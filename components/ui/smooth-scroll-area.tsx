@@ -19,11 +19,12 @@ export const SmoothScrollArea = forwardRef<SmoothScrollHandle, SmoothScrollAreaP
 }, ref) => {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
-  const lenisRef = useRef<Lenis>()
+  const lenisRef = useRef<Lenis | null>(null) // Explicitly allow null
 
   useImperativeHandle(ref, () => ({
     get lenis() {
-      return lenisRef.current
+      // Return undefined if null to match interface if needed, or cast
+      return lenisRef.current ?? undefined
     }
   }))
 
@@ -53,7 +54,7 @@ export const SmoothScrollArea = forwardRef<SmoothScrollHandle, SmoothScrollAreaP
 
     return () => {
       lenis.destroy()
-      lenisRef.current = undefined
+      lenisRef.current = null // Clean up with null
     }
   }, [orientation])
 

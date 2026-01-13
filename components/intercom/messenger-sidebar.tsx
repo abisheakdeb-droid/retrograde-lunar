@@ -11,9 +11,6 @@ import { SmoothScrollArea } from "@/components/ui/smooth-scroll-area"
 
 // ... imports
 
-// Update interface or import from context if exported. 
-// Since we modify the context one, let's reuse it or maintain standard.
-// Ideally we import from context.
 import { Contact } from "./intercom-context"
 
 interface MessengerSidebarProps {
