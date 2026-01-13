@@ -2,11 +2,21 @@
 
 Since your code is already on GitHub, "going live" is incredibly easy. The modern standard for Next.js applications is **Vercel** (the creators of Next.js), which offers a seamless "Git-based" workflow.
 
-## Option 1: Vercel (Recommended)
+## Option 1: The "Easy Mode" (Local Script)
 
-This is the easiest path. It connects to your GitHub repo and auto-deploys every time you push.
+I have installed a local helper for you. Authenticate and deploy directly from your terminal:
 
-### 1. Create a Vercel Account
+1.  Run the deploy script:
+    ```bash
+    ./bin/deploy login
+    ```
+2.  Follow the instructions to log in via browser.
+3.  Once logged in, deploy:
+    ```bash
+    ./bin/deploy
+    ```
+
+## Option 2: Vercel Web Dashboard (Recommended)
 
 Go to [vercel.com](https://vercel.com) and sign up using your **GitHub** account.
 
