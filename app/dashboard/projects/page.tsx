@@ -22,7 +22,7 @@ import { Progress } from "@/components/ui/progress"
 import { CreateTadaClaimDialog } from "@/components/tada/create-claim-dialog"
 
 import { TadaAuditLogSheet } from "@/components/tada/audit-log-sheet"
-import { prisma } from "@/lib/db"
+import { MockDatabase } from "@/lib/data/mock-db"
 import { TadaClaim } from "@/lib/data/generators"
 
 export default async function ProjectsPage(props: { searchParams: Promise<{ q?: string }> }) {
@@ -30,47 +30,14 @@ export default async function ProjectsPage(props: { searchParams: Promise<{ q?: 
     const search = (searchParams?.q || '').toString().trim();
     
     // Fetch Projects with Search
-    const projects = await prisma.project.findMany({
-        where: search ? {
-            OR: [
-                { name: { contains: search } },
-                { managerName: { contains: search } }
-            ]
-        } : {},
-        take: 20
-    });
+    const { data: projects } = await MockDatabase.getInstance().getProjects(1, 20, search);
 
     // Fetch TADA Claims with Search
-    const rawTadaClaims = await prisma.tadaClaim.findMany({
-        where: search ? {
-            OR: [
-                { employeeName: { contains: search } },
-                { purpose: { contains: search } }
-            ]
-        } : {},
-        take: 20,
-        orderBy: { date: 'desc' }
-    });
-
-    const tadaClaims: TadaClaim[] = rawTadaClaims.map(c => ({
-        ...c,
-        status: c.status as TadaClaim['status'],
-        attachments: JSON.parse(c.attachments),
-        approvedBy: c.approvedBy || undefined
-    }));
+    const { data: tadaClaims } = await MockDatabase.getInstance().getTadaClaims(1, 20, search);
 
     // Fetch Audit Log (Last 100)
-    const rawAuditLogClaims = await prisma.tadaClaim.findMany({
-        take: 100,
-        orderBy: { date: 'desc' }
-    });
-
-    const auditLogClaims: TadaClaim[] = rawAuditLogClaims.map(c => ({
-        ...c,
-        status: c.status as TadaClaim['status'],
-        attachments: JSON.parse(c.attachments),
-        approvedBy: c.approvedBy || undefined
-    }));
+    // Using main claims list for audit log in mock mode
+    const auditLogClaims = tadaClaims;
 
     const totalBudget = projects.reduce((acc, p) => acc + p.budget, 0);
     const totalSpent = projects.reduce((acc, p) => acc + p.spent, 0);

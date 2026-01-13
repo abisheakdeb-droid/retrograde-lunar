@@ -12,15 +12,13 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search, Filter, Globe, ShieldCheck, AlertTriangle } from "lucide-react"
 import { SupplierPerformanceCard } from "@/components/suppliers/supplier-performance-card"
-import { prisma } from "@/lib/db"
+import { MockDatabase } from "@/lib/data/mock-db"
 import { Supplier } from "@/lib/data/generators"
 import { AddSupplierDialog } from "@/components/suppliers/add-supplier-dialog"
 import { ImportSuppliersDialog } from "@/components/suppliers/import-suppliers-dialog"
 
 export default async function SupplierPage() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const rawSuppliers = await (prisma as any).supplier.findMany({ take: 100 });
-    const suppliers = rawSuppliers as unknown as Supplier[];
+    const { data: suppliers } = await MockDatabase.getInstance().getSuppliers()
 
     // Filter for top performance cards (mock logic for now, or could sorting)
     const topSuppliers = [...suppliers].sort((a,b) => b.rating - a.rating).slice(0, 3);

@@ -1,17 +1,21 @@
 
-import { prisma } from "./lib/db";
+import { MockDatabase } from "./lib/data/mock-db";
 
 async function main() {
-    console.log("🔍 Verifying Prisma Migration...");
+    console.log("🔍 Verifying Mock Database Data...");
     
+    // Initialize DB
+    const db = MockDatabase.getInstance();
+
     // 1. Check Total Count (Should be ~300 + 3 specific)
-    const total = await prisma.requisition.count();
+    // Note: The Mock DB generates 300 items + 3 specific ones in the constructor.
+    const total = db.requisitions.length;
     console.log(`[TEST] Total Requisitions in DB: ${total}`);
 
     // 2. Test Staff Filter (ID: "3")
-    const staffReqs = await prisma.requisition.findMany({
-        where: { requesterId: "3" }
-    });
+    // We filter synchronously from the in-memory array
+    const staffReqs = db.requisitions.filter(r => r.requesterId === "3");
+    
     console.log(`[TEST] Staff User (ID 3) Requisitions: ${staffReqs.length}`);
     if (staffReqs.length >= 3) {
         console.log("✅ Staff Filter OK");
@@ -24,14 +28,12 @@ async function main() {
     }
 
     // 3. Test Admin Search (Search for 'Sewing')
-    const searchResults = await prisma.requisition.findMany({
-        where: {
-            OR: [
-                { item: { contains: 'Sewing' } },
-                { requesterName: { contains: 'Sewing' } }
-            ]
-        }
-    });
+    // Simulating OR condition: item contains 'Sewing' OR requesterName contains 'Sewing'
+    const searchResults = db.requisitions.filter(r => 
+        (r.item && r.item.includes('Sewing')) ||
+        (r.requesterName && r.requesterName.includes('Sewing'))
+    );
+
     console.log(`[TEST] Search 'Sewing' Results: ${searchResults.length}`);
     if (searchResults.length > 0) console.log("✅ Search OK");
     else console.error("❌ Search Failed");
@@ -42,7 +44,4 @@ main()
   .catch((e) => {
     console.error(e);
     process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
   });

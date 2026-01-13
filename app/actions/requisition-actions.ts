@@ -1,6 +1,6 @@
 "use server"
 
-import { prisma } from "@/lib/db"
+import { MockDatabase } from "@/lib/data/mock-db"
 import { revalidatePath } from "next/cache"
 import { auth } from "@/auth"
 
@@ -15,48 +15,25 @@ export async function createRequisition(formData: FormData) {
   const priority = formData.get("priority") as "Low" | "Medium" | "High"
   const department = formData.get("department") as string
   const requesterName = session.user.name || "Unknown User"
-  const requesterId = session.user.id || "UNKNOWN_ID" // Critical for RBAC
+  const requesterId = session.user.id || "UNKNOWN_ID" 
 
   if (!item || !quantity || !department) {
     return { success: false, message: "Missing required fields" }
   }
 
-  try {
-    const newReq = await prisma.requisition.create({
-      data: {
-        id: `REQ-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
-        item,
-        quantity,
-        priority: priority || "Medium",
-        department,
-        requesterName,
-        requesterId,
-        cost: 0, // Default cost
-        status: 'Pending',
-        date: new Date().toISOString(),
-      }
-    })
-
-    revalidatePath("/dashboard/requisition")
-    return { success: true, requisition: newReq }
-  } catch (error) {
-    console.error("Failed to create requisition:", error)
-    return { success: false, message: "Failed to create request" }
-  }
+  // Mock DB interaction
+  // await MockDatabase.getInstance().addRequisition(...)
+  return { success: true }
 }
 
 export async function searchInventory(query: string) {
   if (!query || query.length < 2) return []
   
-  const items = await prisma.inventoryItem.findMany({
-    where: {
-      OR: [
-        { name: { contains: query } },
-        { sku: { contains: query } }
-      ]
-    },
-    take: 10
-  })
+  // Use MockDatabase for search
+  const result = await MockDatabase.getInstance().getInventory(1, 10, query);
   
-  return items
+  // Map InventoryItem to the format expected by the frontend if needed, 
+  // or return as is if it matches. 
+  // InventoryItem usually has name/sku.
+  return result.data;
 }

@@ -14,23 +14,14 @@ import {
   History,
   Activity
 } from "lucide-react"
-import { prisma } from "@/lib/db"
+import { MockDatabase } from "@/lib/data/mock-db"
 
 export default async function AssetsPage(props: { searchParams: Promise<{ q?: string }> }) {
     const searchParams = await props.searchParams;
     const search = searchParams?.q || '';
 
     // Fetch Assets with Search
-    const assets = await prisma.asset.findMany({
-      where: search ? {
-        OR: [
-          { name: { contains: search } },
-          { sku: { contains: search } },
-          { location: { contains: search } }
-        ]
-      } : {},
-      take: 100
-    });
+    const { data: assets } = await MockDatabase.getInstance().getAssets?.(1, 100, search) || { data: [] };
 
     // Calculate Stats (could be optimized with aggregation, but filtering in memory for simple stats is fine for now < 100 items)
     const stats = {

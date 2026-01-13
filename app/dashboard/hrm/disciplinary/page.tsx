@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { SearchInput } from "@/components/search-input"
 import { AlertTriangle, FileText, Gavel, ShieldAlert, Siren, Scale } from "lucide-react"
-import { prisma } from "@/lib/db"
+import { MockDatabase } from "@/lib/data/mock-db"
 import { DisciplinaryCase } from "@/lib/data/mock-db"
 
 export default async function DisciplinaryPage(props: { searchParams: Promise<{ q?: string }> }) {
@@ -12,28 +12,9 @@ export default async function DisciplinaryPage(props: { searchParams: Promise<{ 
     const search = (searchParams?.q || '').toString().trim();
     
     // Fetch Disciplinary Cases with Search
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const rawCases = await (prisma as any).disciplinaryCase.findMany({
-        where: search ? {
-            OR: [
-                { employeeName: { contains: search } },
-                { description: { contains: search } },
-                { type: { contains: search } }
-            ]
-        } : {},
-        take: 50,
-        orderBy: { incidentDate: 'desc' }
-    });
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const cases: DisciplinaryCase[] = rawCases.map((c: any) => ({
-        ...c,
-        actionsTaken: JSON.parse(c.actionsTaken),
-        severity: c.severity as DisciplinaryCase['severity'],
-        status: c.status as DisciplinaryCase['status'],
-        type: c.type as DisciplinaryCase['type'],
-        employeeAvatar: c.employeeAvatar || "" 
-    }));
+    const cases = (await MockDatabase.getInstance().getDisciplinaryCases?.() || []).filter(c => 
+        search ? c.employeeName.toLowerCase().includes(search.toLowerCase()) : true
+    );
 
     const openCases = cases.filter(c => c.status !== 'Resolved' && c.status !== 'Terminated').length;
     const critical = cases.filter(c => c.severity === 'High' || c.severity === 'Critical').length;

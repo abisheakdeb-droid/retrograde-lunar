@@ -19,29 +19,15 @@ import {
   FileText,
   Users
 } from "lucide-react"
-import { prisma } from "@/lib/db"
+import { MockDatabase } from "@/lib/data/mock-db"
 
 export default async function LeaveManagementPage(props: { searchParams: Promise<{ q?: string }> }) {
     const searchParams = await props.searchParams;
     const search = searchParams?.q || '';
 
     // Fetch Leave Requests with Search
-    const leaveRequests = await prisma.leaveRequest.findMany({
-        where: search ? {
-            OR: [
-                { employeeName: { contains: search } },
-                { type: { contains: search } }
-            ]
-        } : {},
-        take: 100,
-        orderBy: { appliedDate: 'desc' }
-    });
+    const { data: leaveRequests } = await MockDatabase.getInstance().getLeaveRequests?.(1, 100, search) || { data: [] };
 
-    // Holidays are static for now, or could be in DB. Let's keep them static or mock them if not in DB. 
-    // Wait, I saw holidays usage. Let's check if I added a Holiday model. 
-    // I did NOT add a Holiday model in the schema update. 
-    // I will use a static list or keep the mock-db call for holidays ONLY if strictly necessary, 
-    // but better to just mock it inline to remove db dependency.
     const holidays = [
         { id: '1', date: '2026-02-21', name: 'International Mother Language Day', type: 'Public Holiday' },
         { id: '2', date: '2026-03-26', name: 'Independence Day', type: 'Public Holiday' },

@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/db"
+import { MockDatabase } from "@/lib/data/mock-db"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -56,11 +56,7 @@ export default async function RequisitionPage({ searchParams }: Props) {
       ]
   }
 
-  const requisitions = await prisma.requisition.findMany({
-      take: 50,
-      where,
-      orderBy: { date: 'desc' }
-  })
+  const requisitions = await MockDatabase.getInstance().getRequisitions(50);
 
   const pendingCount = requisitions.filter(r => r.status === 'Pending').length
   const approvedCount = requisitions.filter(r => r.status === 'Approved').length

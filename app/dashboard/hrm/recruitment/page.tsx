@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/db"
+import { MockDatabase } from "@/lib/data/mock-db"
 import { JobPosting, Candidate } from "@/lib/data/mock-db"
 import { KanbanBoard } from "@/components/hrm/recruitment/kanban-board"
 import { JobPostingDialog } from "@/components/hrm/recruitment/job-posting-dialog"
@@ -6,13 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Briefcase, Users, TrendingUp } from "lucide-react"
 
 export default async function RecruitmentPage() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const rawJobs = await (prisma as any).jobPosting.findMany();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const rawCandidates = await (prisma as any).candidate.findMany();
-
-    const jobs = rawJobs as unknown as JobPosting[];
-    const candidates = rawCandidates as unknown as Candidate[];
+    const jobs = await MockDatabase.getInstance().getJobPostings();
+    const stats = await MockDatabase.getInstance().getStats();
+    const candidates = await MockDatabase.getInstance().getCandidates();
 
     // Quick check to simulate loading state or ensure data
     const totalCandidates = candidates.length;

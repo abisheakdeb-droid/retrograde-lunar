@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/db"
+import { MockDatabase } from "@/lib/data/mock-db"
 import { Payslip } from "@/lib/data/generators"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -28,24 +28,8 @@ export default async function PayrollPage(props: { searchParams: Promise<{ q?: s
     const searchParams = await props.searchParams;
     const search = searchParams?.q || '';
 
-    const rawPayslips = await prisma.payslip.findMany({
-        where: search ? {
-            OR: [
-                { id: { contains: search } },
-                { employeeName: { contains: search } },
-                { employeeId: { contains: search } }
-            ]
-        } : {},
-        take: 100
-    });
-
-    const payslips: Payslip[] = rawPayslips.map(p => ({
-        ...p,
-        earnings: JSON.parse(p.earnings),
-        deductions: JSON.parse(p.deductions),
-        status: p.status as Payslip['status'],
-        paymentDate: p.paymentDate || undefined
-    }));
+    // Fetch Payslips 
+    const { data: payslips } = await MockDatabase.getInstance().getPayslips?.(1, 100) || { data: [] };
 
     const stats = {
         totalDisbursed: payslips.reduce((acc, p) => acc + p.netSalary, 0),
