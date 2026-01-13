@@ -22,13 +22,16 @@ export function useWidgetConfig() {
     const [isMounted, setIsMounted] = useState(false)
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsMounted(true)
-        const saved = localStorage.getItem("dashboard-widgets")
-        if (saved) {
-            try {
-                setWidgets(JSON.parse(saved))
-            } catch (e) {
-                console.error("Failed to parse widget config", e)
+        if (typeof window !== "undefined") {
+            const saved = localStorage.getItem("dashboard-widgets")
+            if (saved) {
+                try {
+                    setWidgets(JSON.parse(saved))
+                } catch (e) {
+                    console.error("Failed to parse widget config", e)
+                }
             }
         }
     }, [])

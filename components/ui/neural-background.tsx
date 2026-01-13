@@ -14,7 +14,7 @@ export function NeuralBackground() {
     if (!ctx) return
 
     let animationFrameId: number
-    let particles: Particle[] = []
+    const particles: Particle[] = []
     
     // Configuration
     const particleCount = 60

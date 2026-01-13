@@ -29,7 +29,7 @@ export function MessengerWindow() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsOpen(false)}
-            className="fixed inset-0 bg-background/20 backdrop-blur-[1px] z-[9998] pointer-events-auto"
+            className="fixed inset-0 bg-background/20 backdrop-blur-[1px] z-9998 pointer-events-auto"
           />
           
           <motion.div
@@ -37,7 +37,7 @@ export function MessengerWindow() {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="fixed top-0 right-0 h-full w-[100vw] md:w-[700px] lg:w-[900px] bg-background border-l border-border shadow-2xl z-[9999] flex flex-col md:flex-row pointer-events-auto"
+            className="fixed top-0 right-0 h-full w-screen md:w-[700px] lg:w-[900px] bg-background border-l border-border shadow-2xl z-9999 flex flex-col md:flex-row pointer-events-auto"
           >
             {/* Sidebar - Collapses on mobile when chat is active */}
             <div className={cn(

@@ -53,6 +53,7 @@ export function MessengerSidebar({
               inputRef.current?.focus()
               setSearchQuery("") // Clear search to show unfiltered list or ready for new search
             }}
+            aria-label="New Chat"
           >
              <Plus className="h-4 w-4 text-muted-foreground" />
           </Button>
@@ -61,6 +62,7 @@ export function MessengerSidebar({
               variant="ghost" 
               className="h-8 w-8 rounded-full hover:bg-destructive/10 hover:text-destructive"
               onClick={onClose}
+              aria-label="Close Messenger"
           >
              <X className="h-4 w-4" />
           </Button>
