@@ -1,0 +1,116 @@
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-background: hsl(222 15% 7%); /* Deep space dark #0F1115 */
+  --color-foreground: hsl(210 20% 98%);
+  
+  --color-card: hsl(222 15% 10%); /* #12141C */
+  --color-card-foreground: hsl(210 20% 98%);
+  
+  --color-popover: hsl(222 15% 5%);
+  --color-popover-foreground: hsl(210 20% 98%);
+  
+  --color-primary: hsl(180 100% 45%); /* Neon Cyan #06B6D4 */
+  --color-primary-foreground: hsl(222.2 47.4% 11.2%);
+  
+  --color-secondary: hsl(217.2 32.6% 17.5%);
+  --color-secondary-foreground: hsl(210 20% 98%);
+  
+  --color-muted: hsl(217.2 32.6% 17.5%);
+  --color-muted-foreground: hsl(215 20.2% 65.1%);
+  
+  --color-accent: hsl(217.2 32.6% 17.5%);
+  --color-accent-foreground: hsl(210 20% 98%);
+  
+  --color-destructive: hsl(0 62.8% 30.6%);
+  --color-destructive-foreground: hsl(210 20% 98%);
+  
+  --color-border: hsl(217.2 32.6% 25%); /* Thinner, technical borders */
+  --color-input: hsl(217.2 32.6% 17.5%);
+  --color-ring: hsl(180 100% 45%);
+  
+  --color-chart-1: hsl(180 100% 45%);
+  --color-chart-2: hsl(38 92% 50%); /* Neon Amber #FB8C00 */
+  --color-chart-3: hsl(199 89% 48%);
+  --color-chart-4: hsl(280 65% 60%);
+  --color-chart-5: hsl(340 75% 55%);
+
+  --radius-lg: 0.5rem;
+  --radius-md: calc(0.5rem - 2px);
+  --radius-sm: calc(0.5rem - 4px);
+  
+  --color-tactical-bg: hsl(222 15% 7%);
+  --color-tactical-accent: hsl(180 100% 45%);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+    outline-color: color-mix(in srgb, var(--color-ring) 50%, transparent);
+  }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    transition-property: color, background-color;
+    transition-duration: 500ms;
+  }
+}
+
+@layer utilities {
+  /* Tactical Command Center Utilities */
+  .tactical-grid {
+    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
+    background-size: 24px 24px;
+  }
+  
+  .tactical-card {
+    background-color: color-mix(in srgb, var(--color-card) 60%, transparent);
+    border-color: color-mix(in srgb, var(--color-border) 50%, transparent);
+    border-width: 1px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    clip-path: polygon(
+      0 0, 
+      calc(100% - 10px) 0, 100% 10px, 
+      100% 100%, 
+      10px 100%, 0 calc(100% - 10px)
+    );
+  }
+
+  .neon-glow-cyan {
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.3), 0 0 5px rgba(6, 182, 212, 0.2);
+  }
+
+  .neon-glow-amber {
+    box-shadow: 0 0 10px rgba(251, 140, 0, 0.3), 0 0 5px rgba(251, 140, 0, 0.2);
+  }
+
+  .technical-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted-foreground);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-weight: 700;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--color-primary) 30%, transparent);
+    border-radius: 3px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--color-primary) 50%, transparent);
+  }
+}
