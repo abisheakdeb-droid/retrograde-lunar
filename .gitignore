@@ -45,3 +45,6 @@ next-env.d.ts
 *.sqlite
 prisma/*.db
 prisma/*.db-journal
+
+# verification output
+css-verification-output.css
