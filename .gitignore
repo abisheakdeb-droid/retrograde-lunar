@@ -48,3 +48,10 @@ prisma/*.db-journal
 
 # verification output
 css-verification-output.css
+
+# gh cli
+gh_2.83.2_macOS_arm64.zip
+gh_2.83.2_macOS_arm64/
+
+# gh binary
+/gh

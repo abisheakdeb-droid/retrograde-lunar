@@ -57,6 +57,8 @@
     transition-property: color, background-color;
     transition-duration: 500ms;
   }
+  
+
 }
 
 @layer utilities {

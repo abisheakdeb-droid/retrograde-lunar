@@ -37,6 +37,9 @@ export interface OrgNode {
     children?: OrgNode[];
     directReportsCount?: number;
     status: 'Online' | 'Offline' | 'In Meeting';
+    email?: string;
+    phone?: string;
+    location?: string;
 }
 
 export interface ShiftAssignment {
@@ -73,7 +76,7 @@ export interface Review {
     kpiTrend: 'up' | 'down';
 }
 
-class MockDatabase {
+export class MockDatabase {
     private static instance: MockDatabase;
 
     public employees: Employee[] = [];
@@ -94,6 +97,10 @@ class MockDatabase {
 
     private constructor() {
         this.initialize();
+    }
+
+    private delay(ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     async updateRequisitionStatus(id: string, status: 'Approved' | 'Rejected') {
@@ -734,6 +741,9 @@ class MockDatabase {
             department: 'Strategic Command',
             status: 'Online',
             directReportsCount: 3,
+            email: 'ak.azad@hameemgroup.com',
+            phone: '+880 1711-000001',
+            location: 'Dhaka HQ - Level 12',
             children: [
                 {
                     id: 'ED-001',
@@ -743,6 +753,9 @@ class MockDatabase {
                     department: 'Operations',
                     status: 'In Meeting',
                     directReportsCount: 2,
+                    email: 'delwar.hossain@hameemgroup.com',
+                    phone: '+880 1711-000002',
+                    location: 'Dhaka HQ - Level 11',
                     children: [
                         {
                             id: 'GM-001',
@@ -752,6 +765,9 @@ class MockDatabase {
                             department: 'Production',
                             status: 'Online',
                             directReportsCount: 5,
+                            email: 'sajid.rahman@hameemgroup.com',
+                            phone: '+880 1711-000003',
+                            location: 'Gazipur Plant - Block A',
                             children: [
                                 {
                                     id: 'MGR-001',
@@ -760,7 +776,10 @@ class MockDatabase {
                                     avatar: 'https://i.pravatar.cc/150?u=MGR1',
                                     department: 'Denim Unit',
                                     status: 'Offline',
-                                    directReportsCount: 45
+                                    directReportsCount: 45,
+                                    email: 'rafiqul.islam@hameemgroup.com',
+                                    phone: '+880 1711-000004',
+                                    location: 'Gazipur Plant - Floor 2'
                                 },
                                 {
                                     id: 'MGR-002',
@@ -769,7 +788,10 @@ class MockDatabase {
                                     avatar: 'https://i.pravatar.cc/150?u=MGR2',
                                     department: 'Washing Plant',
                                     status: 'Online',
-                                    directReportsCount: 22
+                                    directReportsCount: 22,
+                                    email: 'abdul.malek@hameemgroup.com',
+                                    phone: '+880 1711-000005',
+                                    location: 'Gazipur Plant - Washing Unit'
                                 }
                             ]
                         },
@@ -780,7 +802,10 @@ class MockDatabase {
                             avatar: 'https://i.pravatar.cc/150?u=GM2',
                             department: 'Human Resources',
                             status: 'Online',
-                            directReportsCount: 3
+                            directReportsCount: 3,
+                            email: 'farhana.ahmed@hameemgroup.com',
+                            phone: '+880 1711-000006',
+                            location: 'Dhaka HQ - Level 4'
                         }
                     ]
                 },
@@ -792,16 +817,23 @@ class MockDatabase {
                     status: 'Online',
                     department: 'Administration',
                     directReportsCount: 4,
+                    email: 'tanvir.ahmed@hameemgroup.com',
+                    phone: '+880 1711-000007',
+                    location: 'Dhaka HQ - Level 12',
                     children: [
                          {
                             id: 'DIR-001',
                             name: 'Kamrul Hasan',
                             role: 'Director (Finance)',
                             avatar: 'https://i.pravatar.cc/150?u=DIR1',
-                            department: 'Finance',
                             status: 'Online',
-                            directReportsCount: 6
+                            department: 'Finance',
+                            directReportsCount: 10,
+                            email: 'kamrul.hasan@hameemgroup.com',
+                            phone: '+880 1711-000008',
+                            location: 'Dhaka HQ - Level 8'
                         },
+
                          {
                             id: 'DIR-002',
                             name: 'Nusrat Jahan',
@@ -809,7 +841,62 @@ class MockDatabase {
                             avatar: 'https://i.pravatar.cc/150?u=DIR2',
                             department: 'Marketing',
                             status: 'In Meeting',
-                            directReportsCount: 8
+                            directReportsCount: 8,
+                            email: 'nusrat.jahan@hameemgroup.com',
+                            phone: '+880 1711-000009',
+                            location: 'Dhaka HQ - Level 9',
+                            children: [
+                                {
+                                    id: 'MKT-001',
+                                    name: 'Rahim Uddin',
+                                    role: 'Brand Manager',
+                                    avatar: 'https://i.pravatar.cc/150?u=MKT1',
+                                    department: 'Brand Management',
+                                    status: 'Online',
+                                    directReportsCount: 4,
+                                    email: 'rahim.uddin@hameemgroup.com',
+                                    phone: '+880 1711-000018',
+                                    location: 'Dhaka HQ - Level 9'
+                                },
+                                {
+                                    id: 'MKT-002',
+                                    name: 'Sonia Akter',
+                                    role: 'Digital Marketing Lead',
+                                    avatar: 'https://i.pravatar.cc/150?u=MKT2',
+                                    department: 'Digital Marketing',
+                                    status: 'Online',
+                                    directReportsCount: 6,
+                                    email: 'sonia.akter@hameemgroup.com',
+                                    phone: '+880 1711-000019',
+                                    location: 'Dhaka HQ - Level 9'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'CTO-001',
+                            name: 'Arif Hasan',
+                            role: 'Chief Technology Officer',
+                            avatar: 'https://i.pravatar.cc/150?u=CTO',
+                            department: 'IT & Systems',
+                            status: 'Online',
+                            directReportsCount: 15,
+                            email: 'arif.hasan@hameemgroup.com',
+                            phone: '+880 1711-000020',
+                            location: 'Dhaka HQ - Level 14',
+                            children: [
+                                {
+                                    id: 'IT-001',
+                                    name: 'Rakib Islam',
+                                    role: 'Head of Infrastructure',
+                                    avatar: 'https://i.pravatar.cc/150?u=IT1',
+                                    department: 'IT Infrastructure',
+                                    status: 'Offline',
+                                    directReportsCount: 8,
+                                    email: 'rakib.islam@hameemgroup.com',
+                                    phone: '+880 1711-000021',
+                                    location: 'Dhaka HQ - Server Room'
+                                }
+                            ]
                         }
                     ]
                 },
@@ -820,15 +907,56 @@ class MockDatabase {
                     avatar: 'https://i.pravatar.cc/150?u=ED2',
                     status: 'Offline',
                     department: 'Supply Chain',
-                    directReportsCount: 5
+                    directReportsCount: 5,
+                    email: 'michael.chen@hameemgroup.com',
+                    phone: '+880 1711-000010',
+                    location: 'Chittagong Port Office',
+                    children: [
+                        {
+                            id: 'SCM-001',
+                            name: 'David Lee',
+                            role: 'Head of Logistics',
+                            avatar: 'https://i.pravatar.cc/150?u=SCM1',
+                            department: 'Logistics',
+                            status: 'Online',
+                            directReportsCount: 20,
+                            email: 'david.lee@hameemgroup.com',
+                            phone: '+880 1711-000011',
+                            location: 'Chittagong Depot',
+                            children: [
+                                {
+                                    id: 'LOG-001',
+                                    name: 'Abdul Karim',
+                                    role: 'Fleet Manager',
+                                    avatar: 'https://i.pravatar.cc/150?u=LOG1',
+                                    department: 'Logistics',
+                                    status: 'In Meeting',
+                                    directReportsCount: 50,
+                                    email: 'abdul.karim@hameemgroup.com',
+                                    phone: '+880 1711-000012',
+                                    location: 'Transport Yard'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'SCM-002',
+                            name: 'Sarah Khan',
+                            role: 'Procurement Manager',
+                            avatar: 'https://i.pravatar.cc/150?u=SCM2',
+                            department: 'Procurement',
+                            status: 'Online',
+                            directReportsCount: 5,
+                            email: 'sarah.khan@hameemgroup.com',
+                            phone: '+880 1711-000013',
+                            location: 'Dhaka HQ - Level 2'
+                        }
+                    ]
                 }
             ]
         };
     }
 
-    private delay(ms: number) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
+
 
     async getWeeklyRoster(startDate?: string): Promise<ShiftAssignment[]> {
         await this.delay(600);

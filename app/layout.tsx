@@ -7,6 +7,7 @@ import { AuthProvider } from "@/components/auth-provider";
 import { SmoothScrollProvider } from "@/components/providers/smooth-scroll-provider";
 import { NeuralBackground } from "@/components/ui/neural-background";
 import { DemoRoleProvider } from "@/components/providers/demo-role-provider";
+import { IntercomSystem } from "@/components/intercom/intercom-system";
 
 
 const geistSans = Geist({
@@ -41,6 +42,7 @@ export default function RootLayout({
                 <NeuralBackground />
                 {children}
                 <Toaster />
+                <IntercomSystem />
             </SmoothScrollProvider>
           </DemoRoleProvider>
         </AuthProvider>
