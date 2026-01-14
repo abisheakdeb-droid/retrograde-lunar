@@ -24,16 +24,22 @@ import { CreateTadaClaimDialog } from "@/components/tada/create-claim-dialog"
 import { TadaAuditLogSheet } from "@/components/tada/audit-log-sheet"
 import { MockDatabase } from "@/lib/data/mock-db"
 import { TadaClaim } from "@/lib/data/generators"
+import { KanbanBoard } from "@/components/tasks/kanban-board"
+import { LayoutList, Kanban, FileSpreadsheet } from "lucide-react" 
+import Link from "next/link"
 
-export default async function ProjectsPage(props: { searchParams: Promise<{ q?: string }> }) {
+export default async function ProjectsPage(props: { searchParams: Promise<{ q?: string; view?: string }> }) {
     const searchParams = await props.searchParams;
     const search = (searchParams?.q || '').toString().trim();
+    const view = (searchParams?.view || 'list').toString(); // Default to list for now to preserve existing UX
     
-    // Fetch Projects with Search
+    // Fetch Data
     const { data: projects } = await MockDatabase.getInstance().getProjects(1, 20, search);
+    const { data: tadaClaims } = await MockDatabase.getInstance().getTadaClaims(1, 20, search);
+    const tasks = await MockDatabase.getInstance().getTasks();
 
     // Fetch TADA Claims with Search
-    const { data: tadaClaims } = await MockDatabase.getInstance().getTadaClaims(1, 20, search);
+
 
     // Fetch Audit Log (Last 100)
     // Using main claims list for audit log in mock mode
@@ -55,18 +61,28 @@ export default async function ProjectsPage(props: { searchParams: Promise<{ q?: 
                     <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest px-8">Operational Capital & Travel Disbursement Audit</p>
                 </div>
                 <div className="flex items-center gap-4">
+                    <div className="flex items-center bg-card border border-primary/20 rounded-md p-0.5">
+                        <Link href="?view=list" className={`p-2 rounded-sm transition-colors ${view === 'list' ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:text-primary'}`}>
+                            <LayoutList className="h-4 w-4" />
+                        </Link>
+                        <Link href="?view=board" className={`p-2 rounded-sm transition-colors ${view === 'board' ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:text-primary'}`}>
+                            <Kanban className="h-4 w-4" />
+                        </Link>
+                    </div>
+
                     <Suspense fallback={<div className="h-9 w-[300px] bg-card/20 animate-pulse border border-primary/10" />}>
-                        <SearchInput placeholder="SEARCH PROJECTS/CLAIMS..." />
+                        <SearchInput placeholder={view === 'board' ? "SEARCH TASKS..." : "SEARCH PROJECTS/CLAIMS..."} />
                     </Suspense>
-                    {search && (
-                        <Badge variant="outline" className="font-mono text-[10px] uppercase border-primary text-primary animate-pulse">
-                            Filter: {search}
-                        </Badge>
-                    )}
                     <CreateTadaClaimDialog />
                 </div>
             </div>
 
+            {view === 'board' ? (
+                <div className="h-[calc(100vh-200px)]">
+                    <KanbanBoard initialTasks={tasks} />
+                </div>
+            ) : (
+                <>
             {/* Financial Overview Bento */}
             <div className="grid gap-4 md:grid-cols-4">
                 <Card className="tactical-card border-l-4 border-l-primary/50 md:col-span-2 overflow-hidden relative">
@@ -216,6 +232,8 @@ export default async function ProjectsPage(props: { searchParams: Promise<{ q?: 
                     <TadaAuditLogSheet claims={auditLogClaims} />
                 </div>
             </div>
+            </>
+            )}
         </div>
     )
 }

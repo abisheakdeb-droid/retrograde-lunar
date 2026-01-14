@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { SmoothScrollArea } from "@/components/ui/smooth-scroll-area"
+// import { SmoothScrollArea } from "@/components/ui/smooth-scroll-area" // Removed
 
 // ... imports
 
@@ -84,7 +84,7 @@ export function MessengerSidebar({
       </div>
 
       {/* Conversation List */}
-      <SmoothScrollArea className="flex-1">
+      <div className="flex-1 overflow-y-auto custom-scrollbar">
         <div className="flex flex-col px-2 pb-2 gap-1">
           {filteredContacts.length === 0 ? (
              <div className="p-4 text-center text-sm text-muted-foreground">
@@ -149,7 +149,7 @@ export function MessengerSidebar({
             </button>
           )))}
         </div>
-      </SmoothScrollArea>
+      </div>
     </div>
   )
 }

@@ -19,10 +19,10 @@ import {
   ClipboardList,
   BarChart3,
   Bell,
-  Briefcase
+  Briefcase,
+  Network
 } from "lucide-react"
 import { LogoutButton } from "@/components/logout-button"
-import { SmoothScrollContainer } from "@/components/ui/smooth-scroll-container"
 
 const sidebarGroups = [
   {
@@ -40,6 +40,7 @@ const sidebarGroups = [
       { name: "Payroll & Payslips", href: "/dashboard/payroll", icon: CreditCard },
       { name: "Appraisal (KPI)", href: "/dashboard/appraisal", icon: BarChart3 },
       { name: "Training & Skill", href: "/dashboard/training", icon: GraduationCap },
+      { name: "Organogram", href: "/dashboard/hrm/organogram", icon: Network },
     ]
   },
   {
@@ -79,7 +80,7 @@ export function Sidebar({ className }: SidebarProps) {
         if (role === 'staff') {
              if (group.title === 'Overview') return group
              if (group.title === 'Personnel (HRM)') {
-                 return { ...group, items: group.items.filter(i => ['Leave & Shift', 'Payroll & Payslips', 'Training & Skill'].includes(i.name)) }
+                 return { ...group, items: group.items.filter(i => ['Leave & Shift', 'Payroll & Payslips', 'Training & Skill', 'Organogram'].includes(i.name)) }
              }
              if (group.title === 'Operations & Assets') {
                  // Staff can track assets and make requests
@@ -126,7 +127,7 @@ export function Sidebar({ className }: SidebarProps) {
             </div>
 
             {/* Navigation */}
-            <SmoothScrollContainer className="flex-1 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto custom-scrollbar">
                 <div className="p-4 pb-20 space-y-6">
                 {filteredGroups.map((group) => (
                     <div key={group.title} className="space-y-2">
@@ -160,7 +161,7 @@ export function Sidebar({ className }: SidebarProps) {
                     </div>
                 ))}
                 </div>
-            </SmoothScrollContainer>
+            </div>
 
             {/* Role Switcher & Logout */}
             <div className="p-4 border-t bg-card/50 backdrop-blur-md shrink-0 space-y-4">

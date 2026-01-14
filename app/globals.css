@@ -4,37 +4,37 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-background: hsl(222 15% 7%); /* Deep space dark #0F1115 */
+  --color-background: hsl(222 15% 5%); /* Deepest space dark #0A0C10 */
   --color-foreground: hsl(210 20% 98%);
   
-  --color-card: hsl(222 15% 10%); /* #12141C */
+  --color-card: hsl(222 15% 8%); /* Slightly lighter than bg #111318 */
   --color-card-foreground: hsl(210 20% 98%);
   
   --color-popover: hsl(222 15% 5%);
   --color-popover-foreground: hsl(210 20% 98%);
   
-  --color-primary: hsl(180 100% 45%); /* Neon Cyan #06B6D4 */
+  --color-primary: hsl(180 100% 45%); /* Neon Cyan */
   --color-primary-foreground: hsl(222.2 47.4% 11.2%);
   
-  --color-secondary: hsl(217.2 32.6% 17.5%);
+  --color-secondary: hsl(217.2 32.6% 12%); /* Darker secondary */
   --color-secondary-foreground: hsl(210 20% 98%);
   
-  --color-muted: hsl(217.2 32.6% 17.5%);
+  --color-muted: hsl(217.2 32.6% 12%);
   --color-muted-foreground: hsl(215 20.2% 65.1%);
   
-  --color-accent: hsl(217.2 32.6% 17.5%);
+  --color-accent: hsl(217.2 32.6% 12%);
   --color-accent-foreground: hsl(210 20% 98%);
   
   --color-destructive: hsl(0 62.8% 30.6%);
   --color-destructive-foreground: hsl(210 20% 98%);
   
-  --color-border: hsl(217.2 32.6% 25%); /* Thinner, technical borders */
+  --color-border: hsl(217.2 32.6% 20%); /* Less visible borders */
   --color-input: hsl(217.2 32.6% 17.5%);
   --color-ring: hsl(180 100% 45%);
   
   --color-chart-1: hsl(180 100% 45%);
-  --color-chart-2: hsl(38 92% 50%); /* Neon Amber #FB8C00 */
-  --color-chart-3: hsl(199 89% 48%);
+  --color-chart-2: hsl(45 100% 50%); /* Neon Yellow */
+  --color-chart-3: hsl(150 100% 45%); /* Neon Green */
   --color-chart-4: hsl(280 65% 60%);
   --color-chart-5: hsl(340 75% 55%);
 
@@ -42,7 +42,7 @@
   --radius-md: calc(0.5rem - 2px);
   --radius-sm: calc(0.5rem - 4px);
   
-  --color-tactical-bg: hsl(222 15% 7%);
+  --color-tactical-bg: hsl(222 15% 5%);
   --color-tactical-accent: hsl(180 100% 45%);
 }
 
@@ -83,6 +83,14 @@
 
   .neon-glow-cyan {
     box-shadow: 0 0 10px rgba(6, 182, 212, 0.3), 0 0 5px rgba(6, 182, 212, 0.2);
+  }
+
+  .neon-glow-yellow {
+    box-shadow: 0 0 10px rgba(255, 214, 0, 0.3), 0 0 5px rgba(255, 214, 0, 0.2);
+  }
+  
+  .neon-glow-green {
+    box-shadow: 0 0 10px rgba(0, 255, 128, 0.3), 0 0 5px rgba(0, 255, 128, 0.2);
   }
 
   .neon-glow-amber {

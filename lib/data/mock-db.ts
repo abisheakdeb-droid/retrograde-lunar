@@ -1,7 +1,9 @@
 import { faker } from '@faker-js/faker';
-import { Employee, InventoryItem, Requisition, FactoryUnit, Asset, LeaveRequest, Holiday, LeaveStatus, LeaveType, Payslip, EmployeeDocument, Project, ProjectStatus, TadaClaim, TadaStatus, PerformanceCategory, KpiScorecard, Supplier, generateEmployees, generateInventory, generateRequisitions, generateMonthlyAttendance, generateProductionStats, generateHaMeemFactoryData, generateAssets, generateLeaveRequests, generateHolidays, generatePayslips, generateDocuments, generateProjects, generateTadaClaims, generateKpiScorecards, generateSuppliers } from './generators';
+import { Employee, InventoryItem, Requisition, FactoryUnit, Asset, LeaveRequest, Holiday, LeaveStatus, LeaveType, Payslip, EmployeeDocument, Project, ProjectStatus, TadaClaim, TadaStatus, PerformanceCategory, KpiScorecard, Supplier, generateEmployees, generateInventory, generateRequisitions, generateMonthlyAttendance, generateProductionStats, generateHaMeemFactoryData, generateAssets, generateLeaveRequests, generateHolidays, generatePayslips, generateDocuments, generateProjects, generateTadaClaims, generateKpiScorecards, generateSuppliers, generateTasks } from './generators';
 import { generateAnalyticsKPIs, generateActivityFeed, AnalyticsKPI, ActivityItem } from '@/components/mock-data/generate-analytics';
+import { Task, TaskStatus } from '@/types/task-types';
 import { generateERPInventory } from '@/components/mock-data/generate-erp';
+
 
 export interface JobPosting {
     id: string;
@@ -89,6 +91,7 @@ export class MockDatabase {
     public documents: EmployeeDocument[] = [];
     public projects: Project[] = [];
     public tadaClaims: TadaClaim[] = [];
+    public tasks: Task[] = [];
     public suppliers: Supplier[] = [];
 
     public kpiScorecards: KpiScorecard[] = [];
@@ -192,6 +195,7 @@ export class MockDatabase {
         this.documents = generateDocuments(this.employees); // Generate Documents
         this.projects = generateProjects(15, this.employees); // Generate Projects
         this.tadaClaims = generateTadaClaims(80, this.employees); // Generate TADA Claims
+        this.tasks = generateTasks(50, this.employees); // Generate Tasks
         this.kpiScorecards = generateKpiScorecards(this.employees); // Generate KPI Scorecards
         this.analyticsKPIs = generateAnalyticsKPIs();
         this.activityFeed = generateActivityFeed(20);
@@ -1070,6 +1074,29 @@ export class MockDatabase {
         await this.delay(800);
         console.log('Reported incident:', data);
         return { success: true };
+    }
+    async getTasks(status?: string, priority?: string) {
+        await this.delay(200);
+        let data = this.tasks;
+
+        if (status) {
+            data = data.filter(t => t.status === status);
+        }
+        if (priority) {
+            data = data.filter(t => t.priority === priority);
+        }
+        return data;
+    }
+
+    async updateTaskStatus(taskId: string, newStatus: TaskStatus) {
+        await this.delay(200);
+        const task = this.tasks.find(t => t.id === taskId);
+        if (task) {
+            task.status = newStatus;
+            task.updatedAt = new Date();
+            return task;
+        }
+        return null; 
     }
 }
 

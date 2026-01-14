@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { MessageBubble } from "./message-bubble"
 import { useState, useRef, useEffect } from "react"
 import { cn } from "@/lib/utils"
-import { SmoothScrollArea, SmoothScrollHandle } from "@/components/ui/smooth-scroll-area"
+// import { SmoothScrollArea, SmoothScrollHandle } from "@/components/ui/smooth-scroll-area" // Removed
 import { MessengerProfileSheet } from "./messenger-profile-sheet"
 import { Attachment } from "./intercom-context"
 
@@ -42,17 +42,14 @@ export function MessengerChatArea({
   const [inputValue, setInputValue] = useState("")
   const [attachments, setAttachments] = useState<Attachment[]>([])
   const [showProfile, setShowProfile] = useState(false)
-  const scrollAreaRef = useRef<SmoothScrollHandle>(null)
+  const scrollAreaRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Auto-scroll to bottom
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (scrollAreaRef.current?.lenis) {
-        scrollAreaRef.current.lenis.scrollTo(100000, { immediate: false })
-      }
-    }, 100)
-    return () => clearTimeout(timeout)
+    if (scrollAreaRef.current) {
+        scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
+    }
   }, [messages])
 
   const handleSend = () => {
@@ -143,9 +140,9 @@ export function MessengerChatArea({
       />
 
       {/* Messages Area */}
-      <SmoothScrollArea 
+      <div 
         ref={scrollAreaRef}
-        className="flex-1 p-4"
+        className="flex-1 p-4 overflow-y-auto"
       >
         <div className="flex flex-col justify-end min-h-full">
           {/* Welcome Message */}
@@ -169,7 +166,8 @@ export function MessengerChatArea({
             />
           ))}
         </div>
-      </SmoothScrollArea>
+        </div>
+
 
       {/* Input Area */}
       <div className="p-4 border-t border-border/40 bg-card/30">

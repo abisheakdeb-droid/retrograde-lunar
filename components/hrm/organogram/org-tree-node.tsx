@@ -66,7 +66,13 @@ export function OrgTreeNode({ node, level = 0, highlightedId, expandedIds }: Org
                                 isHighlighted ? "border-amber-500" : ""
                             )}>
                                 <AvatarImage src={node.avatar} />
-                                <AvatarFallback>{node.name[0]}</AvatarFallback>
+                                <AvatarFallback className="bg-transparent">
+                                    <img 
+                                        src="https://api.dicebear.com/9.x/avataaars/svg?seed=Felix" 
+                                        alt="Memoji" 
+                                        className="h-full w-full object-cover scale-125 translate-y-2"
+                                    />
+                                </AvatarFallback>
                             </Avatar>
                             <span className={cn(
                                 "absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-background",

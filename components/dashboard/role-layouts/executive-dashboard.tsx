@@ -3,6 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users, ShoppingCart, Box, Activity, ExternalLink, TrendingUp, AlertTriangle, Play, Factory, Shirt, Layers, Droplets } from "lucide-react"
 import Link from "next/link"
+import { cn } from "@/lib/utils"
 import { ProductionCostChart } from "@/components/charts/production-cost-chart"
 import { HourlyOutputChart } from "@/components/charts/mis-charts"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -33,68 +34,74 @@ export function ExecutiveDashboard({ data, role }: { data: any, role: string }) 
                 </div>
             </div>
 
-            {/* Core Metrics Row */}
+            {/* Core Metrics Row (FinSight Design) */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Link href="/dashboard/hrm">
-                    <Card className="hover:border-primary/50 cursor-pointer group transition-colors">
+                    <Card className="bg-card/40 border-primary/20 hover:border-primary/50 cursor-pointer group transition-all duration-300">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Total Employees</CardTitle>
-                            <Users className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                            <CardTitle className="technical-label text-xs font-mono text-muted-foreground">TOTAL OPERATIVES</CardTitle>
+                            <Users className="h-4 w-4 text-primary/50 group-hover:text-primary transition-colors" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold group-hover:text-primary transition-colors">
+                            <div className="text-3xl font-bold font-mono tracking-tighter text-primary neon-glow-cyan">
                                 {stats.totalEmployees.toLocaleString()}
                             </div>
-                            <p className="text-xs text-muted-foreground mt-1 flex items-center">
-                                View Directory <ExternalLink className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <p className="text-[10px] text-muted-foreground mt-1 flex items-center uppercase tracking-widest font-mono">
+                                Active Personnel <ExternalLink className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
                             </p>
                         </CardContent>
                     </Card>
                 </Link>
 
                 <Link href="/dashboard/requisition">
-                    <Card className="hover:border-primary/50 cursor-pointer group transition-colors">
+                    <Card className="bg-card/40 border-chart-2/20 hover:border-chart-2/50 cursor-pointer group transition-all duration-300">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Pending Requests</CardTitle>
-                            <ShoppingCart className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                            <CardTitle className="technical-label text-xs font-mono text-muted-foreground">PENDING REQUESTS</CardTitle>
+                            <ShoppingCart className="h-4 w-4 text-chart-2/50 group-hover:text-chart-2 transition-colors" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold group-hover:text-primary transition-colors">
+                            <div className="text-3xl font-bold font-mono tracking-tighter text-chart-2 neon-glow-yellow">
                                 {stats.pendingRequisitions.toLocaleString()}
                             </div>
-                            <p className="text-xs text-muted-foreground mt-1 flex items-center">
-                                Review Now <ExternalLink className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <p className="text-[10px] text-muted-foreground mt-1 flex items-center uppercase tracking-widest font-mono">
+                                Awaiting Approval <ExternalLink className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
                             </p>
                         </CardContent>
                     </Card>
                 </Link>
 
                 <Link href="/dashboard/erp">
-                    <Card className="hover:border-primary/50 cursor-pointer group transition-colors">
+                    <Card className="bg-card/40 border-chart-3/20 hover:border-chart-3/50 cursor-pointer group transition-all duration-300">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Inventory Value</CardTitle>
-                            <Box className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                            <CardTitle className="technical-label text-xs font-mono text-muted-foreground">INVENTORY VALUE</CardTitle>
+                            <Box className="h-4 w-4 text-chart-3/50 group-hover:text-chart-3 transition-colors" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold group-hover:text-primary transition-colors">
+                            <div className="text-3xl font-bold font-mono tracking-tighter text-chart-3 neon-glow-green">
                                 ${(stats.totalInventoryValue / 1000000).toFixed(2)}M
                             </div>
-                            <p className="text-xs text-muted-foreground mt-1 flex items-center">
-                                Manage Stock <ExternalLink className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <p className="text-[10px] text-muted-foreground mt-1 flex items-center uppercase tracking-widest font-mono">
+                                Warehouse Assets <ExternalLink className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
                             </p>
                         </CardContent>
                     </Card>
                 </Link>
 
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">System Status</CardTitle>
-                        <Activity className="h-4 w-4 text-green-500" />
+                <Card className="bg-card/40 border-chart-5/20 group relative overflow-hidden">
+                     <div className="absolute top-0 right-0 w-20 h-20 bg-chart-5/10 blur-3xl rounded-full -mr-10 -mt-10"></div>
+                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="technical-label text-xs font-mono text-muted-foreground">SYSTEM HEALTH</CardTitle>
+                        <Activity className="h-4 w-4 text-chart-5 animate-pulse" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">99.9%</div>
-                        <p className="text-xs text-muted-foreground mt-1">
-                            All systems nominal
+                        <div className="text-3xl font-bold font-mono tracking-tighter text-chart-5/90">
+                            99.9%
+                        </div>
+                        <div className="mt-2 h-1 w-full bg-muted/30 rounded-full overflow-hidden">
+                            <div className="h-full bg-chart-5 w-[99.9%] neon-glow-amber"></div>
+                        </div>
+                         <p className="text-[10px] text-muted-foreground mt-1 flex items-center uppercase tracking-widest font-mono">
+                            Compliance Pulse
                         </p>
                     </CardContent>
                 </Card>
@@ -117,27 +124,39 @@ export function ExecutiveDashboard({ data, role }: { data: any, role: string }) 
                     </CardContent>
                 </Card>
 
-                <Card className="col-span-3">
+                <Card className="col-span-3 bg-card/40 border-primary/20">
                     <CardHeader>
-                        <CardTitle>Live Updates</CardTitle>
-                        <CardDescription>
-                            Latest factory floor events.
+                        <CardTitle className="technical-label text-sm">LIVE RUNS STREAM</CardTitle>
+                        <CardDescription className="text-xs font-mono">
+                            Real-time factory floor events.
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="space-y-6">
+                        <div className="space-y-4">
                             {[1, 2, 3, 4].map((i) => (
-                                <div key={i} className="flex items-center group cursor-pointer p-2 -mx-2 rounded-lg hover:bg-muted/50 transition-colors">
-                                    <div className="h-9 w-9 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 font-bold text-xs">
-                                        L{12 + i}
+                                <div key={i} className="flex items-center group cursor-pointer p-2 -mx-2 rounded-md hover:bg-primary/5 transition-colors border-b border-border/20 last:border-0">
+                                    <div className={cn(
+                                        "h-2 w-2 rounded-full mr-3 shadow-[0_0_8px]",
+                                        i === 1 ? "bg-chart-3 shadow-chart-3/50" : "bg-chart-2 shadow-chart-2/50"
+                                    )} />
+                                    
+                                    <div className="w-12 text-[10px] font-mono text-muted-foreground shrink-0 tabular-nums text-right mr-4 border-r border-border/40 pr-4">
+                                        {i * 15}m
                                     </div>
-                                    <div className="ml-4 space-y-1">
-                                        <p className="text-sm font-medium leading-none group-hover:text-primary transition-colors">
-                                            {i === 1 ? 'Target Achieved for H&M Order' : 'Batch QC Passed'}
+
+                                    <div className="space-y-1">
+                                        <p className="text-xs font-medium leading-none text-foreground/90 group-hover:text-primary transition-colors font-mono">
+                                            {i === 1 ? 'TARGET_ACHIEVED :: H&M_ORDER_#442' : 'BATCH_QC_PASSED :: LINE_14'}
                                         </p>
-                                        <p className="text-xs text-muted-foreground">Line {12 + i} • Creative Collections</p>
+                                        <div className="flex items-center gap-2">
+                                            <Badge variant="outline" className="text-[9px] h-4 px-1 rounded-none border-primary/20 text-primary/70">
+                                                L{12 + i}
+                                            </Badge>
+                                            <span className="text-[9px] text-muted-foreground uppercase tracking-wider">Creative Collections</span>
+                                        </div>
                                     </div>
-                                    <div className="ml-auto font-medium text-xs text-muted-foreground">{i * 15}m ago</div>
+                                    
+                                    <ExternalLink className="h-3 w-3 ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-primary" />
                                 </div>
                             ))}
                         </div>

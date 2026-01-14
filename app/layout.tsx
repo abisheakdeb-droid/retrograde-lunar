@@ -4,7 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/components/auth-provider";
 
-import { SmoothScrollProvider } from "@/components/providers/smooth-scroll-provider";
+
 import { NeuralBackground } from "@/components/ui/neural-background";
 import { DemoRoleProvider } from "@/components/providers/demo-role-provider";
 import { IntercomSystem } from "@/components/intercom/intercom-system";
@@ -38,12 +38,10 @@ export default function RootLayout({
       >
         <AuthProvider>
           <DemoRoleProvider>
-            <SmoothScrollProvider>
-                <NeuralBackground />
+            <NeuralBackground />
                 {children}
                 <Toaster />
                 <IntercomSystem />
-            </SmoothScrollProvider>
           </DemoRoleProvider>
         </AuthProvider>
       </body>

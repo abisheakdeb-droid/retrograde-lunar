@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker';
+import { Task, TaskStatus, Priority } from '@/types/task-types';
 
 export type Employee = {
     id: string;
@@ -101,7 +102,7 @@ export interface Project {
 
 export type TadaStatus = 'Draft' | 'Pending' | 'Approved' | 'Disbursed' | 'Rejected';
 
-export interface TadaClaim {
+export type TadaClaim = {
     id: string;
     employeeId: string;
     employeeName: string;
@@ -112,6 +113,33 @@ export interface TadaClaim {
     approvedBy?: string;
     attachments: string[];
 }
+
+
+
+export function generateTasks(count: number, employees: Employee[]): Task[] {
+    return Array.from({ length: count }).map((_, i) => {
+        const status = faker.helpers.arrayElement(['PENDING', 'IN_PROGRESS', 'REVIEW', 'COMPLETED']) as TaskStatus;
+        const priority = faker.helpers.arrayElement(['CRITICAL', 'HIGH', 'NORMAL', 'LOW']) as Priority;
+        const assignee = faker.helpers.arrayElement(employees);
+        
+        return {
+            id: `TSK-${faker.string.alphanumeric(6).toUpperCase()}`,
+            title: faker.hacker.phrase().replace(/^./, c => c.toUpperCase()),
+            description: faker.lorem.paragraph(),
+            status,
+            priority,
+            assignee: {
+                name: assignee.name,
+                avatar: assignee.avatar
+            },
+            dueDate: faker.date.future(),
+            tags: faker.helpers.arrayElements(['Frontend', 'Backend', 'Design', 'QA', 'DevOps', 'Mobile'], { min: 1, max: 3 }),
+            createdAt: faker.date.past(),
+            updatedAt: faker.date.recent()
+        };
+    });
+}
+
 
 export type LeaveType = 'Annual' | 'Sick' | 'Earned' | 'Maternity' | 'Paternity' | 'LWP' | 'Special';
 export type LeaveStatus = 'Pending' | 'Approved' | 'Rejected' | 'Cancelled';

@@ -5,7 +5,6 @@ import { InventoryItem } from "@/lib/data/generators"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Box, Activity, ShieldCheck, History, BarChart3 } from "lucide-react"
 
 interface ItemDetailDrawerProps {
@@ -19,8 +18,8 @@ export function ItemDetailDrawer({ item, open, onClose }: ItemDetailDrawerProps)
 
   return (
     <Sheet open={open} onOpenChange={onClose}>
-      <SheetContent className="w-[400px] sm:w-[540px] border-l border-border/40 bg-background/95 backdrop-blur-xl">
-        <SheetHeader className="space-y-4">
+      <SheetContent className="w-[400px] sm:w-[540px] border-l border-border/40 bg-background/95 backdrop-blur-xl flex flex-col h-full">
+        <SheetHeader className="space-y-4 px-6 pt-6 pb-0">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
               <SheetTitle className="text-2xl font-mono uppercase tracking-tight text-primary">
@@ -39,7 +38,7 @@ export function ItemDetailDrawer({ item, open, onClose }: ItemDetailDrawerProps)
           <Separator className="bg-border/50" />
         </SheetHeader>
 
-        <ScrollArea className="h-[calc(100vh-200px)] pr-6">
+        <div className="flex-1 overflow-y-auto px-6 pb-24">
           <div className="space-y-8 py-6">
             
             {/* 3D Model Placeholder */}
@@ -110,7 +109,8 @@ export function ItemDetailDrawer({ item, open, onClose }: ItemDetailDrawerProps)
                 </div>
             </div>
           </div>
-        </ScrollArea>
+          </div>
+
 
         <SheetFooter className="absolute bottom-0 left-0 right-0 p-6 bg-background/95 backdrop-blur border-t border-border/40">
            <Button className="w-full neon-glow-cyan" onClick={() => {}}>Requisition Restock</Button>

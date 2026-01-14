@@ -16,12 +16,12 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex min-h-screen">
-      <div className="hidden h-full md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 z-50">
+      <div className="hidden h-full md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 z-100">
         <Sidebar className="h-full" />
       </div>
-      <main className="md:pl-64 flex-1">
+      <main className="md:pl-64 flex-1 relative z-0">
         {/* Top Header with Notifications */}
-        <div className="sticky top-0 z-10 flex items-center justify-between p-4 border-b bg-card">
+        <div className="sticky top-0 z-90 flex items-center justify-between p-4 border-b bg-card">
           <div className="md:hidden flex items-center">
             <Sheet>
               <SheetTrigger asChild>
