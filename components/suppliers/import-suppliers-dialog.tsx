@@ -14,7 +14,6 @@ import { Input } from "@/components/ui/input"
 import { Upload, FileUp, FileText, CheckCircle2, AlertCircle } from "lucide-react"
 import { useState, useRef } from "react"
 import { toast } from "sonner"
-import * as XLSX from 'xlsx';
 import { importBatchSuppliers } from "@/app/actions/supplier-actions"
 
 export function ImportSuppliersDialog() {
@@ -49,12 +48,62 @@ export function ImportSuppliersDialog() {
     try {
         let data: any[] = [];
 
-        if (file.name.endsWith('.csv') || file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+        if (file.name.endsWith('.xlsx')) {
             const arrayBuffer = await file.arrayBuffer();
-            const workbook = XLSX.read(arrayBuffer);
-            const sheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[sheetName];
-            data = XLSX.utils.sheet_to_json(worksheet);
+            const ExcelJS = (await import('exceljs')).default;
+            const workbook = new ExcelJS.Workbook();
+            await workbook.xlsx.load(arrayBuffer);
+            
+            const worksheet = workbook.worksheets[0];
+            const headers: string[] = [];
+            
+            worksheet.eachRow((row, rowNumber) => {
+                if (rowNumber === 1) {
+                    // Capture headers
+                    if (Array.isArray(row.values)) {
+                         // row.values in exceljs is [undefined, val1, val2] (1-based index usually)
+                         // But we filter
+                         (row.values as any[]).forEach((val, idx) => {
+                             if (val) headers[idx] = String(val);
+                         });
+                    }
+                } else {
+                    const rowData: any = {};
+                    if (Array.isArray(row.values)) {
+                         (row.values as any[]).forEach((val, idx) => {
+                             const header = headers[idx];
+                             if (header) {
+                                  // cell value might be object (rich text) or primitive
+                                  rowData[header] = (typeof val === 'object' && val !== null && 'text' in val) ? val.text : val;
+                             }
+                         });
+                    } else if (typeof row.values === 'object') {
+                        // Sparse array or object handling
+                        Object.entries(row.values).forEach(([key, val]) => {
+                             const idx = Number(key);
+                             const header = headers[idx];
+                             if (header) rowData[header] = val;
+                        });
+                    }
+                    data.push(rowData);
+                }
+            });
+
+        } else if (file.name.endsWith('.csv')) {
+            // Simple CSV parser for browser without heavy libs
+            const text = await file.text();
+            const lines = text.split('\n');
+            const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+            
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                const values = lines[i].split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+                const row: any = {};
+                headers.forEach((h, idx) => {
+                    row[h] = values[idx];
+                });
+                data.push(row);
+            }
         } else if (file.name.endsWith('.pdf')) {
             // PDF Parsing Simulation (Real PDF parsing requires heavy libs like pdfjs-dist)
             // accessing the file content not trivial in browser without lib.
@@ -155,7 +204,7 @@ export function ImportSuppliersDialog() {
                     ref={fileInputRef}
                     id="file" 
                     type="file" 
-                    accept=".csv, .xlsx, .xls, .pdf"
+                    accept=".csv, .xlsx, .pdf"
                     className="hidden" 
                     onChange={handleFileChange}
                 />
