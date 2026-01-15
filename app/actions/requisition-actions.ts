@@ -3,6 +3,7 @@
 import { MockDatabase } from "@/lib/data/mock-db"
 import { revalidatePath } from "next/cache"
 import { auth } from "@/auth"
+import { auditService } from "@/lib/services/audit-service"
 
 export async function createRequisition(formData: FormData) {
   const session = await auth()
@@ -22,7 +23,25 @@ export async function createRequisition(formData: FormData) {
   }
 
   // Mock DB interaction
-  // await MockDatabase.getInstance().addRequisition(...)
+  await MockDatabase.getInstance().addRequisition({
+    item,
+    quantity,
+    priority,
+    department,
+    requesterName,
+    requesterId
+  });
+
+  await auditService.log({
+    action: 'CREATE',
+    entity: 'Requisition',
+    entityId: 'REQ-NEW', // In a real app we'd get the ID from the DB response
+    actorId: requesterId,
+    actorName: requesterName,
+    details: `Created requisition for ${quantity}x ${item}`,
+  });
+
+  revalidatePath("/dashboard/requisition")
   return { success: true }
 }
 

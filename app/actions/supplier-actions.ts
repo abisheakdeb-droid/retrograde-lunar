@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/data/mock-db";
 import { Supplier } from "@/lib/data/generators";
+import { auditService } from "@/lib/services/audit-service";
 
 export async function addSupplier(formData: FormData) {
     // ... existing code ...
@@ -20,6 +21,15 @@ export async function addSupplier(formData: FormData) {
             name,
             category,
             location
+        });
+
+        await auditService.log({
+            action: 'CREATE',
+            entity: 'Supplier',
+            entityId: 'SPL-NEW', 
+            actorId: 'admin', // Placeholder until auth is fully piped through here
+            actorName: 'Admin User',
+            details: `Added new supplier: ${name}`,
         });
         revalidatePath("/dashboard/suppliers");
         return { success: true };

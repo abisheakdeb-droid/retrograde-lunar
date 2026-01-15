@@ -78,6 +78,18 @@ export interface Review {
     kpiTrend: 'up' | 'down';
 }
 
+export interface AuditLog {
+    id: string;
+    action: 'CREATE' | 'UPDATE' | 'DELETE' | 'LOGIN' | 'APPROVE' | 'REJECT';
+    entity: 'Employee' | 'Requisition' | 'Inventory' | 'System' | 'Supplier' | 'Project' | 'Task';
+    entityId: string;
+    actorId: string;
+    actorName: string;
+    details: string;
+    timestamp: string;
+    metadata?: Record<string, any>;
+}
+
 export class MockDatabase {
     private static instance: MockDatabase;
 
@@ -96,7 +108,9 @@ export class MockDatabase {
 
     public kpiScorecards: KpiScorecard[] = [];
     public analyticsKPIs: AnalyticsKPI[] = [];
+
     public activityFeed: ActivityItem[] = [];
+    public auditLogs: AuditLog[] = [];
 
     private constructor() {
         this.initialize();
@@ -216,6 +230,20 @@ export class MockDatabase {
         const erpItems = generateERPInventory(500);
         // Cast to any to bypass minor type mismatch if any, though we aligned them
         this.inventory = [...this.inventory, ...(erpItems as unknown as InventoryItem[])];
+        
+        // Initial Audit Logs
+        this.auditLogs = [
+            {
+                id: 'LOG-001',
+                action: 'LOGIN',
+                entity: 'System',
+                entityId: 'SYS',
+                actorId: '3',
+                actorName: 'Staff User',
+                details: 'User logged into the system',
+                timestamp: new Date().toISOString()
+            }
+        ];
 
         console.log(`Generated: ${this.employees.length} employees, ${this.inventory.length} items, ${this.requisitions.length} requests.`);
     }
@@ -537,6 +565,68 @@ export class MockDatabase {
     async getFactoryPerformance() {
         await this.delay(400); // Simulate slightly heavier query
         return generateHaMeemFactoryData();
+    }
+
+    async addAuditLog(log: Partial<AuditLog>) {
+        await this.delay(100);
+        const newLog: AuditLog = {
+            id: `LOG-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+            action: log.action || 'UPDATE',
+            entity: log.entity || 'System',
+            entityId: log.entityId || 'N/A',
+            actorId: log.actorId || 'UNKNOWN',
+            actorName: log.actorName || 'Unknown Actor',
+            details: log.details || 'No details provided',
+            timestamp: new Date().toISOString(),
+            metadata: log.metadata
+        };
+        this.auditLogs.unshift(newLog);
+        return newLog;
+    }
+
+    async getAuditLogs(page: number = 1, pageSize: number = 20, filters?: {
+        action?: string;
+        entity?: string;
+        search?: string;
+        startDate?: string;
+        endDate?: string;
+    }) {
+        await this.delay(300);
+        let data = this.auditLogs;
+
+        if (filters?.action && filters.action !== 'All') {
+            data = data.filter(l => l.action === filters.action);
+        }
+
+        if (filters?.entity && filters.entity !== 'All') {
+            data = data.filter(l => l.entity === filters.entity);
+        }
+
+        if (filters?.search) {
+            const search = filters.search.toLowerCase();
+            data = data.filter(l => 
+                l.details.toLowerCase().includes(search) ||
+                l.actorName.toLowerCase().includes(search) ||
+                l.entityId.toLowerCase().includes(search)
+            );
+        }
+
+        if (filters?.startDate) {
+            data = data.filter(l => l.timestamp >= filters.startDate!);
+        }
+
+        if (filters?.endDate) {
+            data = data.filter(l => l.timestamp <= filters.endDate!);
+        }
+
+        const total = data.length;
+        const start = (page - 1) * pageSize;
+        
+        return {
+            data: data.slice(start, start + pageSize),
+            total,
+            totalPages: Math.ceil(total / pageSize)
+        };
     }
 
 

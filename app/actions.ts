@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache"
 import { db } from "@/lib/data/mock-db"
 import { auth } from "@/auth"
+import { auditService } from "@/lib/services/audit-service"
 
 async function checkAuth(allowedRoles: string[]) {
     const session = await auth()
@@ -16,6 +17,14 @@ async function checkAuth(allowedRoles: string[]) {
 export async function updateRequisitionStatus(id: string, status: 'Approved' | 'Rejected') {
     await checkAuth(['Admin', 'Manager'])
     await db.updateRequisitionStatus(id, status);
+    await auditService.log({
+        action: status === 'Approved' ? 'APPROVE' : 'REJECT',
+        entity: 'Requisition',
+        entityId: id,
+        actorId: 'admin', // TODO: Get from session
+        actorName: 'Admin/Manager',
+        details: `Requisition ${id} was ${status}`,
+    });
     revalidatePath("/dashboard/requisition");
 }
 
@@ -35,7 +44,15 @@ export async function createEmployee(formData: FormData) {
     }
 
     try {
-        await db.addEmployee({ name, email, role, department });
+        const newEmp = await db.addEmployee({ name, email, role, department });
+        await auditService.log({
+            action: 'CREATE',
+            entity: 'Employee',
+            entityId: newEmp.id, 
+            actorId: 'admin', 
+            actorName: 'Admin',
+            details: `Created employee: ${name} (${role})`,
+        });
         console.log("Employee added successfully to DB");
         revalidatePath("/dashboard/hrm");
     } catch (error) {
@@ -63,6 +80,14 @@ export async function updateEmployee(formData: FormData) {
 
     try {
         await db.updateEmployee(id, { name, email, role, department, phone, address, status });
+        await auditService.log({
+            action: 'UPDATE',
+            entity: 'Employee',
+            entityId: id,
+            actorId: 'admin', 
+            actorName: 'Admin',
+            details: `Updated profile for ${name}`,
+        });
         console.log("Employee updated successfully");
         revalidatePath(`/dashboard/hrm/${id}`);
         revalidatePath("/dashboard/hrm");
@@ -83,6 +108,14 @@ export async function deleteEmployee(id: string) {
     try {
         const success = await db.deleteEmployee(id);
         if (success) {
+            await auditService.log({
+                action: 'DELETE',
+                entity: 'Employee',
+                entityId: id,
+                actorId: 'admin', 
+                actorName: 'Admin',
+                details: `Deleted employee ${id}`,
+            });
             console.log("Employee deleted successfully");
             revalidatePath("/dashboard/hrm");
             return { success: true };

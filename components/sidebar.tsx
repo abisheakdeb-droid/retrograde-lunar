@@ -20,7 +20,8 @@ import {
   BarChart3,
   Bell,
   Briefcase,
-  Network
+  Network,
+  History
 } from "lucide-react"
 import { LogoutButton } from "@/components/logout-button"
 
@@ -58,6 +59,7 @@ const sidebarGroups = [
     items: [
       { name: "Documents & Archive", href: "/dashboard/documents", icon: FileText },
       { name: "Safety & Compliance", href: "/dashboard/compliance", icon: ShieldCheck },
+      { name: "Audit Logs", href: "/dashboard/compliance/audit-logs", icon: History },
       { name: "System Settings", href: "/dashboard/settings", icon: Settings },
     ]
   }
