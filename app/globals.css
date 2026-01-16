@@ -118,18 +118,35 @@
   }
 
   /* Isolated Intercom Scrollbar */
+  .intercom-scroll {
+    overflow-y: overlay; /* WebKit compatible overlay */
+    scrollbar-gutter: stable all; /* Modern standard - but we want no gap, so maybe 'auto' or we rely on overlay */
+    /* To truly remove the gap, we rely on overflow: overlay or 0-width track */
+  }
+
+  /* Fallback for standard auto if overlay not supported, 
+     but we want to force the visual to not reserve space if possible */
+  @supports not (overflow-y: overlay) {
+    .intercom-scroll {
+      overflow-y: auto;
+    }
+  }
+
   .intercom-scroll::-webkit-scrollbar {
-    width: 5px; /* Ultra thin */
-    height: 5px;
+    width: 6px; /* Slightly wider for usability, but overlaid */
+    background: transparent;
   }
   .intercom-scroll::-webkit-scrollbar-track {
-    background: transparent; /* No track background to avoid gaps */
+    background: transparent; 
   }
   .intercom-scroll::-webkit-scrollbar-thumb {
-    background: #333;
+    background: rgba(34, 37, 43, 0.5); /* Semi-transparent handle */
     border-radius: 10px;
+    border: 1px solid transparent; /* Padding around thumb */
+    background-clip: content-box;
   }
   .intercom-scroll::-webkit-scrollbar-thumb:hover {
-    background: #444;
+    background: rgba(34, 37, 43, 0.8);
+    border: 0;
   }
 }
