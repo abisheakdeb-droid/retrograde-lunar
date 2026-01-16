@@ -799,6 +799,56 @@ export function generateDocuments(employees: Employee[], count: number = 200): E
     });
 }
 
+export function generateJobPostings(count: number): any[] {
+    return Array.from({ length: count }).map((_, i) => ({
+        id: `JOB-${202500 + i}`,
+        title: faker.person.jobTitle(),
+        department: faker.commerce.department(),
+        type: faker.helpers.arrayElement(['Full-time', 'Contract', 'Remote']),
+        location: faker.location.city(),
+        salaryRange: `$${faker.number.int({ min: 30, max: 80 })}k - $${faker.number.int({ min: 85, max: 150 })}k`,
+        status: 'Open',
+        postedDate: faker.date.recent().toISOString(),
+        candidatesCount: faker.number.int({ min: 0, max: 50 }),
+        createdAt: faker.date.recent().toISOString()
+    }));
+}
+
+export function generateCandidates(count: number): any[] {
+    return Array.from({ length: count }).map((_, i) => ({
+        id: `CND-${5000 + i}`,
+        jobId: `JOB-${202500 + faker.number.int({ min: 0, max: 10 })}`,
+        name: faker.person.fullName(),
+        email: faker.internet.email(),
+        phone: faker.phone.number(),
+        stage: faker.helpers.arrayElement(['Applied', 'Screening', 'Interview', 'Offer', 'Hired', 'Rejected']),
+        matchScore: faker.number.int({ min: 40, max: 99 }),
+        appliedDate: faker.date.recent().toISOString(),
+        experience: `${faker.number.int({ min: 1, max: 15 })} years`
+    }));
+}
+
+export function generateDisciplinaryCases(count: number, employees: Employee[]): any[] {
+    return Array.from({ length: count }).map((_, i) => {
+        const emp = faker.helpers.arrayElement(employees);
+        return {
+            id: `CASE-${2025}-${1000 + i}`,
+            employeeId: emp.id,
+            employeeName: emp.name,
+            type: faker.helpers.arrayElement(['Misconduct', 'Late Arrival', 'Insubordination', 'Policy Violation']),
+            severity: faker.helpers.arrayElement(['Low', 'Medium', 'High', 'Critical']),
+            description: faker.lorem.sentence(),
+            status: faker.helpers.arrayElement(['Open', 'Closed', 'Under Review']),
+            date: faker.date.recent().toISOString(),
+            createdAt: faker.date.recent().toISOString()
+        };
+    });
+}
+
+// Detached code removed
+
+
+
 export function generateProjects(count: number, employees: Employee[]): Project[] {
     const statuses: ProjectStatus[] = ['Active', 'On Hold', 'Completed', 'Planning'];
     const projectNames = [

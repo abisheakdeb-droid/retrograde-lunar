@@ -47,12 +47,12 @@ export function ExecutePayrollDialog() {
       const result = await executePayrollAction(month)
       if (result.success) {
         toast.success("Payroll Execution Successful", {
-            description: result.message
+            description: `Payroll processed for ${'count' in result ? result.count : 'all'} employees`
         })
         setOpen(false)
       } else {
         toast.error("Execution Failed", {
-            description: result.message
+            description: 'message' in result ? result.message : "Unexpected error occurred"
         })
       }
     } catch (error) {

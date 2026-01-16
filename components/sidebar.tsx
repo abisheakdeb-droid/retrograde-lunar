@@ -124,7 +124,7 @@ export function Sidebar({ className }: SidebarProps) {
     }).filter(Boolean) as typeof sidebarGroups
 
     return (
-        <div className={cn("flex flex-col bg-[#0b0c0e] border-r border-[#22252b] h-full", className)}>
+        <div className={cn("flex flex-col bg-background border-r border-[#22252b] h-full", className)}>
             {/* Logo */}
             <div className="flex h-16 items-center gap-2 px-6 border-b bg-card/50 backdrop-blur-md shrink-0">
                 <div className="flex h-8 w-8 items-center justify-center rounded-none border border-primary text-primary neon-glow-cyan">

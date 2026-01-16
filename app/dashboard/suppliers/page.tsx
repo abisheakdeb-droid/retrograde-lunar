@@ -19,8 +19,6 @@ import { ImportSuppliersDialog } from "@/components/suppliers/import-suppliers-d
 export default async function SupplierPage() {
     const suppliers = await getSuppliers(50)
 
-    const suppliers = await getSuppliers(50)
-
     // Filter for top performance cards (mock logic for now, or could sorting)
     const topSuppliers = [...suppliers].sort((a,b) => (b.rating || 0) - (a.rating || 0)).slice(0, 3);
     // Find a risk supplier

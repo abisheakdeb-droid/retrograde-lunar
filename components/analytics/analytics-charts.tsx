@@ -62,7 +62,7 @@ export function AnalyticsCharts() {
                         <CardTitle className="technical-label text-base tracking-widest">Payroll Trend</CardTitle>
                     </div>
                 </CardHeader>
-                <CardContent className="h-[350px] p-4 bg-[#0b0c0e]">
+                <CardContent className="h-[350px] p-4 bg-background">
                     <ResponsiveContainer width="100%" height="100%">
                         <AreaChart data={data.payroll} margin={{ top: 20, right: 20, left: 0, bottom: 0 }}>
                             <defs>
@@ -117,7 +117,7 @@ export function AnalyticsCharts() {
                         <CardTitle className="technical-label text-base tracking-widest">Attendance</CardTitle>
                     </div>
                 </CardHeader>
-                <CardContent className="h-[350px] relative p-4 flex flex-col items-center justify-center bg-[#0b0c0e]">
+                <CardContent className="h-[350px] relative p-4 flex flex-col items-center justify-center bg-background">
                     <ResponsiveContainer width="100%" height={250}>
                         <PieChart>
                             <Pie
@@ -154,7 +154,7 @@ export function AnalyticsCharts() {
 
                     <div className="flex flex-wrap justify-center gap-6 mt-4 w-full">
                         <div className="flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-sm bg-[#73bf69]"></span>
+                            <div className="h-2 w-2 rounded-full bg-chart-2 mr-2" />
                             <span className="text-xs font-mono font-bold text-muted-foreground uppercase">Present</span>
                         </div>
                         <div className="flex items-center gap-2">
@@ -162,7 +162,7 @@ export function AnalyticsCharts() {
                             <span className="text-xs font-mono font-bold text-muted-foreground uppercase">Absent</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-sm bg-[#ff9830]"></span>
+                            <div className="h-2 w-2 rounded-full bg-chart-4 mr-2" />
                             <span className="text-xs font-mono font-bold text-muted-foreground uppercase">Leave</span>
                         </div>
                     </div>
@@ -177,7 +177,7 @@ export function AnalyticsCharts() {
                         <CardTitle className="technical-label text-base tracking-widest">Top Inventory Categories</CardTitle>
                     </div>
                 </CardHeader>
-                <CardContent className="h-[300px] p-4 bg-[#0b0c0e]">
+                <CardContent className="h-[300px] p-4 bg-background">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={data.inventory} layout="vertical" barSize={12} margin={{ top: 0, right: 30, left: 30, bottom: 0 }}>
                              <defs>

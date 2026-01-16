@@ -21,18 +21,19 @@ import { PayslipDialog } from "@/components/hrm/payslip-dialog"
 import { SearchInput } from "@/components/search-input"
 import { Suspense } from "react"
 import { ExecutePayrollDialog } from "@/components/hrm/execute-payroll-dialog"
+import { getPayslips } from "@/lib/db/queries"
 
 export default async function PayrollPage(props: { searchParams: Promise<{ q?: string }> }) {
     const searchParams = await props.searchParams;
     const search = searchParams?.q || '';
 
     // Fetch Payslips 
-    const { data: payslips } = await MockDatabase.getInstance().getPayslips?.(1, 100) || { data: [] };
+    const { data: payslips } = await getPayslips(1, 100);
 
     const stats = {
-        totalDisbursed: payslips.reduce((acc, p) => acc + p.netSalary, 0),
+        totalDisbursed: payslips.reduce((acc, p) => acc + (p.netSalary || 0), 0),
         pendingCycles: payslips.filter(p => p.status === 'Processing').length,
-        averageSalary: payslips.length > 0 ? Math.floor(payslips.reduce((acc, p) => acc + p.netSalary, 0) / payslips.length) : 0,
+        averageSalary: payslips.length > 0 ? Math.floor(payslips.reduce((acc, p) => acc + (p.netSalary || 0), 0) / payslips.length) : 0,
         paidCount: payslips.filter(p => p.status === 'Paid').length
     };
 
