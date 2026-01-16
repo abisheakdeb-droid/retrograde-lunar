@@ -84,7 +84,7 @@ export function MessengerSidebar({
       </div>
 
       {/* Conversation List */}
-      <div className="flex-1 overflow-y-auto panel-scroll">
+      <div className="flex-1 overflow-y-auto intercom-scroll">
         <div className="flex flex-col pb-2 gap-1">
           {filteredContacts.length === 0 ? (
              <div className="p-4 text-center text-sm text-muted-foreground">

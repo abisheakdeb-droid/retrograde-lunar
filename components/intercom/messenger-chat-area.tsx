@@ -136,7 +136,7 @@ export function MessengerChatArea({
       {/* Messages Area */}
       <div 
         ref={scrollAreaRef}
-        className="flex-1 p-4 overflow-y-auto panel-scroll"
+        className="flex-1 p-4 overflow-y-auto intercom-scroll"
       >
         <div className="flex flex-col justify-end min-h-full">
           {/* Welcome Message */}
