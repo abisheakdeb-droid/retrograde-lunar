@@ -145,7 +145,7 @@ export const productionStats = pgTable("production_stats", {
 
 export const factoryUnits = pgTable("factory_units", {
   id: uuid("id").primaryKey().defaultRandom(),
-  name: text("name").notNull(),
+  name: text("name").notNull().unique(),
   type: text("type").notNull(),
   manager: text("manager"),
   lines: jsonb("lines"), // Stores ProductionLine[]
