@@ -4,46 +4,43 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-background: hsl(222 15% 5%); /* Deepest space dark #0A0C10 */
-  --color-foreground: hsl(210 20% 98%);
+  --color-background: #0b0c0e; /* Prom Ex Deep Dark */
+  --color-foreground: #d0d0d0; /* Muted White */
   
-  --color-card: hsl(222 15% 8%); /* Slightly lighter than bg #111318 */
-  --color-card-foreground: hsl(210 20% 98%);
+  --color-card: #111217; /* Panel Background */
+  --color-card-foreground: #d0d0d0;
   
-  --color-popover: hsl(222 15% 5%);
-  --color-popover-foreground: hsl(210 20% 98%);
+  --color-popover: #111217;
+  --color-popover-foreground: #d0d0d0;
   
-  --color-primary: hsl(180 100% 45%); /* Neon Cyan */
-  --color-primary-foreground: hsl(222.2 47.4% 11.2%);
+  --color-primary: #5794f2; /* Grafana Blue */
+  --color-primary-foreground: #ffffff;
   
-  --color-secondary: hsl(217.2 32.6% 12%); /* Darker secondary */
-  --color-secondary-foreground: hsl(210 20% 98%);
+  --color-secondary: #22252b; /* Panel Header/Border */
+  --color-secondary-foreground: #d0d0d0;
   
-  --color-muted: hsl(217.2 32.6% 12%);
-  --color-muted-foreground: hsl(215 20.2% 65.1%);
+  --color-muted: #22252b;
+  --color-muted-foreground: #7b808a; /* Grafana Grey Text */
   
-  --color-accent: hsl(217.2 32.6% 12%);
-  --color-accent-foreground: hsl(210 20% 98%);
+  --color-accent: #22252b;
+  --color-accent-foreground: #ffffff;
   
-  --color-destructive: hsl(0 62.8% 30.6%);
-  --color-destructive-foreground: hsl(210 20% 98%);
+  --color-destructive: #f2495c; /* Grafana Red */
+  --color-destructive-foreground: #ffffff;
   
-  --color-border: hsl(217.2 32.6% 20%); /* Less visible borders */
-  --color-input: hsl(217.2 32.6% 17.5%);
-  --color-ring: hsl(180 100% 45%);
+  --color-border: #22252b; /* Subtle Borders */
+  --color-input: #181b1f; /* Input Fields */
+  --color-ring: #5794f2;
   
-  --color-chart-1: hsl(180 100% 45%);
-  --color-chart-2: hsl(45 100% 50%); /* Neon Yellow */
-  --color-chart-3: hsl(150 100% 45%); /* Neon Green */
-  --color-chart-4: hsl(280 65% 60%);
-  --color-chart-5: hsl(340 75% 55%);
+  --color-chart-1: #5794f2; /* Blue */
+  --color-chart-2: #73bf69; /* Green */
+  --color-chart-3: #f2495c; /* Red */
+  --color-chart-4: #ff9830; /* Orange */
+  --color-chart-5: #b877d9; /* Purple */
 
-  --radius-lg: 0.5rem;
-  --radius-md: calc(0.5rem - 2px);
-  --radius-sm: calc(0.5rem - 4px);
-  
-  --color-tactical-bg: hsl(222 15% 5%);
-  --color-tactical-accent: hsl(180 100% 45%);
+  --radius-lg: 2px; /* Technical Square Look */
+  --radius-md: 2px;
+  --radius-sm: 2px;
 }
 
 @layer base {
@@ -54,73 +51,69 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    transition-property: color, background-color;
-    transition-duration: 500ms;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
-  
-
 }
 
 @layer utilities {
-  /* Tactical Command Center Utilities */
-  .tactical-grid {
-    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
-    background-size: 24px 24px;
+  /* Tactical/Prom Ex Utilities */
+  .tactical-panel {
+    background-color: var(--color-card);
+    border: 1px solid var(--color-border);
+    box-shadow: none; /* Flat look */
+  }
+
+  .tactical-header {
+    background-color: #181b1f; /* Slightly lighter header */
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #e0e0e0;
   }
   
-  .tactical-card {
-    background-color: color-mix(in srgb, var(--color-card) 60%, transparent);
-    border-color: color-mix(in srgb, var(--color-border) 50%, transparent);
-    border-width: 1px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.5);
-    clip-path: polygon(
-      0 0, 
-      calc(100% - 10px) 0, 100% 10px, 
-      100% 100%, 
-      10px 100%, 0 calc(100% - 10px)
-    );
+  /* Grid pattern for dashboard background */
+  .dashboard-grid {
+    background-image: linear-gradient(to right, #22252b 1px, transparent 1px),
+                      linear-gradient(to bottom, #22252b 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-color: #0b0c0e; 
+    /* Only apply widely if desired, or use on specific containers */
   }
 
-  .neon-glow-cyan {
-    box-shadow: 0 0 10px rgba(6, 182, 212, 0.3), 0 0 5px rgba(6, 182, 212, 0.2);
-  }
-
-  .neon-glow-yellow {
-    box-shadow: 0 0 10px rgba(255, 214, 0, 0.3), 0 0 5px rgba(255, 214, 0, 0.2);
-  }
-  
-  .neon-glow-green {
-    box-shadow: 0 0 10px rgba(0, 255, 128, 0.3), 0 0 5px rgba(0, 255, 128, 0.2);
-  }
-
-  .neon-glow-amber {
-    box-shadow: 0 0 10px rgba(251, 140, 0, 0.3), 0 0 5px rgba(251, 140, 0, 0.2);
-  }
-
-  .technical-label {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--muted-foreground);
+  .font-mono-numbers {
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    font-weight: 700;
+  }
+
+  .neon-text-green {
+    color: #73bf69;
+    text-shadow: 0 0 5px rgba(115, 191, 105, 0.4);
   }
   
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+  .neon-text-blue {
+    color: #5794f2;
+    text-shadow: 0 0 5px rgba(87, 148, 242, 0.4);
+  }
+  
+  .neon-text-red {
+    color: #f2495c;
+    text-shadow: 0 0 5px rgba(242, 73, 92, 0.4);
   }
 
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
+  /* Custom Scrollbar for Panel Content */
+  .panel-scroll::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
   }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--color-primary) 30%, transparent);
-    border-radius: 3px;
+  .panel-scroll::-webkit-scrollbar-track {
+    background: #0b0c0e;
   }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: color-mix(in srgb, var(--color-primary) 50%, transparent);
+  .panel-scroll::-webkit-scrollbar-thumb {
+    background: #22252b;
+    border-radius: 2px;
+  }
+  .panel-scroll::-webkit-scrollbar-thumb:hover {
+    background: #333;
   }
 }

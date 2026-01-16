@@ -17,14 +17,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
+import { createJobAction } from "@/app/actions/recruitment-actions"
 
 export function JobPostingDialog() {
   const [open, setOpen] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 800))
+    const formData = new FormData(e.currentTarget)
+    await createJobAction(formData)
     toast.success("Job posted successfully")
     setOpen(false)
   }

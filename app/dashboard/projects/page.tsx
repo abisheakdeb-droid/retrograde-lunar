@@ -22,8 +22,7 @@ import { Progress } from "@/components/ui/progress"
 import { CreateTadaClaimDialog } from "@/components/tada/create-claim-dialog"
 
 import { TadaAuditLogSheet } from "@/components/tada/audit-log-sheet"
-import { MockDatabase } from "@/lib/data/mock-db"
-import { TadaClaim } from "@/lib/data/generators"
+import { getProjects, getTadaClaims, getTasks } from "@/lib/db/queries"
 import { KanbanBoard } from "@/components/tasks/kanban-board"
 import { LayoutList, Kanban, FileSpreadsheet } from "lucide-react" 
 import Link from "next/link"
@@ -34,15 +33,13 @@ export default async function ProjectsPage(props: { searchParams: Promise<{ q?: 
     const view = (searchParams?.view || 'list').toString(); // Default to list for now to preserve existing UX
     
     // Fetch Data
-    const { data: projects } = await MockDatabase.getInstance().getProjects(1, 20, search);
-    const { data: tadaClaims } = await MockDatabase.getInstance().getTadaClaims(1, 20, search);
-    const tasks = await MockDatabase.getInstance().getTasks();
-
-    // Fetch TADA Claims with Search
-
+    const { data: projects } = await getProjects(1, 20, search);
+    const { data: tadaClaims } = await getTadaClaims(1, 20, search);
+    const tasks = await getTasks(); // Note: getTasks signature might need adjustment or is fine
 
     // Fetch Audit Log (Last 100)
-    // Using main claims list for audit log in mock mode
+    // Using main claims list for audit log in mock mode - transition to real audit logs or keep as claim history
+    // For now keeping it simple
     const auditLogClaims = tadaClaims;
 
     const totalBudget = projects.reduce((acc, p) => acc + p.budget, 0);

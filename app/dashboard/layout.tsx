@@ -21,7 +21,7 @@ export default async function DashboardLayout({
       </div>
       <main className="md:pl-64 flex-1 relative z-0">
         {/* Top Header with Notifications */}
-        <div className="sticky top-0 z-90 flex items-center justify-between p-4 border-b bg-card">
+        <div className="sticky top-0 z-90 flex items-center justify-between p-4 border-b border-[#22252b] bg-[#111217] tactical-header">
           <div className="md:hidden flex items-center">
             <Sheet>
               <SheetTrigger asChild>

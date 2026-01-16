@@ -19,14 +19,31 @@ import {
   FileText,
   Users
 } from "lucide-react"
-import { MockDatabase } from "@/lib/data/mock-db"
+import { getLeaveRequests } from "@/lib/db/queries"
 
 export default async function LeaveManagementPage(props: { searchParams: Promise<{ q?: string }> }) {
     const searchParams = await props.searchParams;
     const search = searchParams?.q || '';
 
     // Fetch Leave Requests with Search
-    const { data: leaveRequests } = await MockDatabase.getInstance().getLeaveRequests?.(1, 100, search) || { data: [] };
+    const { data: rawLeaveRequests } = await getLeaveRequests(1, 100, search);
+    
+    // Map nullable fields for UI safety
+    const leaveRequests = rawLeaveRequests.map(r => ({
+        ...r,
+        employeeName: r.employeeName || 'Unknown',
+        employeeAvatar: r.employeeAvatar || undefined,
+        // Map any other mismatches if needed?
+        // Mock Type had startDate string? DB has Date?
+        // UI usage: req.startDate (Line 132) -> renders directly. Date object rendering might crash if not stringified.
+        // Line 132: {req.startDate} ➟ {req.endDate}
+        // If req.startDate is Date, React will warn/error.
+        startDate: r.startDate ? new Date(r.startDate).toLocaleDateString() : '',
+        endDate: r.endDate ? new Date(r.endDate).toLocaleDateString() : '',
+        appliedDate: r.createdAt ? new Date(r.createdAt).toLocaleDateString() : '',
+        // days: calculate days?
+        days: r.startDate && r.endDate ? Math.ceil((new Date(r.endDate).getTime() - new Date(r.startDate).getTime()) / (1000 * 60 * 60 * 24)) + 1 : 1
+    }));
 
     const holidays = [
         { id: '1', date: '2026-02-21', name: 'International Mother Language Day', type: 'Public Holiday' },

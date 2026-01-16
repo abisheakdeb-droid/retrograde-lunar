@@ -1,32 +1,23 @@
 "use server";
 
-import { db } from "@/lib/data/mock-db";
 import { revalidatePath } from "next/cache";
-import { DocType } from "@/lib/data/generators";
+import { createDocument } from "@/lib/db/queries";
 
-export async function uploadDocument(formData: FormData) {
-    try {
-        const employeeName = formData.get("employeeName") as string;
-        const employeeId = formData.get("employeeId") as string;
-        const type = formData.get("type") as DocType;
-        // In a real app, we would handle the file upload here
-        // const file = formData.get("file") as File;
+export async function uploadDocumentAction(formData: FormData) {
+    const employeeId = formData.get('employeeId') as string;
+    const type = formData.get('type') as string;
+    const file = formData.get('file'); 
 
-        if (!employeeName || !type) {
-             return { success: false, message: "Missing required fields" };
-        }
+    // In a real app, handle file upload to blob storage here.
+    // For now, mocking the URL.
 
-        await db.addDocument({
-            employeeName,
-            employeeId: employeeId || `EMP-${Math.floor(Math.random() * 1000)}`,
-            type,
-            status: 'Pending'
-        });
-
-        revalidatePath("/dashboard/documents");
-        return { success: true, message: "Document uploaded successfully" };
-    } catch (error) {
-        console.error("Failed to upload document:", error);
-        return { success: false, message: "Failed to upload document" };
-    }
+    await createDocument({
+        employeeId,
+        employeeName: "Current User", // Stub
+        type,
+        name: type,
+        url: "https://example.com/mock-doc.pdf",
+        fileSize: "1.2 MB"
+    });
+    revalidatePath("/dashboard/documents");
 }

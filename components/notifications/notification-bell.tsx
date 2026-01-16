@@ -8,7 +8,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useNotifications } from "@/lib/hooks/use-notifications"
+import { useNotifications } from "@/components/providers/notification-provider"
 import { NotificationList } from "./notification-list"
 import { Badge } from "@/components/ui/badge"
 
@@ -17,8 +17,7 @@ interface NotificationBellProps {
 }
 
 export function NotificationBell({ userId }: NotificationBellProps) {
-  const { notifications, unreadCount, markAsRead, markAllAsRead, deleteNotification } = 
-    useNotifications(userId)
+  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications()
 
   const [mounted, setMounted] = useState(false)
   useEffect(() => {
@@ -41,7 +40,7 @@ export function NotificationBell({ userId }: NotificationBellProps) {
           {unreadCount > 0 && (
             <Badge 
               variant="destructive" 
-              className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+              className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs animate-pulse"
             >
               {unreadCount > 9 ? '9+' : unreadCount}
             </Badge>
@@ -53,7 +52,6 @@ export function NotificationBell({ userId }: NotificationBellProps) {
           notifications={notifications}
           onMarkAsRead={markAsRead}
           onMarkAllAsRead={markAllAsRead}
-          onDelete={deleteNotification}
         />
       </DropdownMenuContent>
     </DropdownMenu>

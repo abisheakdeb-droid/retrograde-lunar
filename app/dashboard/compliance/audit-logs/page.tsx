@@ -1,6 +1,6 @@
 
 import { AuditLogTable } from "@/components/compliance/audit-log-table";
-import { MockDatabase } from "@/lib/data/mock-db";
+import { getAuditLogs } from "@/lib/db/queries";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AuditLogsPage() {
-  const logs = await MockDatabase.getInstance().getAuditLogs(1, 100);
+  const logs = await getAuditLogs(1, 100);
 
   return (
     <div className="flex flex-col gap-5 p-5">
@@ -23,7 +23,7 @@ export default async function AuditLogsPage() {
       </div>
 
       <div className="bg-background rounded-lg border p-4 shadow-sm">
-        <AuditLogTable initialLogs={logs.data} />
+        <AuditLogTable initialLogs={logs.data as any} />
       </div>
     </div>
   );

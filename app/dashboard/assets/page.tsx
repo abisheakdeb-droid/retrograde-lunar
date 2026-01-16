@@ -14,14 +14,14 @@ import {
   History,
   Activity
 } from "lucide-react"
-import { MockDatabase } from "@/lib/data/mock-db"
+import { getAssets } from "@/lib/db/queries"
 
 export default async function AssetsPage(props: { searchParams: Promise<{ q?: string }> }) {
     const searchParams = await props.searchParams;
     const search = searchParams?.q || '';
 
     // Fetch Assets with Search
-    const { data: assets } = await MockDatabase.getInstance().getAssets?.(1, 100, search) || { data: [] };
+    const { data: assets } = await getAssets(1, 100, search);
 
     // Calculate Stats (could be optimized with aggregation, but filtering in memory for simple stats is fine for now < 100 items)
     const stats = {

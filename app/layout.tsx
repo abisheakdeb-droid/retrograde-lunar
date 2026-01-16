@@ -8,6 +8,7 @@ import { AuthProvider } from "@/components/auth-provider";
 import { NeuralBackground } from "@/components/ui/neural-background";
 import { DemoRoleProvider } from "@/components/providers/demo-role-provider";
 import { IntercomSystem } from "@/components/intercom/intercom-system";
+import { NotificationProvider } from "@/components/providers/notification-provider";
 
 
 const geistSans = Geist({
@@ -39,9 +40,11 @@ export default function RootLayout({
         <AuthProvider>
           <DemoRoleProvider>
             <NeuralBackground />
+             <NotificationProvider>
                 {children}
                 <Toaster />
                 <IntercomSystem />
+             </NotificationProvider>
           </DemoRoleProvider>
         </AuthProvider>
       </body>

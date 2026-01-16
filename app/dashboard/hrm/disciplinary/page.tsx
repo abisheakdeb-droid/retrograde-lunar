@@ -1,18 +1,18 @@
+import { getDisciplinaryCases } from "@/lib/db/queries"
 import { DisciplinaryList } from "@/components/hrm/disciplinary/disciplinary-list"
 import { IncidentReportDialog } from "@/components/hrm/disciplinary/incident-report-dialog"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { SearchInput } from "@/components/search-input"
 import { AlertTriangle, FileText, Gavel, ShieldAlert, Siren, Scale } from "lucide-react"
-import { MockDatabase } from "@/lib/data/mock-db"
-import { DisciplinaryCase } from "@/lib/data/mock-db"
 
 export default async function DisciplinaryPage(props: { searchParams: Promise<{ q?: string }> }) {
     const searchParams = await props.searchParams;
     const search = (searchParams?.q || '').toString().trim();
     
     // Fetch Disciplinary Cases with Search
-    const cases = (await MockDatabase.getInstance().getDisciplinaryCases?.() || []).filter(c => 
+    const allCases = await getDisciplinaryCases(100);
+    const cases = allCases.filter((c: any) => 
         search ? c.employeeName.toLowerCase().includes(search.toLowerCase()) : true
     );
 
@@ -64,7 +64,7 @@ export default async function DisciplinaryPage(props: { searchParams: Promise<{ 
             </div>
 
             <div className="flex-1 min-h-0 container mx-auto p-0">
-                <DisciplinaryList cases={cases} />
+                <DisciplinaryList cases={cases as any[]} />
             </div>
         </div>
     )

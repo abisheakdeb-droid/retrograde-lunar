@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { BadgeCheck, UserPlus, FileText, ChevronLeft, ChevronRight, Eye } from "lucide-react"
-import { db } from "@/lib/data/mock-db"
+import { getEmployees } from "@/lib/db/queries"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 import { SearchInput } from "@/components/search-input"
@@ -17,7 +17,7 @@ export default async function HRMPage(props: { searchParams: Promise<{ page?: st
     const searchParams = await props.searchParams;
     const page = Number(searchParams?.page) || 1;
     const search = searchParams?.q || '';
-    const { data: employees, total, totalPages } = await db.getEmployees(page, 10, search);
+    const { data: employees, total, totalPages } = await getEmployees(page, 10, search);
 
     return (
         <div className="space-y-6">
@@ -98,7 +98,7 @@ export default async function HRMPage(props: { searchParams: Promise<{ page?: st
                                     <TableCell className="font-medium">
                                         <div className="flex items-center gap-3">
                                             <Avatar className="h-9 w-9">
-                                                <AvatarImage src={employee.avatar} />
+                                                <AvatarImage src={employee.avatar || undefined} />
                                                 <AvatarFallback>{employee.name.charAt(0)}</AvatarFallback>
                                             </Avatar>
                                             <div className="flex flex-col">

@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Upload, FileText, Loader2, AlertCircle } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { uploadDocument } from "@/app/actions/document-actions"
+import { uploadDocumentAction } from "@/app/actions/document-actions"
 import { DocType } from "@/lib/data/generators"
 import { toast } from "sonner"
 
@@ -30,19 +30,15 @@ export function UploadDocumentDialog() {
     const formData = new FormData(event.currentTarget)
     
     try {
-        const result = await uploadDocument(formData)
+        // Note: Client-side FormData handling might fail with Server Action if files are involved directly without extra handling.
+        // But Next.js Server Actions support FormData with files.
+        await uploadDocumentAction(formData)
         
-        if (result.success) {
-            toast.success("Document Uploaded", {
-                description: "The document has been securely archived.",
-                className: "border-primary/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
-            })
-            setOpen(false)
-        } else {
-            toast.error("Upload Failed", {
-                description: result.message,
-            })
-        }
+        toast.success("Document Uploaded", {
+            description: "The document has been securely archived.",
+            className: "border-primary/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
+        })
+        setOpen(false)
     } catch {
         toast.error("Error", {
             description: "Something went wrong. Please try again.",

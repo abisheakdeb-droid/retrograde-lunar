@@ -12,16 +12,17 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search, Filter, Globe, ShieldCheck, AlertTriangle } from "lucide-react"
 import { SupplierPerformanceCard } from "@/components/suppliers/supplier-performance-card"
-import { MockDatabase } from "@/lib/data/mock-db"
-import { Supplier } from "@/lib/data/generators"
+import { getSuppliers } from "@/lib/db/queries"
 import { AddSupplierDialog } from "@/components/suppliers/add-supplier-dialog"
 import { ImportSuppliersDialog } from "@/components/suppliers/import-suppliers-dialog"
 
 export default async function SupplierPage() {
-    const { data: suppliers } = await MockDatabase.getInstance().getSuppliers()
+    const suppliers = await getSuppliers(50)
+
+    const suppliers = await getSuppliers(50)
 
     // Filter for top performance cards (mock logic for now, or could sorting)
-    const topSuppliers = [...suppliers].sort((a,b) => b.rating - a.rating).slice(0, 3);
+    const topSuppliers = [...suppliers].sort((a,b) => (b.rating || 0) - (a.rating || 0)).slice(0, 3);
     // Find a risk supplier
     const riskSupplier = suppliers.find(s => s.status === 'Risk');
     const performanceCards = riskSupplier ? [...topSuppliers, riskSupplier] : topSuppliers;
@@ -80,9 +81,9 @@ export default async function SupplierPage() {
                         key={supplier.id}
                         name={supplier.name} 
                         category={supplier.category} 
-                        score={supplier.rating} 
-                        speed={supplier.speed} 
-                        status={supplier.status} 
+                        score={supplier.rating || 0} 
+                        speed={supplier.speed || 0} 
+                        status={supplier.status as any} 
                     />
                 ))}
             </div>
@@ -115,7 +116,7 @@ export default async function SupplierPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {suppliers.map((supplier) => (
+                            {suppliers.map((supplier: any) => (
                                 <TableRow key={supplier.id} className="cursor-pointer hover:bg-muted/50 border-border/50">
                                     <TableCell className="font-mono text-xs text-muted-foreground">{supplier.id}</TableCell>
                                     <TableCell className="font-medium flex items-center gap-2">

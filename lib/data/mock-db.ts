@@ -90,6 +90,17 @@ export interface AuditLog {
     metadata?: Record<string, any>;
 }
 
+export interface Notification {
+    id: string;
+    userId: string; // 'all' or specific user ID
+    title: string;
+    message: string;
+    type: 'info' | 'success' | 'warning' | 'error';
+    link?: string;
+    isRead: boolean;
+    createdAt: string;
+}
+
 export class MockDatabase {
     private static instance: MockDatabase;
 
@@ -111,6 +122,7 @@ export class MockDatabase {
 
     public activityFeed: ActivityItem[] = [];
     public auditLogs: AuditLog[] = [];
+    public notifications: Notification[] = [];
 
     private constructor() {
         this.initialize();
@@ -245,6 +257,39 @@ export class MockDatabase {
             }
         ];
 
+        // Initial Notifications
+        this.notifications = [
+            {
+                id: 'NOTIF-001',
+                userId: 'all',
+                title: 'System Maintenance',
+                message: 'Scheduled maintenance tonight at 02:00 AM.',
+                type: 'info',
+                isRead: false,
+                createdAt: new Date().toISOString()
+            },
+            {
+                id: 'NOTIF-002',
+                userId: 'user-123',
+                title: 'Payroll Processed',
+                message: 'January payroll has been successfully processed.',
+                type: 'success',
+                link: '/dashboard/payroll',
+                isRead: false,
+                createdAt: new Date(Date.now() - 1000 * 60 * 60).toISOString() // 1 hour ago
+            },
+            {
+                id: 'NOTIF-003',
+                userId: 'user-123',
+                title: 'Requisition Pending',
+                message: 'Hardware requisition REQ-2024-89 requires approval.',
+                type: 'warning',
+                link: '/dashboard/requisition',
+                isRead: true,
+                createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString() // 1 day ago
+            }
+        ];
+
         console.log(`Generated: ${this.employees.length} employees, ${this.inventory.length} items, ${this.requisitions.length} requests.`);
     }
 
@@ -287,6 +332,16 @@ export class MockDatabase {
         await this.delay(300);
         const employee = this.employees.find(e => e.id === employeeId);
         return employee?.attendance || generateMonthlyAttendance();
+    }
+
+    async getAllAttendanceRecords() {
+        await this.delay(500);
+        return this.employees.map(e => ({
+            employeeId: e.id,
+            employeeName: e.name,
+            department: e.department,
+            attendance: e.attendance
+        }));
     }
 
     async getInventory(page: number = 1, pageSize: number = 20, search?: string) {
@@ -1187,6 +1242,56 @@ export class MockDatabase {
             return task;
         }
         return null; 
+    }
+
+    async getNotifications(userId: string = 'user-123') {
+        // Return notifications for specific user or 'all'
+        await this.delay(100);
+        return this.notifications
+            .filter(n => n.userId === userId || n.userId === 'all')
+            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }
+
+    async markNotificationAsRead(id: string) {
+        await this.delay(50);
+        const index = this.notifications.findIndex(n => n.id === id);
+        if (index !== -1) {
+            this.notifications[index].isRead = true;
+            return true;
+        }
+        if (id === 'all') {
+             this.notifications.forEach(n => n.isRead = true);
+             return true;
+        }
+        return false;
+    }
+
+    async createNotification(data: Omit<Notification, 'id' | 'createdAt' | 'isRead'>) {
+        const newNotification: Notification = {
+            id: `NOTIF-${faker.string.alphanumeric(8)}`,
+            ...data,
+            isRead: false,
+            createdAt: new Date().toISOString()
+        };
+        this.notifications.unshift(newNotification);
+        // Keep only last 100 notifications
+        if (this.notifications.length > 100) {
+            this.notifications = this.notifications.slice(0, 100);
+        }
+        return newNotification;
+    }
+
+    async getEmployeeTasks(employeeId: string) {
+        await this.delay(300);
+        const employee = this.employees.find(e => e.id === employeeId);
+        if (!employee) return [];
+        
+        return this.tasks.filter(t => t.assignee?.name === employee.name);
+    }
+
+    async getEmployeePerformance(employeeId: string) {
+        await this.delay(300);
+        return this.kpiScorecards.filter(k => k.employeeId === employeeId).sort((a, b) => new Date(b.reviewDate).getTime() - new Date(a.reviewDate).getTime());
     }
 }
 

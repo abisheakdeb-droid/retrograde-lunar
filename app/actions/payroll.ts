@@ -1,11 +1,11 @@
 'use server'
 
-import { db } from "@/lib/data/mock-db"
+import { executePayroll } from "@/lib/db/queries"
 import { revalidatePath } from "next/cache"
 
 export async function executePayrollAction(month: string) {
     try {
-        const result = await db.executePayroll(month)
+        const result = await executePayroll(month)
         revalidatePath('/dashboard/payroll')
         return result
     } catch (error) {

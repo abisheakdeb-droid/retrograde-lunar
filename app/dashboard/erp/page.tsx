@@ -2,7 +2,7 @@ import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Archive, TrendingUp, Truck, ChevronLeft, ChevronRight } from "lucide-react"
-import { db } from "@/lib/data/mock-db"
+import { getInventory, getStats } from "@/lib/db/queries"
 import { SearchInput } from "@/components/search-input"
 import { ActionBar } from "@/components/action-bar"
 import { ExportButton } from "@/components/export-button"
@@ -14,8 +14,8 @@ export default async function ERPPage(props: { searchParams: Promise<{ page?: st
     const searchParams = await props.searchParams;
     const page = Number(searchParams?.page) || 1;
     const search = searchParams?.q || '';
-    const { data: inventory, total, totalPages } = await db.getInventory(page, 15, search);
-    const stats = await db.getStats();
+    const { data: inventory, total, totalPages } = await getInventory(page, 15, search);
+    const stats = await getStats();
 
     return (
         <div className="space-y-6">

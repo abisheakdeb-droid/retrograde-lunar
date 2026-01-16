@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation"
-import { db } from "@/lib/data/mock-db"
+import { getEmployeeById, getEmployeeTasks, getEmployeePerformance, getLeaveRequests, getAttendanceHistory } from "@/lib/db/queries"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -25,6 +25,7 @@ import { getEmployeeRequisitions } from "@/lib/data/generators"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { LeaveProfileTab } from "@/components/hrm/leave-profile-tab"
 import { Umbrella } from "lucide-react"
+import { DownloadProfileButton } from "@/components/hrm/download-profile-button"
 
 interface ProfilePageProps {
     params: Promise<{
@@ -34,7 +35,7 @@ interface ProfilePageProps {
 
 export default async function EmployeeProfilePage({ params }: ProfilePageProps) {
     const { id } = await params
-    const employee = await db.getEmployeeById(id)
+    const employee = await getEmployeeById(id)
     const session = await auth()
     const userRole = (session?.user as any)?.role
 
@@ -43,8 +44,13 @@ export default async function EmployeeProfilePage({ params }: ProfilePageProps) 
     }
 
     const requisitions = getEmployeeRequisitions(employee.id)
-    const { data: allLeaveRequests } = await db.getLeaveRequests(1, 100)
-    const employeeLeaveRequests = allLeaveRequests.filter(r => r.employeeId === employee.id)
+    const { data: allLeaveRequests } = await getLeaveRequests(100)
+    // Map missing fields for LeaveRequest Mock Type compatibility
+    const employeeLeaveRequests = allLeaveRequests
+        .filter(r => r.employeeId === employee.id)
+        .map(r => ({ ...r, employeeName: employee.name, days: 1, appliedDate: r.createdAt ? new Date(r.createdAt).toISOString() : new Date().toISOString() } as any));
+    const tasks = await getEmployeeTasks(employee.id)
+    const performance = await getEmployeePerformance(employee.id)
 
     return (
         <div className="space-y-6 animate-in fade-in-0 duration-500">
@@ -59,9 +65,10 @@ export default async function EmployeeProfilePage({ params }: ProfilePageProps) 
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
+                    <DownloadProfileButton employee={employee as any} tasks={tasks as any} performance={performance} />
                     <ActionBar />
                     {hasPermission(userRole, "canEditEmployee") && (
-                        <EditEmployeeDialog employee={employee} />
+                        <EditEmployeeDialog employee={employee as any} />
                     )}
                     {hasPermission(userRole, "canDeleteEmployee") && (
                         <DeleteEmployeeDialog employeeId={employee.id} employeeName={employee.name} />
@@ -76,7 +83,7 @@ export default async function EmployeeProfilePage({ params }: ProfilePageProps) 
                         <div className="bg-muted h-32 w-full absolute top-0 left-0 z-0 opacity-20" />
                         <CardHeader className="relative z-10 pt-12 pb-2">
                             <Avatar className="h-32 w-32 mx-auto ring-4 ring-background shadow-xl">
-                                <AvatarImage src={employee.avatar} />
+                                <AvatarImage src={employee.avatar || undefined} />
                                 <AvatarFallback>{employee.name.charAt(0)}</AvatarFallback>
                             </Avatar>
                             <div className="mt-4">
@@ -107,7 +114,7 @@ export default async function EmployeeProfilePage({ params }: ProfilePageProps) 
                                 <Separator />
                                 <div className="flex items-center gap-3 text-sm">
                                     <Calendar className="h-4 w-4 text-muted-foreground" />
-                                    <span>Joined {employee.joinDate}</span>
+                                    <span>Joined {employee.joinDate ? new Date(employee.joinDate).toLocaleDateString() : 'N/A'}</span>
                                 </div>
                             </div>
                         </CardContent>
@@ -132,11 +139,12 @@ export default async function EmployeeProfilePage({ params }: ProfilePageProps) 
                 {/* Right Column: Detailed Views with Tabs */}
                 <div className="md:col-span-2 space-y-6">
                     <Tabs defaultValue="attendance" className="w-full">
-                        <TabsList className="grid w-full grid-cols-3">
+                        <TabsList className="grid w-full grid-cols-5">
                             <TabsTrigger value="attendance">Attendance</TabsTrigger>
-                            <TabsTrigger value="leave">Leave & Holidays</TabsTrigger>
-                            <TabsTrigger value="requisitions">My Requisitions</TabsTrigger>
-                            <TabsTrigger value="projects">Projects</TabsTrigger>
+                            <TabsTrigger value="leave">Leave</TabsTrigger>
+                            <TabsTrigger value="tasks">Tasks</TabsTrigger>
+                            <TabsTrigger value="performance">Performance</TabsTrigger>
+                            <TabsTrigger value="requisitions">Reqs</TabsTrigger>
                         </TabsList>
                         
                         <TabsContent value="attendance" className="mt-6 space-y-6">
@@ -183,6 +191,93 @@ export default async function EmployeeProfilePage({ params }: ProfilePageProps) 
                             />
                         </TabsContent>
 
+                        <TabsContent value="tasks" className="mt-6">
+                            <Card>
+                                <CardHeader>
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <CardTitle>Assigned Tasks</CardTitle>
+                                            <CardDescription>Current and past operational assignments.</CardDescription>
+                                        </div>
+                                        <Badge variant="outline">{tasks.length} Total</Badge>
+                                    </div>
+                                </CardHeader>
+                                <CardContent>
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead>Task Title</TableHead>
+                                                <TableHead>Status</TableHead>
+                                                <TableHead>Priority</TableHead>
+                                                <TableHead className="text-right">Due Date</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {tasks.map((task, i) => (
+                                                <TableRow key={i}>
+                                                    <TableCell className="font-medium">{task.title}</TableCell>
+                                                    <TableCell>
+                                                        <Badge variant={task.status === 'COMPLETED' ? 'default' : 'secondary'} className={task.status === 'COMPLETED' ? 'bg-green-600' : ''}>
+                                                            {task.status}
+                                                        </Badge>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                         <Badge variant="outline" className={task.priority === 'CRITICAL' ? 'text-red-600 border-red-200' : ''}>
+                                                            {task.priority}
+                                                        </Badge>
+                                                    </TableCell>
+                                                    <TableCell className="text-right">{task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'No Deadline'}</TableCell>
+                                                </TableRow>
+                                            ))}
+                                            {tasks.length === 0 && <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground">No tasks assigned.</TableCell></TableRow>}
+                                        </TableBody>
+                                    </Table>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
+                        <TabsContent value="performance" className="mt-6">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Performance Reviews</CardTitle>
+                                    <CardDescription>KPI Scorecards and Supervisor Feedback.</CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-6">
+                                        {performance.map((scorecard, i) => (
+                                            <div key={i} className="border rounded-lg p-4 space-y-4">
+                                                <div className="flex items-center justify-between">
+                                                    <div>
+                                                        <h4 className="font-semibold text-lg">{new Date(scorecard.reviewDate).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })} Review</h4>
+                                                        <p className="text-sm text-muted-foreground">Reviewed by: {scorecard.supervisorName}</p>
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <span className="text-2xl font-bold block">{scorecard.overallScore}%</span>
+                                                        <Badge variant={scorecard.trend === 'Up' ? 'default' : 'destructive'} className={scorecard.trend === 'Up' ? 'bg-green-600' : ''}>
+                                                            Trend: {scorecard.trend}
+                                                        </Badge>
+                                                    </div>
+                                                </div>
+                                                <Separator />
+                                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                                    {scorecard.scores.map((s: any, j: number) => (
+                                                        <div key={j} className="bg-muted/30 p-2 rounded">
+                                                            <p className="text-xs text-muted-foreground">{s.category}</p>
+                                                            <p className="font-bold">{s.score}/100</p>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                                <div className="bg-muted p-3 rounded-md">
+                                                    <p className="text-sm italic">"{scorecard.feedback}"</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                        {performance.length === 0 && <p className="text-center text-muted-foreground py-8">No performance records found.</p>}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
                         <TabsContent value="requisitions" className="mt-6">
                             <MyRequisitions requisitions={requisitions} />
                         </TabsContent>
@@ -224,7 +319,7 @@ export default async function EmployeeProfilePage({ params }: ProfilePageProps) 
 }
 
 async function AttendanceHistoryTable({ employeeId }: { employeeId: string }) {
-    const history = await db.getAttendanceHistory(employeeId);
+    const history = await getAttendanceHistory(employeeId);
 
     return (
         <Card>

@@ -1,33 +1,36 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { db } from "@/lib/data/mock-db";
-import { Supplier } from "@/lib/data/generators";
+import { createSupplier } from "@/lib/db/queries";
 import { auditService } from "@/lib/services/audit-service";
+import { Supplier } from "@/lib/data/generators";
 
 export async function addSupplier(formData: FormData) {
-    // ... existing code ...
     console.log("addSupplier action started");
     const name = formData.get('name') as string;
     const category = formData.get('category') as string;
-    const location = formData.get('location') as string;
+    const location = formData.get('location') as string; // Note: Schema doesn't have location yet, might need update or mapping
+    // Mapping location to contactPerson or just ignoring for now as per schema
+    // Schema has: name, contactPerson, email, phone, category, status, rating, speed
 
-    if (!name || !category || !location) {
-        throw new Error("Name, Category, and Location are required");
+    if (!name || !category) {
+        throw new Error("Name and Category are required");
     }
 
     try {
-        await db.addSupplier({
+        await createSupplier({
             name,
             category,
-            location
+            contactPerson: location, // Temporary mapping to persist the location input
+            email: 'admin@supplier.com', // Default
+            phone: 'N/A'
         });
 
         await auditService.log({
             action: 'CREATE',
             entity: 'Supplier',
             entityId: 'SPL-NEW', 
-            actorId: 'admin', // Placeholder until auth is fully piped through here
+            actorId: 'admin',
             actorName: 'Admin User',
             details: `Added new supplier: ${name}`,
         });
@@ -46,7 +49,13 @@ export async function importBatchSuppliers(suppliers: Partial<Supplier>[]) {
         let count = 0;
         for (const s of suppliers) {
             if (s.name) {
-                await db.addSupplier(s);
+                await createSupplier({
+                    name: s.name,
+                    category: s.category || 'General',
+                    contactPerson: s.contactPerson || 'N/A',
+                    email: s.email,
+                    phone: 'N/A'
+                });
                 count++;
             }
         }

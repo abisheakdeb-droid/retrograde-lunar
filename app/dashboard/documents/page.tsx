@@ -1,4 +1,4 @@
-import { db } from "@/lib/data/mock-db"
+import { getDocuments } from "@/lib/db/queries"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -29,7 +29,8 @@ import { UploadDocumentDialog } from "@/components/documents/upload-document-dia
 export default async function DocumentsPage(props: { searchParams: Promise<{ q?: string }> }) {
     const searchParams = await props.searchParams;
     const search = (searchParams?.q || '').toString().trim();
-    const { data: documents } = await db.getDocuments(1, 100, search);
+    const allDocuments = await getDocuments(100);
+    const documents = allDocuments.filter((d: any) => search ? d.employeeName.toLowerCase().includes(search.toLowerCase()) || d.id.includes(search) : true);
 
     const categories = [
         { name: 'NID & Identity', count: documents.filter(d => d.type === 'NID' || d.type === 'ID Card').length, icon: ShieldCheck, color: 'text-cyan-500' },
@@ -128,7 +129,7 @@ export default async function DocumentsPage(props: { searchParams: Promise<{ q?:
                                         </Badge>
                                     </TableCell>
                                     <TableCell className="text-xs font-mono text-muted-foreground">
-                                        {doc.uploadDate}
+                                        {new Date(doc.uploadDate).toLocaleDateString()}
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center gap-2">

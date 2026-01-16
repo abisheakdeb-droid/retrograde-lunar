@@ -1,12 +1,12 @@
-import { db } from "@/lib/data/mock-db"
+import { getStats, getProductionStats, getFactoryPerformance, getUpcomingReviews } from "@/lib/db/queries"
 import { DashboardSwitcher } from "@/components/dashboard/dashboard-switcher"
 
 export default async function DashboardPage() {
     // Fetch data on the server
-    const stats = await db.getStats();
-    const productionStats = await db.getProductionStats();
-    const factoryUnits = await db.getFactoryPerformance();
-    const upcomingReviews = await db.getUpcomingReviews();
+    const stats = await getStats();
+    const productionStats = await getProductionStats();
+    const factoryUnits = await getFactoryPerformance();
+    const upcomingReviews = await getUpcomingReviews();
 
     // Bundle data for the client switcher
     const dashboardData = {

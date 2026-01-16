@@ -17,19 +17,26 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { AlertTriangle } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
+import { submitIncidentReport } from "@/app/actions/disciplinary-actions"
 
 export function IncidentReportDialog() {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 800))
-    toast.success("Incident reported successfully")
-    setLoading(false)
-    setOpen(false)
+    
+    try {
+        const formData = new FormData(e.currentTarget)
+        await submitIncidentReport(formData)
+        toast.success("Incident reported successfully")
+        setOpen(false)
+    } catch (error) {
+        toast.error("Failed to report incident")
+    } finally {
+        setLoading(false)
+    }
   }
 
   return (

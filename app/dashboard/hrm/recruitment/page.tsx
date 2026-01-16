@@ -1,14 +1,12 @@
-import { MockDatabase } from "@/lib/data/mock-db"
-import { JobPosting, Candidate } from "@/lib/data/mock-db"
+import { getJobPostings, getCandidates } from "@/lib/db/queries"
 import { KanbanBoard } from "@/components/hrm/recruitment/kanban-board"
 import { JobPostingDialog } from "@/components/hrm/recruitment/job-posting-dialog"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Briefcase, Users, TrendingUp } from "lucide-react"
 
 export default async function RecruitmentPage() {
-    const jobs = await MockDatabase.getInstance().getJobPostings();
-    const stats = await MockDatabase.getInstance().getStats();
-    const candidates = await MockDatabase.getInstance().getCandidates();
+    const jobs = await getJobPostings(50);
+    const candidates = await getCandidates(100);
 
     // Quick check to simulate loading state or ensure data
     const totalCandidates = candidates.length;
@@ -60,7 +58,7 @@ export default async function RecruitmentPage() {
 
             {/* Main Kanban Board */}
             <div className="flex-1 min-h-0">
-                <KanbanBoard candidates={candidates} jobs={jobs} />
+                <KanbanBoard candidates={candidates as any[]} jobs={jobs as any[]} />
             </div>
         </div>
     )

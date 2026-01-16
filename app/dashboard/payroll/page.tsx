@@ -1,5 +1,3 @@
-import { MockDatabase } from "@/lib/data/mock-db"
-import { Payslip } from "@/lib/data/generators"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -147,7 +145,7 @@ export default async function PayrollPage(props: { searchParams: Promise<{ q?: s
                                         </div>
                                     </TableCell>
                                     <TableCell className="text-right pr-6">
-                                        <PayslipDialog payslip={slip} />
+                                        <PayslipDialog payslip={slip as any} />
                                     </TableCell>
                                 </TableRow>
                             ))}

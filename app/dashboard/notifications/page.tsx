@@ -1,23 +1,21 @@
 "use client"
 
-import { useNotifications } from "@/lib/hooks/use-notifications"
+import { useNotifications } from "@/components/providers/notification-provider"
 import { useSession } from "next-auth/react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { NotificationList } from "@/components/notifications/notification-list"
-import { Bell, CheckCheck, Trash2 } from "lucide-react"
+import { Bell, CheckCheck } from "lucide-react"
 
 export default function NotificationsPage() {
   const { data: session } = useSession()
-  const userId = session?.user?.email?.split('@')[0].toUpperCase() || undefined
   const { 
     notifications, 
     unreadCount, 
     markAsRead, 
     markAllAsRead, 
-    deleteNotification,
     isLoading 
-  } = useNotifications(userId)
+  } = useNotifications()
 
   if (!session) return null
 
@@ -52,6 +50,9 @@ export default function NotificationsPage() {
                 {unreadCount} unread
               </span>
             )}
+            {isLoading && (
+               <span className="text-xs text-muted-foreground animate-pulse">Syncing...</span>
+            )}
           </div>
           <CardDescription>
             You have received {notifications.length} notifications in the last 30 days.
@@ -62,7 +63,6 @@ export default function NotificationsPage() {
             notifications={notifications}
             onMarkAsRead={markAsRead}
             onMarkAllAsRead={markAllAsRead}
-            onDelete={deleteNotification}
           />
         </CardContent>
       </Card>

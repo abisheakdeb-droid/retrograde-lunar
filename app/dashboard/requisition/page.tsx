@@ -1,4 +1,4 @@
-import { MockDatabase } from "@/lib/data/mock-db"
+import { getRequisitions } from "@/lib/db/queries"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -56,11 +56,40 @@ export default async function RequisitionPage({ searchParams }: Props) {
       ]
   }
 
-  const requisitions = await MockDatabase.getInstance().getRequisitions(50);
+    const requisitions = await getRequisitions(100);
 
-  const pendingCount = requisitions.filter(r => r.status === 'Pending').length
-  const approvedCount = requisitions.filter(r => r.status === 'Approved').length
-  const rejectedCount = requisitions.filter(r => r.status === 'Rejected').length
+    // Apply filters in memory since getRequisitions is basic currently
+    let displayRequisitions = requisitions.filter(req => {
+        let match = true;
+        // Role filter
+        if (requesterFilter && requesterFilter !== 'INVALID_SESSION_ID') {
+            if (req.requesterId !== requesterFilter) match = false;
+        } else if (requesterFilter === 'INVALID_SESSION_ID') {
+            match = false;
+        }
+
+        // Status filter
+        if (params.status && params.status !== 'All' && req.status !== params.status) match = false;
+        
+        // Priority filter
+        if (params.priority && params.priority !== 'All' && req.priority !== params.priority) match = false;
+
+        // Search
+        if (params.search) {
+            const search = params.search.toLowerCase();
+            const searchMatch = 
+                req.item.toLowerCase().includes(search) || 
+                req.requesterName.toLowerCase().includes(search) ||
+                req.id.toLowerCase().includes(search);
+            if (!searchMatch) match = false;
+        }
+
+        return match;
+    });
+
+    const pendingCount = displayRequisitions.filter(r => r.status === 'Pending').length
+    const approvedCount = displayRequisitions.filter(r => r.status === 'Approved').length
+    const rejectedCount = displayRequisitions.filter(r => r.status === 'Rejected').length
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -147,7 +176,7 @@ export default async function RequisitionPage({ searchParams }: Props) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {requisitions.map((req) => (
+              {displayRequisitions.map((req: any) => (
                 <TableRow key={req.id} className="cursor-pointer hover:bg-muted/50 border-border/50">
                   <TableCell className="font-mono text-xs text-muted-foreground">{req.id.split('-').pop()}</TableCell>
                   <TableCell className="font-mono text-xs text-primary/80">{req.requesterId}</TableCell>
