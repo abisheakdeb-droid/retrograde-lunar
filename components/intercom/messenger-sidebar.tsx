@@ -85,7 +85,7 @@ export function MessengerSidebar({
 
       {/* Conversation List */}
       <div className="flex-1 overflow-y-auto custom-scrollbar">
-        <div className="flex flex-col px-2 pb-2 gap-1">
+        <div className="flex flex-col pb-2 gap-1">
           {filteredContacts.length === 0 ? (
              <div className="p-4 text-center text-sm text-muted-foreground">
                No employees found.
