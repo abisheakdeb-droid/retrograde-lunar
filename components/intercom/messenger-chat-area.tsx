@@ -87,7 +87,7 @@ export function MessengerChatArea({
       <div className="h-16 border-b border-border/40 flex items-center justify-between px-4 bg-card/30">
         <div className="flex items-center gap-3">
           {isMobile && (
-            <Button variant="ghost" size="icon" onClick={onBack} className="mr-1 -ml-2 md:hidden">
+            <Button variant="ghost" size="icon" onClick={onBack} className="mr-1 -ml-2">
               <ArrowLeft className="h-5 w-5" />
             </Button>
           )}

@@ -1,6 +1,7 @@
 import { Sidebar } from "@/components/sidebar"
 import { TacticalLayout } from "@/components/tactical-layout"
 import { NotificationBell } from "@/components/notifications/notification-bell"
+import { IntercomLauncher } from "@/components/intercom/intercom-launcher"
 import { auth } from "@/auth"
 import { Box, Menu } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
@@ -40,6 +41,7 @@ export default async function DashboardLayout({
             <h1 className="text-xl font-semibold">Ha-Meem ERP</h1>
           </div>
           <div className="flex items-center gap-4">
+            <IntercomLauncher />
             <NotificationBell userId={userId} />
             {session?.user && (
               <div className="text-sm hidden md:block">

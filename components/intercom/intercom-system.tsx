@@ -3,13 +3,13 @@
 import { useState, useEffect } from "react"
 import { createPortal } from "react-dom"
 import { IntercomContext, Contact, Message, Attachment } from "./intercom-context"
-import { IntercomLauncher } from "./intercom-launcher"
+
 import { MessengerWindow } from "./messenger-window"
 // @ts-ignore
 import { faker } from "@faker-js/faker"
 import { MockDatabase } from "@/lib/data/mock-db"
 
-export function IntercomSystem() {
+export function IntercomSystem({ children }: { children?: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false)
   const [activeContactId, setActiveContactId] = useState<string | null>(null)
   const [contacts, setContacts] = useState<Contact[]>([])
@@ -121,7 +121,7 @@ export function IntercomSystem() {
 
   return (
     <IntercomContext.Provider value={value}>
-      <IntercomLauncher />
+      {children}
       {mounted && createPortal(
         <MessengerWindow />,
         document.body

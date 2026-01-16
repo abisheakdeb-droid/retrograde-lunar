@@ -41,9 +41,10 @@ export default function RootLayout({
           <DemoRoleProvider>
             <NeuralBackground />
              <NotificationProvider>
-                {children}
-                <Toaster />
-                <IntercomSystem />
+                <IntercomSystem>
+                  {children}
+                  <Toaster />
+                </IntercomSystem>
              </NotificationProvider>
           </DemoRoleProvider>
         </AuthProvider>
