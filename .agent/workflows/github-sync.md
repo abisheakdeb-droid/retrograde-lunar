@@ -1,11 +1,25 @@
 ---
-description: Sync current changes to GitHub (Add, Commit, Push)
+description: Sync current changes to GitHub and trigger Deployment (Build, Add, Commit, Push)
 ---
 
-1. Check the current git status to see modified files.
-2. Stage all changes using `git add .`.
-3. Generate a descriptive commit message based on the recent changes.
-4. Commit the changes using `git commit -m "your generated message"`.
-5. Check if `gh` is installed and authenticated using `gh auth status`.
-6. If authenticated, push using `git push`.
-7. If not, prompt the user or just `git push` and hope for SSH keys.
+# GitHub Sync & Deploy Workflow
+
+1.  **Pre-flight Check**:
+
+    - Run `npm run build` to ensure the code is deployable.
+    - If the build fails, STOP and notify the user.
+
+2.  **Git Status**:
+
+    - Run `git status` to see what will be committed.
+
+3.  **Approve & Commit**:
+
+    - Stage all changes: `git add .`
+    - Commit with a descriptive message: `git commit -m "update: [summary of changes]"`
+
+4.  **Push & Deploy**:
+    - Push to main: `git push origin main`
+    - This push acts as the trigger for connected CI/CD (Vercel/Netlify) to "update everywhere".
+
+// turbo 5. Notify the user that changes are live (or building).

@@ -116,19 +116,13 @@ export function MessengerChatArea({
         </div>
 
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary">
-            <Phone className="h-4 w-4" />
-          </Button>
-          <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary">
-            <Video className="h-4 w-4" />
-          </Button>
           <Button 
             variant="ghost" 
             size="icon" 
-            className="text-muted-foreground hover:text-primary"
+            className="text-muted-foreground hover:text-primary h-8 w-8"
             onClick={() => setShowProfile(true)}
           >
-            <Info className="h-4 w-4" />
+            <MoreVertical className="h-4 w-4" />
           </Button>
         </div>
       </div>
@@ -209,13 +203,7 @@ export function MessengerChatArea({
               className="h-8 w-8 text-muted-foreground hover:text-primary rounded-full"
               onClick={() => fileInputRef.current?.click()}
             >
-              <Plus className="h-4 w-4" />
-            </Button>
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary rounded-full">
               <Paperclip className="h-4 w-4" />
-            </Button>
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary rounded-full">
-              <Smile className="h-4 w-4" />
             </Button>
           </div>
           
@@ -240,10 +228,7 @@ export function MessengerChatArea({
             </Button>
           </div>
           
-          <Button variant="ghost" size="icon" className="h-9 w-9 text-primary mb-px">
-            <span className="sr-only">Like</span>
-            <span className="text-lg">👍</span>
-          </Button>
+
         </div>
       </div>
     </div>
