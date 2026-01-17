@@ -85,11 +85,8 @@ const CandleShape = (props: any) => {
   const color = isUp ? ChartTheme.accentGreen : ChartTheme.accentRed;
   const wickColor = isUp ? "#9AFFA0" : "#FF8A8A";
   
-  // Use the scoped ID passed via props
-  const filterUrl = isUp && glowId ? `url(#${glowId})` : undefined;
-
   return (
-    <g filter={filterUrl}>
+    <g>
       {/* Wick */}
       <line
         x1={xCenter}
@@ -203,16 +200,7 @@ export function GovernXCandlestickChart({
       <div style={{ height: height - 80 }}>
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={processingData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-            {/* Definitions for Glow Filter */}
-            <defs>
-              <filter id={glowId} x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="3.5" result="coloredBlur" />
-                <feMerge>
-                  <feMergeNode in="coloredBlur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-            </defs>
+            {/* Removed Glow Filter Defs to prevent hydration crash */}
 
             <CartesianGrid
               strokeDasharray="4 4"
@@ -246,18 +234,22 @@ export function GovernXCandlestickChart({
               content={({ active, payload }) => {
                 if (active && payload && payload.length) {
                   const d = payload[0].payload;
+               
+               // Type safety for tooltip
+               if (!d) return null;
+
                   return (
                     <div className="bg-[#151A21] border border-[#2A2F38] p-3 rounded-lg shadow-xl">
                       <p className="text-[#9AA1AC] text-xs mb-2 font-mono">{d.date}</p>
                       <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs font-mono">
                         <span className="text-[#9AA1AC]">Open:</span>
-                        <span className="text-[#E8EBF0] text-right">{d.open.toFixed(2)}</span>
+                        <span className="text-[#E8EBF0] text-right">{Number(d.open).toFixed(2)}</span>
                         <span className="text-[#9AA1AC]">High:</span>
-                        <span className="text-[#E8EBF0] text-right">{d.high.toFixed(2)}</span>
+                        <span className="text-[#E8EBF0] text-right">{Number(d.high).toFixed(2)}</span>
                         <span className="text-[#9AA1AC]">Low:</span>
-                        <span className="text-[#E8EBF0] text-right">{d.low.toFixed(2)}</span>
+                        <span className="text-[#E8EBF0] text-right">{Number(d.low).toFixed(2)}</span>
                         <span className="text-[#9AA1AC]">Close:</span>
-                        <span className="text-[#E8EBF0] text-right">{d.close.toFixed(2)}</span>
+                        <span className="text-[#E8EBF0] text-right">{Number(d.close).toFixed(2)}</span>
                       </div>
                     </div>
                   );
@@ -266,18 +258,14 @@ export function GovernXCandlestickChart({
               }}
             />
             
-            {/* The Candle implementation using Bar with range [low, high] and custom shape */}
+            {/* The Candle implementation */}
             <Bar 
                 dataKey="range" 
-                shape={<CandleShape glowId={glowId} />} 
+                shape={<CandleShape />} 
                 isAnimationActive={false}
-            >
-                {/* 
-                  Note: Custom shape handles coloring
-                */}
-            </Bar>
+            />
             
-            {/* Current Price Line */}
+            {/* Current Price Line - Simplified Label */}
              <ReferenceLine 
                 y={lastPrice} 
                 stroke="#FFFFFF" 
@@ -286,13 +274,10 @@ export function GovernXCandlestickChart({
                 label={{ 
                     position: 'right', 
                     value: lastPrice.toFixed(2), 
-                    fill: '#111', 
+                    fill: '#E8EBF0', 
                     fontSize: 10,
-                    fontWeight: 'bold',
-                    className: 'bg-white px-1 rounded' // Recharts text doesn't support className like that, usually specific rendering needed
                 }}
              />
-
           </ComposedChart>
         </ResponsiveContainer>
       </div>
