@@ -6,7 +6,7 @@ import Link from "next/link"
 import { cn } from "@/lib/utils"
 // import { ProductionCostChart } from "@/components/charts/production-cost-chart" (Removed)
 // import { HourlyOutputChart } from "@/components/charts/mis-charts" (Removed)
-import { GovernXProductionChart } from "@/components/charts/governx-production-chart"
+// import { GovernXProductionChart } from "@/components/charts/governx-production-chart" (Removed)
 import { GovernXStackedBarChart } from "@/components/charts/governx-stacked-bar-chart"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
@@ -115,7 +115,34 @@ export function ExecutiveDashboard({ data, role }: { data: any, role: string }) 
             {/* Main Production Chart */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
                 <div className="col-span-4">
-                     <GovernXProductionChart data={productionStats} height={350} />
+                     <GovernXStackedBarChart 
+                        title="Production vs Cost"
+                        data={productionStats} 
+                        xAxisKey="month"
+                        layout="horizontal"
+                        type="grouped"
+                        height={350}
+                        barWidth={10}
+                        stacks={[
+                            { 
+                                name: "Production Units", 
+                                field: "production", 
+                                color: "#FFF478",
+                                fillType: "gradient",
+                                gradientColors: ["#FFF478", "#FBBF24"], // Yellow-400 equivalent
+                                radius: [4, 4, 0, 0]
+                            },
+                            { 
+                                name: "Cost (USD)", 
+                                field: "cost", 
+                                color: "#99EC72",
+                                fillType: "gradient",
+                                gradientColors: ["#99EC72", "#4ADE80"], // Green-400 equivalent
+                                radius: [4, 4, 0, 0]
+                            }
+                        ]}
+                        className="border-0! bg-transparent!"
+                     />
                 </div>
 
                 <Card className="col-span-3 bg-card/40 border-primary/20">

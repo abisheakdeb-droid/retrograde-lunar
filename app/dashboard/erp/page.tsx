@@ -10,7 +10,7 @@ import { InventoryFilters } from "@/components/inventory/inventory-filters"
 import { InventoryTable } from "@/components/erp/inventory-table"
 import { TypingEffect } from "@/components/ui/typing-effect"
 
-import { GovernXProductionChart } from "@/components/charts/governx-production-chart"
+import { GovernXStackedBarChart } from "@/components/charts/governx-stacked-bar-chart"
 
 export default async function ERPPage(props: { searchParams: Promise<{ page?: string, q?: string }> }) {
     const searchParams = await props.searchParams;
@@ -53,8 +53,33 @@ export default async function ERPPage(props: { searchParams: Promise<{ page?: st
             
             <div className="grid gap-4 md:grid-cols-2">
                  <div className="md:col-span-2">
-                      <GovernXProductionChart 
-                          data={productionData} 
+                      <GovernXStackedBarChart 
+                          title="Production vs Cost"
+                          data={productionData}
+                          xAxisKey="month"
+                          layout="horizontal"
+                          type="grouped"
+                          height={350}
+                          barWidth={10}
+                          stacks={[
+                              { 
+                                  name: "Production Units", 
+                                  field: "production", 
+                                  color: "#FFF478",
+                                  fillType: "gradient",
+                                  gradientColors: ["#FFF478", "#FBBF24"],
+                                  radius: [4, 4, 0, 0]
+                              },
+                              { 
+                                  name: "Cost (USD)", 
+                                  field: "cost", 
+                                  color: "#99EC72",
+                                  fillType: "gradient",
+                                  gradientColors: ["#99EC72", "#4ADE80"],
+                                  radius: [4, 4, 0, 0]
+                              }
+                          ]}
+                          className="border-0! bg-transparent!"
                       />
                  </div>
             </div>
