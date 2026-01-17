@@ -4,8 +4,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Users, ShoppingCart, Box, Activity, ExternalLink, TrendingUp, AlertTriangle, Play, Factory, Shirt, Layers, Droplets } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
-import { ProductionCostChart } from "@/components/charts/production-cost-chart"
-import { HourlyOutputChart } from "@/components/charts/mis-charts"
+// import { ProductionCostChart } from "@/components/charts/production-cost-chart" (Removed)
+// import { HourlyOutputChart } from "@/components/charts/mis-charts" (Removed)
+import { GovernXProductionChart } from "@/components/charts/governx-production-chart"
+import { GovernXBarChart } from "@/components/charts/governx-bar-chart"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { DashboardClientWidgets } from "@/components/dashboard/dashboard-client-widgets"
@@ -112,17 +114,9 @@ export function ExecutiveDashboard({ data, role }: { data: any, role: string }) 
 
             {/* Main Production Chart */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                <Card className="col-span-4">
-                    <CardHeader>
-                        <CardTitle>Production vs Cost</CardTitle>
-                        <CardDescription>
-                            Real-time monthly production analysis.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="pl-2">
-                        <ProductionCostChart data={productionStats} />
-                    </CardContent>
-                </Card>
+                <div className="col-span-4">
+                     <GovernXProductionChart data={productionStats} height={350} />
+                </div>
 
                 <Card className="col-span-3 bg-card/40 border-primary/20">
                     <CardHeader>
@@ -238,15 +232,17 @@ export function ExecutiveDashboard({ data, role }: { data: any, role: string }) 
                                 </div>
 
                                 <div className="grid gap-4 md:grid-cols-7">
-                                    <Card className="col-span-4">
-                                        <CardHeader>
-                                            <CardTitle>Hourly Production (Target vs Actual)</CardTitle>
-                                            <CardDescription>Line 14 Detailed Breakdown</CardDescription>
-                                        </CardHeader>
-                                        <CardContent className="pl-2">
-                                            <HourlyOutputChart data={sampleHourlyData} />
-                                        </CardContent>
-                                    </Card>
+                                    <div className="col-span-4">
+                                        <GovernXBarChart 
+                                            data={sampleHourlyData} 
+                                            keys={['target', 'achieved']} 
+                                            xAxisKey="hour"
+                                            stacked={false}
+                                            colors={['#2A2D35', '#3B82F6']} 
+                                            title="Hourly Production (Target vs Actual)"
+                                            height={300}
+                                        />
+                                    </div>
                                     <Card className="col-span-3">
                                         <CardHeader>
                                             <CardTitle>Efficiency Heatmap</CardTitle>
