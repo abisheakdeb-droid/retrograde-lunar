@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useId } from "react";
 import {
   ResponsiveContainer,
   ComposedChart,
@@ -126,9 +126,10 @@ export function GovernXCandlestickChart({
   priceChangePercent,
 }: GovernXCandlestickChartProps) {
   
-  // Generate unique ID for this chart instance's glow filter
-  const chartId = useMemo(() => Math.random().toString(36).substr(2, 9), []);
-  const glowId = `glow-${chartId}`;
+  // HUD-safe unique ID generation
+  const uniqueId = useId();
+  // Ensure the ID is valid for SVG (remove colons if any, though useId usually handles this, safe to prefix)
+  const glowId = `glow-${uniqueId.replace(/:/g, "")}`;
   // Calculate visual cues
   const lastPrice = currentPrice ?? (data?.length > 0 ? data[data.length - 1]?.close : 0) ?? 0;
   const change = priceChange ?? (data?.length > 1 ? data[data.length - 1].close - data[data.length - 2].close : 0);
