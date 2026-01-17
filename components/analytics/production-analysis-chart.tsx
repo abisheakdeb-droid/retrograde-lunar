@@ -79,7 +79,7 @@ export function ProductionAnalysisChart() {
           ]}
           xAxisKey="month"
           height={350}
-          className="!border-0 !bg-transparent !p-0 !rounded-none"
+          className="border-0! bg-transparent! p-0! rounded-none!"
           yLeft={{ 
              tick: { fill: '#888', fontSize: 10 },
              tickFormatter: (value: number) => `${value}` 

@@ -92,7 +92,7 @@ export function InventoryTrendChart() {
             ]}
             xAxisKey="date"
             height={300}
-            className="!border-0 !bg-transparent !p-0 !rounded-none"
+            className="border-0! bg-transparent! p-0! rounded-none!"
             yLeft={{ label: { value: 'Value (k)', angle: -90, position: 'insideLeft', style: { fill: '#888' }} }}
             yRight={{ label: { value: 'Volume', angle: 90, position: 'insideRight', style: { fill: '#888' }} }}
           />

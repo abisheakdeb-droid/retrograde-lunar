@@ -7,18 +7,37 @@ import { Users, AlertTriangle, TrendingUp, Shirt, Layers, Droplets, Activity, Ar
 import { GovernXCandlestickChart } from "@/components/charts/governx-candlestick-chart"
 import { FactoryTicker } from "@/components/dashboard/factory-ticker"
 
-export function FactoryUnitCard({ unit, candleData }: { unit: any, candleData: any[] }) {
+
+
+interface FactoryUnitLine {
+    id: number
+    name: string
+    totalProduced: number
+    dailyTarget: number
+    status: string
+}
+
+interface FactoryUnit {
+    id: string
+    name: string
+    type: string
+    manager: string
+    overallEfficiency: number
+    lines: FactoryUnitLine[]
+}
+
+export function FactoryUnitCard({ unit, candleData }: { unit: FactoryUnit, candleData: any[] }) {
     // Live Pulse Logic
     const [liveStats, setLiveStats] = useState({
         efficiency: unit.overallEfficiency,
-        output: unit.lines.reduce((acc: any, line: any) => acc + line.totalProduced, 0),
-        activeLines: unit.lines.filter((l: any) => l.status === 'Running').length
+        output: unit.lines.reduce((acc: number, line: FactoryUnitLine) => acc + line.totalProduced, 0),
+        activeLines: unit.lines.filter((l: FactoryUnitLine) => l.status === 'Running').length
     });
 
     useEffect(() => {
         const interval = setInterval(() => {
             setLiveStats(prev => ({
-                efficiency: Math.min(100, Math.max(0, prev.efficiency + (Math.random() - 0.5) * 2)).toFixed(1),
+                efficiency: parseFloat(Math.min(100, Math.max(0, prev.efficiency + (Math.random() - 0.5) * 2)).toFixed(1)),
                 output: Math.floor(prev.output + (Math.random() > 0.3 ? Math.random() * 5 : 0)), // Mostly goes up
                 activeLines: prev.activeLines // Keep stable for now
             }));
@@ -26,16 +45,16 @@ export function FactoryUnitCard({ unit, candleData }: { unit: any, candleData: a
         return () => clearInterval(interval);
     }, []);
 
-    const totalDailyTarget = unit.lines.reduce((acc: any, line: any) => acc + line.dailyTarget, 0);
+    const totalDailyTarget = unit.lines.reduce((acc: number, line: FactoryUnitLine) => acc + line.dailyTarget, 0);
 
     // Calculate Efficiency per Line
-    const linesWithEfficiency = unit.lines.map((line: any) => {
+    const linesWithEfficiency = unit.lines.map((line: FactoryUnitLine) => {
         const eff = line.dailyTarget > 0 ? (line.totalProduced / line.dailyTarget) * 100 : 0;
         return { ...line, efficiency: eff.toFixed(0) };
     });
 
     // Generate Unit-Specific Ticker Items
-    const tickerItems = linesWithEfficiency.map((line: any, i: number) => ({
+    const tickerItems = linesWithEfficiency.map((line: FactoryUnitLine & { efficiency: string }, i: number) => ({
         id: line.id,
         text: `LINE ${line.name.split(' ')[1]} :: ${line.status === 'Running' ? 'TARGET_ON_TRACK' : 'MAINTENANCE_REQ'}`,
         value: `${line.efficiency}%`,
@@ -56,7 +75,7 @@ export function FactoryUnitCard({ unit, candleData }: { unit: any, candleData: a
                 </div>
                 <div className="flex items-center gap-3 shrink-0 ml-auto">
                     <Badge variant="outline" className="text-[10px] h-5 border-[#2A2F38] text-muted-foreground font-mono whitespace-nowrap hidden sm:flex">
-                        MGR: {unit.manager.split(' ').map((n:any) => n[0]).join('')}
+                        MGR: {unit.manager.split(' ').map((n: string) => n[0]).join('')}
                     </Badge>
                      {/* Status Dot */}
                     <div className="flex items-center gap-1.5 bg-[#0E1218] px-2 py-0.5 rounded-full border border-[#2A2F38]">
@@ -93,7 +112,7 @@ export function FactoryUnitCard({ unit, candleData }: { unit: any, candleData: a
                         <GovernXCandlestickChart 
                             data={candleData} 
                             height={220} 
-                            className="!border-0 !p-0 !bg-transparent w-full max-w-full"
+                            className="border-0! p-0! bg-transparent! w-full max-w-full"
                             title="VOLATILITY INDEX"
                         />
                     </div>

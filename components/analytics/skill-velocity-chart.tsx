@@ -72,7 +72,7 @@ export function SkillVelocityChart() {
           ]}
           xAxisKey="month"
           height={300}
-          className="!border-0 !bg-transparent !p-0 !rounded-none"
+          className="border-0! bg-transparent! p-0! rounded-none!"
           yLeft={{ label: { value: 'Skill Index', angle: -90, position: 'insideLeft', style: { fill: '#888' }} }}
           yRight={{ label: { value: 'Hours', angle: 90, position: 'insideRight', style: { fill: '#888' }} }}
         />

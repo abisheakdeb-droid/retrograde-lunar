@@ -32,8 +32,8 @@ export function FactoryTicker({ items = TICKER_ITEMS, className, speed = 40 }: F
   return (
     <div className={`w-full bg-[#05070A] border-y border-[#2A2F38] h-8 flex items-center overflow-hidden relative select-none ${className}`}>
        {/* Gradient Masks for fade effect */}
-      <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#05070A] to-transparent z-10"></div>
-      <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#05070A] to-transparent z-10"></div>
+      <div className="absolute left-0 top-0 bottom-0 w-16 bg-linear-to-r from-[#05070A] to-transparent z-10"></div>
+      <div className="absolute right-0 top-0 bottom-0 w-16 bg-linear-to-l from-[#05070A] to-transparent z-10"></div>
 
       <div className="flex animate-infinite-scroll whitespace-nowrap hover:paused group" style={{ animationDuration: `${speed}s` }}>
         {/* Render twice for seamless loop */}
