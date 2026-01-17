@@ -10,12 +10,24 @@ import { InventoryFilters } from "@/components/inventory/inventory-filters"
 import { InventoryTable } from "@/components/erp/inventory-table"
 import { TypingEffect } from "@/components/ui/typing-effect"
 
+import { GovernXCandlestickChart } from "@/components/charts/governx-candlestick-chart"
+
 export default async function ERPPage(props: { searchParams: Promise<{ page?: string, q?: string }> }) {
     const searchParams = await props.searchParams;
     const page = Number(searchParams?.page) || 1;
     const search = searchParams?.q || '';
     const { data: inventory, total, totalPages } = await getInventory(page, 15, search);
     const stats = await getStats();
+
+    // Mock Data for ERP Charts (Candlestick)
+    const commodityData = [
+        { time: 'Feb', open: 180, high: 200, low: 170, close: 190 },
+        { time: 'Mar', open: 190, high: 210, low: 180, close: 205 },
+        { time: 'Apr', open: 205, high: 220, low: 195, close: 215 },
+        { time: 'May', open: 215, high: 230, low: 200, close: 210 }, // Down
+        { time: 'Jun', open: 210, high: 240, low: 205, close: 235 },
+        { time: 'Jul', open: 235, high: 250, low: 220, close: 245 },
+    ];
 
     return (
         <div className="space-y-6">
@@ -34,6 +46,17 @@ export default async function ERPPage(props: { searchParams: Promise<{ page?: st
                     <ExportButton data={inventory} type="inventory" />
                     <Button className="neon-glow-cyan">Manage Inventory</Button>
                 </div>
+            </div>
+            
+            <div className="grid gap-4 md:grid-cols-2">
+                 <div className="md:col-span-2">
+                      <GovernXCandlestickChart 
+                          data={commodityData} 
+                          title="Raw Material Index (Cotton)" 
+                          currentPrice={245.00}
+                          change="+10.00 (4.2%)"
+                      />
+                 </div>
             </div>
 
             <div className="grid gap-4 md:grid-cols-3">

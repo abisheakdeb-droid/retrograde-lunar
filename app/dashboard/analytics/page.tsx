@@ -1,15 +1,30 @@
-import { RegionRadarChart } from "@/components/analytics/region-radar-chart"
-import { ProductionAnalysisChart } from "@/components/analytics/production-analysis-chart"
-import { InventoryTrendChart } from "@/components/analytics/inventory-trend-chart"
 import { OverviewCard } from "@/components/analytics/overview-card"
 import { ActivityFeed } from "@/components/analytics/activity-feed"
 import { TypingEffect } from "@/components/ui/typing-effect"
 import { db } from "@/lib/data/mock-db"
 import { Button } from "@/components/ui/button"
 import { RefreshCcw, Download } from "lucide-react"
+import { GovernXBarChart } from "@/components/charts/governx-bar-chart"
+import { GovernXRadialChart } from "@/components/charts/governx-radial-chart"
 
 export default async function AnalyticsPage() {
   const { kpis, activity } = await db.getAnalytics()
+
+  // Mock Data for GovernX Charts
+  const barData = [
+    { name: 'May', buy: 4000, hold: 2400, sell: 2400 },
+    { name: 'Jun', buy: 3000, hold: 1398, sell: 2210 },
+    { name: 'Jul', buy: 2000, hold: 9800, sell: 2290 },
+    { name: 'Aug', buy: 2780, hold: 3908, sell: 2000 },
+    { name: 'Sep', buy: 1890, hold: 4800, sell: 2181 },
+    { name: 'Oct', buy: 2390, hold: 3800, sell: 2500 },
+    { name: 'Nov', buy: 3490, hold: 4300, sell: 2100 },
+  ];
+
+  const radialData = [
+    { name: 'Completed', value: 69 },
+    { name: 'Remaining', value: 31 },
+  ];
 
   return (
     <div className="flex flex-col space-y-6">
@@ -49,10 +64,21 @@ export default async function AnalyticsPage() {
 
       <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-3">
         <div className="lg:col-span-2">
-             <ProductionAnalysisChart />
+             <GovernXBarChart 
+                title="Production Ownership & Ratings" 
+                data={barData} 
+                keys={["buy", "hold", "sell"]}
+                colors={["#99EC72", "#FFF478", "#FF3C46"]}
+             />
         </div>
         <div className="lg:col-span-1">
-            <RegionRadarChart />
+            <GovernXRadialChart 
+                data={radialData}
+                centerValue="5,235"
+                centerLabel="Active Projects"
+                subtitle="69% Completion Rate"
+                title="Project Ownership"
+            />
         </div>
       </div>
 

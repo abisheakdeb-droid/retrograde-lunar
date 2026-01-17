@@ -13,11 +13,21 @@ import { AddEmployeeDialog } from "@/components/hrm/add-employee-dialog"
 import { ExportButton } from "@/components/export-button"
 import { HRMFilters } from "@/components/hrm/hrm-filters"
 
+import { GovernXBarChart } from "@/components/charts/governx-bar-chart"
+
 export default async function HRMPage(props: { searchParams: Promise<{ page?: string, q?: string }> }) {
     const searchParams = await props.searchParams;
     const page = Number(searchParams?.page) || 1;
     const search = searchParams?.q || '';
     const { data: employees, total, totalPages } = await getEmployees(page, 10, search);
+
+    // Mock Data for HRM Chart
+    const attendanceData = [
+       { name: 'Week 1', present: 85, late: 10, absent: 5 },
+       { name: 'Week 2', present: 88, late: 8, absent: 4 },
+       { name: 'Week 3', present: 92, late: 5, absent: 3 },
+       { name: 'Week 4', present: 90, late: 6, absent: 4 },
+    ];
 
     return (
         <div className="space-y-6">
@@ -45,23 +55,17 @@ export default async function HRMPage(props: { searchParams: Promise<{ page?: st
                         <p className="text-xs text-muted-foreground">Active employees currently</p>
                     </CardContent>
                 </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Daily Attendance</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">96%</div>
-                        <p className="text-xs text-muted-foreground">On time arrival: 92%</p>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Pending Payroll</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">12</div>
-                        <p className="text-xs text-muted-foreground">Processing for current cycle</p>
-                    </CardContent>
+                <Card className="col-span-2">
+                     <div className="p-2">
+                         <GovernXBarChart 
+                            title="Shift Efficiency & Attendance" 
+                            data={attendanceData} 
+                            keys={["present", "late", "absent"]}
+                            colors={["#99EC72", "#FFF478", "#FF3C46"]}
+                            height={180}
+                            className="border-0 shadow-none bg-transparent"
+                         />
+                     </div>
                 </Card>
             </div>
 
