@@ -57,7 +57,7 @@ export function LeaveRequestDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="bg-primary text-primary-foreground neon-glow-cyan uppercase font-mono text-[10px] tracking-widest rounded-none hover:bg-primary/80">
+        <Button size="sm" className="bg-primary text-primary-foreground neon-glow-cyan uppercase font-mono text-[10px] tracking-widest rounded-lg hover:bg-primary/80">
             <FileText className="mr-2 h-3 w-3" />
             Register Leave Request
         </Button>
@@ -80,7 +80,7 @@ export function LeaveRequestDialog() {
                 <div className="space-y-2">
                     <Label htmlFor="type" className="text-[10px] uppercase font-mono text-muted-foreground">Leave Category</Label>
                     <Select required>
-                        <SelectTrigger className="bg-background/50 border-input/50 rounded-none focus:ring-primary/50 font-mono text-xs">
+                        <SelectTrigger className="bg-background/50 border-input/50 rounded-lg focus:ring-primary/50 font-mono text-xs">
                             <SelectValue placeholder="Select Type" />
                         </SelectTrigger>
                         <SelectContent className="tactical-card border-primary/20 bg-card/95 backdrop-blur-3xl">
@@ -94,7 +94,7 @@ export function LeaveRequestDialog() {
                 </div>
                 <div className="space-y-2">
                     <Label className="text-[10px] uppercase font-mono text-muted-foreground">Duration Unit</Label>
-                    <Input disabled value="1 Day (Default)" className="bg-muted/20 border-border/50 rounded-none font-mono text-xs text-muted-foreground" />
+                    <Input disabled value="1 Day (Default)" className="bg-muted/20 border-border/50 rounded-lg font-mono text-xs text-muted-foreground" />
                 </div>
             </div>
 

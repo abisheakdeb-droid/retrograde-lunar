@@ -87,7 +87,7 @@ export function AssetsView({ assets }: AssetsViewProps) {
                               <Settings2 className="mr-2 h-3 w-3" />
                               Configuration
                             </Button>
-                            <Button size="sm" className="bg-primary text-primary-foreground neon-glow-cyan uppercase font-mono text-[10px] tracking-widest rounded-none">
+                            <Button size="sm" className="bg-primary text-primary-foreground neon-glow-cyan uppercase font-mono text-[10px] tracking-widest rounded-lg">
                                 <Plus className="mr-2 h-3 w-3" />
                                 Provision Asset
                             </Button>

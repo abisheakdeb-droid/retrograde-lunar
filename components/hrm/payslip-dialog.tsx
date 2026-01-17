@@ -78,7 +78,7 @@ export function PayslipDialog({ payslip }: PayslipDialogProps) {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-0 border border-primary/10 rounded-none overflow-hidden">
+                <div className="grid grid-cols-2 gap-0 border border-primary/10 rounded-lg overflow-hidden">
                     {/* Earnings */}
                     <div className="p-4 border-r border-primary/10 bg-muted/5">
                         <h4 className="technical-label mb-3 flex items-center gap-2">

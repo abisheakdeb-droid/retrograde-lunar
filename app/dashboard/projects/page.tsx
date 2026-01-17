@@ -175,7 +175,7 @@ export default async function ProjectsPage(props: { searchParams: Promise<{ q?: 
                                         />
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <Badge variant="outline" className={`text-[8px] uppercase rounded-none border-primary/20 ${
+                                        <Badge variant="outline" className={`text-[8px] uppercase rounded-lg border-primary/20 ${
                                             project.status === 'Active' ? 'text-emerald-500 border-emerald-500/30' : 
                                             project.status === 'On Hold' ? 'text-amber-500 border-amber-500/30' : 'text-muted-foreground'
                                         }`}>
@@ -208,7 +208,7 @@ export default async function ProjectsPage(props: { searchParams: Promise<{ q?: 
                                     </div>
                                     <p className="text-[9px] text-muted-foreground uppercase line-clamp-1">{claim.purpose}</p>
                                     <div className="flex items-center gap-2">
-                                        <Badge variant="outline" className="text-[7px] h-4 rounded-none px-1 border-primary/10 uppercase">
+                                        <Badge variant="outline" className="text-[7px] h-4 rounded-lg px-1 border-primary/10 uppercase">
                                             {claim.status}
                                         </Badge>
                                         <span className="text-[8px] font-mono text-muted-foreground">{claim.date}</span>
@@ -217,7 +217,7 @@ export default async function ProjectsPage(props: { searchParams: Promise<{ q?: 
                                 <div className="text-right space-y-2">
                                     <div className="text-xs font-bold font-mono text-primary">৳{claim.amount.toLocaleString()}</div>
                                     {claim.status === 'Pending' && (
-                                        <Button variant="outline" size="xs" className="h-6 text-[8px] uppercase border-cyan-500/50 text-cyan-500 hover:bg-cyan-500/10 rounded-none">
+                                        <Button variant="outline" size="xs" className="h-6 text-[8px] uppercase border-cyan-500/50 text-cyan-500 hover:bg-cyan-500/10 rounded-lg">
                                             Authorize
                                         </Button>
                                     )}

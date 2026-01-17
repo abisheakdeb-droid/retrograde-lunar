@@ -67,7 +67,7 @@ export function ExecutePayrollDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="bg-primary text-primary-foreground neon-glow-cyan uppercase font-mono text-[10px] tracking-widest rounded-none">
+        <Button size="sm" className="bg-primary text-primary-foreground neon-glow-cyan uppercase font-mono text-[10px] tracking-widest rounded-lg">
             <DollarSign className="mr-2 h-3 w-3" />
             Execute Payroll Run
         </Button>

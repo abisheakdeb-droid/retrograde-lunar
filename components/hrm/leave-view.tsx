@@ -114,11 +114,11 @@ export function LeaveView({ leaveRequests, holidays }: LeaveViewProps) {
             </div>
 
             <Tabs defaultValue="requests" className="w-full">
-                <TabsList className="bg-card/50 border border-border/50 rounded-none h-10 p-1">
-                    <TabsTrigger value="requests" className="technical-label rounded-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-6">
+                <TabsList className="bg-card/50 border border-border/50 rounded-lg h-10 p-1">
+                    <TabsTrigger value="requests" className="technical-label rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-6">
                         {role === 'staff' ? "My Requests" : "Leave Requests"}
                     </TabsTrigger>
-                    <TabsTrigger value="calendar" className="technical-label rounded-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-6">Holiday Calendar</TabsTrigger>
+                    <TabsTrigger value="calendar" className="technical-label rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-6">Holiday Calendar</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="requests" className="mt-6">
@@ -162,9 +162,9 @@ export function LeaveView({ leaveRequests, holidays }: LeaveViewProps) {
                                             {role !== 'staff' && (
                                                 <TableCell className="pl-6">
                                                     <div className="flex items-center gap-3">
-                                                        <Avatar className="h-8 w-8 rounded-none border border-border/50">
+                                                        <Avatar className="h-8 w-8 rounded-lg border border-border/50">
                                                             <AvatarImage src={req.employeeAvatar || undefined} />
-                                                            <AvatarFallback className="rounded-none font-mono text-[10px]">{req.employeeName.charAt(0)}</AvatarFallback>
+                                                            <AvatarFallback className="rounded-lg font-mono text-[10px]">{req.employeeName.charAt(0)}</AvatarFallback>
                                                         </Avatar>
                                                         <div className="flex flex-col">
                                                             <span className="text-xs font-semibold uppercase">{req.employeeName}</span>
@@ -174,7 +174,7 @@ export function LeaveView({ leaveRequests, holidays }: LeaveViewProps) {
                                                 </TableCell>
                                             )}
                                             <TableCell className={role === 'staff' ? "pl-6" : ""}>
-                                                <Badge variant="outline" className="text-[9px] uppercase font-mono rounded-none border-border/50">{req.type}</Badge>
+                                                <Badge variant="outline" className="text-[9px] uppercase font-mono rounded-lg border-border/50">{req.type}</Badge>
                                             </TableCell>
                                             <TableCell>
                                                 <div className="flex flex-col">
@@ -218,7 +218,7 @@ export function LeaveView({ leaveRequests, holidays }: LeaveViewProps) {
                             {holidays.map((holiday) => (
                                 <div key={holiday.id} className="border border-border/50 bg-background/30 p-4 space-y-3 relative group overflow-hidden">
                                     <div className="absolute top-0 right-0 p-1 opacity-10 group-hover:opacity-100 transition-opacity">
-                                      <Badge variant="outline" className="text-[8px] rounded-none border-primary/30 uppercase">{holiday.type}</Badge>
+                                      <Badge variant="outline" className="text-[8px] rounded-lg border-primary/30 uppercase">{holiday.type}</Badge>
                                     </div>
                                     <div className="text-2xl font-bold font-mono text-primary italic">
                                       {new Date(holiday.date).toLocaleDateString('en-US', { day: '2-digit', month: 'short' })}
