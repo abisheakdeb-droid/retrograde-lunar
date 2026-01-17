@@ -34,7 +34,7 @@ export default function NeonDemoPage() {
       <div className="max-w-6xl mx-auto space-y-8">
         <div>
           <h1 className="text-2xl font-bold text-white mb-2">Neon-Style Monitoring Charts</h1>
-          <p className="text-gray-400">Exact replica of Neon's database monitoring interface</p>
+          <p className="text-gray-400">Exact replica of Neon&apos;s database monitoring interface</p>
         </div>
         
         {/* CPU & RAM Chart - PIXEL PERFECT MATCH */}

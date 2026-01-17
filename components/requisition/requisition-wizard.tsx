@@ -157,7 +157,7 @@ export function RequisitionWizard() {
                         <div className="text-center py-6 text-muted-foreground">
                             <p>No inventory items found.</p>
                             <Button variant="link" onClick={handleNewItem} className="mt-2 text-primary">
-                                Request New Item "{searchQuery}"
+                                Request New Item &quot;{searchQuery}&quot;
                             </Button>
                         </div>
                     )}

@@ -44,7 +44,7 @@ export function AddEmployeeDialog() {
                 <DialogHeader>
                     <DialogTitle>Add New Employee</DialogTitle>
                     <DialogDescription>
-                        Create a new employee profile. Click save when you're done.
+                        Create a new employee profile. Click save when you&apos;re done.
                     </DialogDescription>
                 </DialogHeader>
                 <form action={onSubmit} className="grid gap-4 py-4">

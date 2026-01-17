@@ -64,7 +64,7 @@ export function DisciplinaryList({ cases }: DisciplinaryListProps) {
                              </div>
 
                              <div className="bg-muted/30 p-3 rounded-md text-sm italic border-l-2 border-border">
-                                "{record.description}"
+                                &quot;{record.description}&quot;
                              </div>
 
                              <div className="flex items-center gap-4 text-xs text-muted-foreground mt-2">

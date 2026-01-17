@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { ChevronDown, ChevronRight } from "lucide-react"
 import { NodeDetailsDialog } from "./node-details-dialog"
@@ -66,11 +67,12 @@ export function OrgTreeNode({ node, level = 0, highlightedId, expandedIds }: Org
                                 isHighlighted ? "border-amber-500" : ""
                             )}>
                                 <AvatarImage src={node.avatar} />
-                                <AvatarFallback className="bg-transparent">
-                                    <img 
+                                <AvatarFallback className="bg-transparent relative h-full w-full overflow-hidden">
+                                    <Image 
                                         src="https://api.dicebear.com/9.x/avataaars/svg?seed=Felix" 
                                         alt="Memoji" 
-                                        className="h-full w-full object-cover scale-125 translate-y-2"
+                                        fill
+                                        className="object-cover scale-125 translate-y-2"
                                     />
                                 </AvatarFallback>
                             </Avatar>

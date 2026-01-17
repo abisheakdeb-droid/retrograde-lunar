@@ -47,7 +47,7 @@ export default async function RosterPage() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{nightShifts}</div>
-                        <p className="text-xs text-muted-foreground">Active 'C' Shifts</p>
+                        <p className="text-xs text-muted-foreground">Active &apos;C&apos; Shifts</p>
                     </CardContent>
                 </Card>
             </div>

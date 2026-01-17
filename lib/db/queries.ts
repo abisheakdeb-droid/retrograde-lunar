@@ -212,7 +212,7 @@ export async function getLeaveRequests(page: number = 1, pageSize: number = 10, 
         employeeAvatar: employees.avatar
     })
     .from(leaveRequests)
-    .leftJoin(employees, eq(leaveRequests.employeeId, employees.id))
+    .leftJoin(employees, sql`${leaveRequests.employeeId} = ${employees.id}::text`)
     .limit(pageSize)
     .offset(offset)
     .orderBy(desc(leaveRequests.createdAt));

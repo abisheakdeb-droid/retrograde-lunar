@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Mail, Phone, MapPin, Briefcase, Camera, Upload, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import Image from "next/image"
 
 interface NodeDetailsDialogProps {
   isOpen: boolean
@@ -55,11 +56,12 @@ export function NodeDetailsDialog({ isOpen, onClose, node }: NodeDetailsDialogPr
             <div className="relative mb-4">
                 <Avatar className="h-24 w-24 border-4 border-background shadow-xl">
                     <AvatarImage src={currentAvatar || node.avatar} />
-                    <AvatarFallback className="bg-transparent">
-                         <img 
+                    <AvatarFallback className="bg-transparent relative h-full w-full overflow-hidden">
+                         <Image 
                             src="https://api.dicebear.com/9.x/avataaars/svg?seed=Felix" 
                             alt="Memoji" 
-                            className="h-full w-full object-cover scale-125 translate-y-2"
+                            fill
+                            className="object-cover scale-125 translate-y-2"
                         />
                     </AvatarFallback>
                 </Avatar>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Notification } from "@/lib/data/notifications"
 
 export function useNotifications(userId: string | undefined) {
@@ -8,19 +8,9 @@ export function useNotifications(userId: string | undefined) {
   const [unreadCount, setUnreadCount] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    if (!userId) return
 
-    // Initial fetch
-    fetchNotifications()
 
-    // Poll every 10 seconds for new notifications
-    const interval = setInterval(fetchNotifications, 10000)
-
-    return () => clearInterval(interval)
-  }, [userId])
-
-  async function fetchNotifications() {
+  const fetchNotifications = useCallback(async () => {
     if (!userId) return
 
     try {
@@ -33,7 +23,19 @@ export function useNotifications(userId: string | undefined) {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [userId])
+
+  useEffect(() => {
+    if (!userId) return
+
+    // Initial fetch
+    fetchNotifications()
+
+    // Poll every 10 seconds for new notifications
+    const interval = setInterval(fetchNotifications, 10000)
+
+    return () => clearInterval(interval)
+  }, [userId, fetchNotifications])
 
   async function markAsRead(notificationId: string) {
     try {

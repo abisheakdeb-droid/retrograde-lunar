@@ -105,7 +105,7 @@ export function ExecutePayrollDialog() {
                 <div className="space-y-1">
                     <p className="text-[10px] font-bold uppercase text-amber-500">Warning: Fiscal Irreversibility</p>
                     <p className="text-[10px] text-muted-foreground">
-                        Executing this command will finalize all "Processing" slips for the selected month and mark them as "Paid". Ensure audit checks are complete.
+                        Executing this command will finalize all &quot;Processing&quot; slips for the selected month and mark them as &quot;Paid&quot;. Ensure audit checks are complete.
                     </p>
                 </div>
             </div>

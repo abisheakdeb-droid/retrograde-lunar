@@ -94,7 +94,7 @@ export function TaskDetailSheet({ task, open, onOpenChange }: TaskDetailSheetPro
                             <AlertCircle className="h-4 w-4" /> Briefing
                         </h4>
                         <div className="p-4 rounded-md bg-secondary/10 border border-primary/5 text-sm leading-relaxed text-muted-foreground min-h-[100px]">
-                            Task description content would go here. Currently using mock data which doesn't include long description fields.
+                            Task description content would go here. Currently using mock data which doesn&apos;t include long description fields.
                         </div>
                     </div>
                 </div>

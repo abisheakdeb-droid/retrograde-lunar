@@ -176,7 +176,7 @@ export default async function EmployeeProfilePage({ params }: ProfilePageProps) 
                                     </CardHeader>
                                     <CardContent>
                                         <div className="text-2xl font-bold">{employee.attendance[0]?.totalHours || '0h'}</div>
-                                        <p className="text-xs text-muted-foreground">Today's Log</p>
+                                        <p className="text-xs text-muted-foreground">Today&apos;s Log</p>
                                     </CardContent>
                                 </Card>
                             </div>
@@ -268,7 +268,7 @@ export default async function EmployeeProfilePage({ params }: ProfilePageProps) 
                                                     ))}
                                                 </div>
                                                 <div className="bg-muted p-3 rounded-md">
-                                                    <p className="text-sm italic">"{scorecard.feedback}"</p>
+                                                    <p className="text-sm italic">&quot;{scorecard.feedback}&quot;</p>
                                                 </div>
                                             </div>
                                         ))}
