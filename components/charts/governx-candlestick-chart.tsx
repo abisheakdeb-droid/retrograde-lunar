@@ -200,8 +200,8 @@ export function GovernXCandlestickChart({
             </div>
         </div>
 
-      <div style={{ height: height - 80 }}>
-        <ResponsiveContainer width="100%" height="100%">
+      <div style={{ height: height - 80, minHeight: 200, width: "100%" }}>
+        <ResponsiveContainer width="100%" height="100%" minWidth={100} minHeight={200}>
           <ComposedChart data={processingData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
             {/* Re-implemented Safe Glow Filter */}
             <defs>

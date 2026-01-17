@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${onest.variable} antialiased`}
+        className={`${onest.variable} antialiased overflow-x-hidden`}
         suppressHydrationWarning
       >
         <AuthProvider>

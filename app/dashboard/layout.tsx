@@ -20,7 +20,7 @@ export default async function DashboardLayout({
       <div className="hidden h-full md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 z-100">
         <Sidebar className="h-full" />
       </div>
-      <main className="md:pl-64 flex-1 relative z-0">
+      <main className="md:pl-64 flex-1 relative z-0 overflow-x-hidden max-w-full">
         {/* Top Header with Notifications */}
         <div className="sticky top-0 z-90 flex items-center justify-between p-4 border-b border-[#22252b] bg-[#111217] tactical-header">
           <div className="md:hidden flex items-center">

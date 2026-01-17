@@ -35,6 +35,8 @@ import { cn } from "@/lib/utils"
 // import { GovernXProductionChart } from "@/components/charts/governx-production-chart" (Removed)
 import { GovernXStackedBarChart } from "@/components/charts/governx-stacked-bar-chart";
 import { GovernXCandlestickChart } from "@/components/charts/governx-candlestick-chart";
+import { FactoryTicker } from "@/components/dashboard/factory-ticker";
+import { FactoryUnitCard } from "@/components/dashboard/factory-unit-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { DashboardClientWidgets } from "@/components/dashboard/dashboard-client-widgets"
@@ -57,7 +59,7 @@ export function ExecutiveDashboard({ data, role }: { data: any, role: string }) 
     const { stats, productionStats, factoryUnits } = data
 
     return (
-        <div className="space-y-8 animate-in fade-in zoom-in duration-300">
+        <div className="space-y-8 animate-in fade-in zoom-in duration-300 max-w-full overflow-x-hidden">
             <div className="flex items-center justify-between space-y-2">
                 <div>
                     <h2 className="text-3xl font-bold tracking-tight uppercase">
@@ -232,110 +234,13 @@ export function ExecutiveDashboard({ data, role }: { data: any, role: string }) 
                     </div>
                 </div>
 
-                <Tabs defaultValue={factoryUnits[0].id} className="space-y-4">
-                    <TabsList>
-                        {factoryUnits.map((unit: any) => (
-                            <TabsTrigger key={unit.id} value={unit.id} className="gap-2">
-                                {unit.type === 'Denim' && <Shirt className="w-4 h-4" />}
-                                {unit.type === 'Woven' && <Layers className="w-4 h-4" />}
-                                {unit.type === 'Washing' && <Droplets className="w-4 h-4" />}
-                                {unit.name}
-                            </TabsTrigger>
-                        ))}
-                    </TabsList>
-
-                    {factoryUnits.map((unit: any) => {
-                        const sampleHourlyData = unit.lines[0].hourlyData;
-                        const totalDailyTarget = unit.lines.reduce((acc: any, line: any) => acc + line.dailyTarget, 0);
-                        const totalDailyAchieved = unit.lines.reduce((acc: any, line: any) => acc + line.totalProduced, 0);
-
-                        return (
-                            <TabsContent key={unit.id} value={unit.id} className="space-y-4">
-                                <div className="grid gap-4 md:grid-cols-4">
-                                    <Card>
-                                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                            <CardTitle className="text-sm font-medium">Daily Output</CardTitle>
-                                            <Shirt className="h-4 w-4 text-muted-foreground" />
-                                        </CardHeader>
-                                        <CardContent>
-                                            <div className="text-2xl font-bold">{totalDailyAchieved.toLocaleString()} pcs</div>
-                                            <p className="text-xs text-muted-foreground">Target: {totalDailyTarget.toLocaleString()}</p>
-                                        </CardContent>
-                                    </Card>
-                                    <Card>
-                                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                            <CardTitle className="text-sm font-medium">Line Efficiency</CardTitle>
-                                            <TrendingUp className="h-4 w-4 text-green-500" />
-                                        </CardHeader>
-                                        <CardContent>
-                                            <div className="text-2xl font-bold">{unit.overallEfficiency}%</div>
-                                            <p className="text-xs text-muted-foreground">Manager: {unit.manager}</p>
-                                        </CardContent>
-                                    </Card>
-                                    <Card>
-                                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                            <CardTitle className="text-sm font-medium">Active Lines</CardTitle>
-                                            <Play className="h-4 w-4 text-blue-500" />
-                                        </CardHeader>
-                                        <CardContent>
-                                            <div className="text-2xl font-bold">{unit.lines.filter((l: any) => l.status === 'Running').length} / {unit.lines.length}</div>
-                                            <p className="text-xs text-muted-foreground">2 Customizing</p>
-                                        </CardContent>
-                                    </Card>
-                                    <Card>
-                                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                            <CardTitle className="text-sm font-medium">Avg DHU</CardTitle>
-                                            <AlertTriangle className="h-4 w-4 text-red-500" />
-                                        </CardHeader>
-                                        <CardContent>
-                                            <div className="text-2xl font-bold">1.8%</div>
-                                            <p className="text-xs text-muted-foreground">Quality Control Pass</p>
-                                        </CardContent>
-                                    </Card>
-                                </div>
-
-                                <div className="grid gap-4 md:grid-cols-7">
-                                    <div className="col-span-4">
-                                        <GovernXCandlestickChart 
-                                            data={productionCandleData} 
-                                            symbol="PROD"
-                                            title="HOURLY OUTPUT VOLATILITY"
-                                            currentPrice={198.00}
-                                            priceChange={-7.00}
-                                            priceChangePercent={-3.4}
-                                            height={350}
-                                            className="shadow-2xl shadow-green-900/5 bg-[#0E1218] border-[#2A2F38]"
-                                        />
-                                    </div>
-                                    <Card className="col-span-3">
-                                        <CardHeader>
-                                            <CardTitle>Efficiency Heatmap</CardTitle>
-                                            <CardDescription>Real-time line performance.</CardDescription>
-                                        </CardHeader>
-                                        <CardContent>
-                                            <div className="space-y-4">
-                                                {unit.lines.slice(0, 6).map((line: any) => (
-                                                    <div key={line.id} className="flex items-center justify-between">
-                                                        <div className="space-y-1">
-                                                            <p className="text-sm font-medium leading-none">{line.name}</p>
-                                                            <p className="text-xs text-muted-foreground">{line.buyer} • {line.style}</p>
-                                                        </div>
-                                                        <div className="text-right">
-                                                            <div className="text-sm font-bold">{line.dhu}% DHU</div>
-                                                            <Badge variant={line.dhu < 2 ? "default" : "destructive"} className="text-[10px] h-5">
-                                                                {line.dhu < 2 ? 'Excellent' : 'Needs Check'}
-                                                            </Badge>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                </div>
-                            </TabsContent>
-                        )
-                    })}
-                </Tabs>
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 w-full min-w-0">
+                    {factoryUnits.map((unit: any) => (
+                        <div key={unit.id} className="min-w-0 w-full">
+                            <FactoryUnitCard unit={unit} candleData={productionCandleData} />
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     )
