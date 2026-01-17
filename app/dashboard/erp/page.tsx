@@ -10,7 +10,7 @@ import { InventoryFilters } from "@/components/inventory/inventory-filters"
 import { InventoryTable } from "@/components/erp/inventory-table"
 import { TypingEffect } from "@/components/ui/typing-effect"
 
-import { GovernXCandlestickChart } from "@/components/charts/governx-candlestick-chart"
+import { GovernXProductionChart } from "@/components/charts/governx-production-chart"
 
 export default async function ERPPage(props: { searchParams: Promise<{ page?: string, q?: string }> }) {
     const searchParams = await props.searchParams;
@@ -19,15 +19,18 @@ export default async function ERPPage(props: { searchParams: Promise<{ page?: st
     const { data: inventory, total, totalPages } = await getInventory(page, 15, search);
     const stats = await getStats();
 
-    // Mock Data for ERP Charts (Candlestick)
-    const commodityData = [
-        { time: 'Feb', open: 180, high: 200, low: 170, close: 190 },
-        { time: 'Mar', open: 190, high: 210, low: 180, close: 205 },
-        { time: 'Apr', open: 205, high: 220, low: 195, close: 215 },
-        { time: 'May', open: 215, high: 230, low: 200, close: 210 }, // Down
-        { time: 'Jun', open: 210, high: 240, low: 205, close: 235 },
-        { time: 'Jul', open: 235, high: 250, low: 220, close: 245 },
-    ];
+    // Mock Data for Production vs Cost (Dense for "Needle" look)
+    // Generating 24 months of data to simulate the dense look in the image
+    const productionData = Array.from({ length: 24 }).map((_, i) => {
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const month = monthNames[i % 12];
+        const baseCost = 25000 + Math.random() * 20000;
+        return {
+            month: i % 2 === 0 ? month : '', // Show label every other month or let Recharts handle interval
+            production: baseCost * 0.8 + Math.random() * 5000,
+            cost: baseCost
+        };
+    });
 
     return (
         <div className="space-y-6">
@@ -50,11 +53,8 @@ export default async function ERPPage(props: { searchParams: Promise<{ page?: st
             
             <div className="grid gap-4 md:grid-cols-2">
                  <div className="md:col-span-2">
-                      <GovernXCandlestickChart 
-                          data={commodityData} 
-                          title="Raw Material Index (Cotton)" 
-                          currentPrice={245.00}
-                          change="+10.00 (4.2%)"
+                      <GovernXProductionChart 
+                          data={productionData} 
                       />
                  </div>
             </div>
