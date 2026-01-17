@@ -31,6 +31,7 @@ export function MessageBubble({ message, isMe, timestamp, attachments }: Message
                 {attachments.map(att => (
                     <div key={att.id} className="rounded-lg overflow-hidden border border-background/20 bg-background/10">
                         {att.type === 'image' ? (
+                            /* eslint-disable-next-line @next/next/no-img-element */
                             <img src={att.url} alt={att.name} className="max-w-full h-auto object-cover max-h-[200px]" />
                         ) : (
                             <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg">

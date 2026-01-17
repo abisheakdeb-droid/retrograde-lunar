@@ -172,6 +172,7 @@ export function MessengerChatArea({
               <div key={file.id} className="relative group shrink-0">
                 <div className="h-16 w-16 rounded-lg border bg-muted flex items-center justify-center overflow-hidden">
                   {file.type === 'image' ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
                     <img src={file.url} alt={file.name} className="h-full w-full object-cover" />
                   ) : (
                     <FileIcon className="h-8 w-8 text-muted-foreground" />
