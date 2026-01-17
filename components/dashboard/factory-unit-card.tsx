@@ -22,32 +22,33 @@ export function FactoryUnitCard({ unit, candleData }: { unit: any, candleData: a
     return (
         <Card className="bg-[#0E1218] border border-[#2A2F38] overflow-hidden shadow-2xl">
             {/* Compact Header */}
-            <div className="bg-[#151A21] px-4 py-3 flex items-center justify-between border-b border-[#2A2F38]">
-                <div className="flex items-center gap-2">
-                    {unit.type === 'Denim' && <Shirt className="w-4 h-4 text-blue-400" />}
-                    {unit.type === 'Woven' && <Layers className="w-4 h-4 text-amber-400" />}
-                    {unit.type === 'Washing' && <Droplets className="w-4 h-4 text-cyan-400" />}
-                    <h3 className="font-bold text-[#E8EBF0] tracking-tight uppercase text-sm">{unit.name}</h3>
+            {/* Compact Header - Responsive Wrapper */}
+            <div className="bg-[#151A21] px-4 py-3 flex flex-wrap gap-y-2 items-center justify-between border-b border-[#2A2F38]">
+                <div className="flex items-center gap-2 min-w-0">
+                    {unit.type === 'Denim' && <Shirt className="w-4 h-4 text-blue-400 shrink-0" />}
+                    {unit.type === 'Woven' && <Layers className="w-4 h-4 text-amber-400 shrink-0" />}
+                    {unit.type === 'Washing' && <Droplets className="w-4 h-4 text-cyan-400 shrink-0" />}
+                    <h3 className="font-bold text-[#E8EBF0] tracking-tight uppercase text-sm truncate">{unit.name}</h3>
                 </div>
-                <div className="flex items-center gap-3">
-                    <Badge variant="outline" className="text-[10px] h-5 border-[#2A2F38] text-muted-foreground font-mono">
+                <div className="flex items-center gap-3 shrink-0 ml-auto">
+                    <Badge variant="outline" className="text-[10px] h-5 border-[#2A2F38] text-muted-foreground font-mono whitespace-nowrap hidden sm:flex">
                         MGR: {unit.manager.split(' ').map((n:any) => n[0]).join('')}
                     </Badge>
                      {/* Status Dot */}
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 bg-[#0E1218] px-2 py-0.5 rounded-full border border-[#2A2F38]">
                         <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.5)]"></div>
-                        <span className="text-[10px] text-green-500 font-mono">LIVE</span>
+                        <span className="text-[10px] text-green-500 font-mono font-bold tracking-wider">LIVE</span>
                     </div>
                 </div>
             </div>
 
-            {/* KPI Strip - Horizontal Compact */}
-            <div className="grid grid-cols-4 divide-x divide-[#2A2F38] border-b border-[#2A2F38] bg-[#0E1218]">
+            {/* KPI Strip - Responsive Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-[#2A2F38] border-b border-[#2A2F38] bg-[#0E1218]">
                 <div className="p-3 text-center">
                     <div className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Output</div>
                     <div className="text-sm font-bold text-[#E8EBF0] font-mono">{totalDailyAchieved.toLocaleString()}</div>
                 </div>
-                <div className="p-3 text-center">
+                <div className="p-3 text-center border-l-0">
                     <div className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Efficiency</div>
                     <div className="text-sm font-bold text-[#7CFF6B] font-mono">{unit.overallEfficiency}%</div>
                 </div>
