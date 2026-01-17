@@ -34,6 +34,8 @@ interface GovernXStackedBarChartProps {
   className?: string;
 }
 
+import { useId } from "react";
+
 export function GovernXStackedBarChart({
   title,
   data,
@@ -47,8 +49,10 @@ export function GovernXStackedBarChart({
 }: GovernXStackedBarChartProps & { layout?: "horizontal" | "vertical"; type?: "stacked" | "grouped" }) {
   const isVertical = layout === "vertical";
   
-  // Helper to generate gradient ID
-  const getGradientId = (field: string) => `gradient-${field}`;
+  // Unique ID for this chart instance to prevent gradient collisions
+  const uniqueChartId = useId();
+  const getGradientId = (field: string) => `gradient-${field}-${uniqueChartId.replace(/:/g, '')}`;
+
   
   return (
     <div
