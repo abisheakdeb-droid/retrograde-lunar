@@ -84,9 +84,12 @@ const CandleShape = (props: any) => {
 
   const color = isUp ? ChartTheme.accentGreen : ChartTheme.accentRed;
   const wickColor = isUp ? "#9AFFA0" : "#FF8A8A";
+
+  // Safe usage of unique ID
+  const filterUrl = isUp && glowId ? `url(#${glowId})` : undefined;
   
   return (
-    <g>
+    <g filter={filterUrl}>
       {/* Wick */}
       <line
         x1={xCenter}
@@ -200,7 +203,16 @@ export function GovernXCandlestickChart({
       <div style={{ height: height - 80 }}>
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={processingData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-            {/* Removed Glow Filter Defs to prevent hydration crash */}
+            {/* Re-implemented Safe Glow Filter */}
+            <defs>
+              <filter id={glowId} x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="3.5" result="coloredBlur" />
+                <feMerge>
+                  <feMergeNode in="coloredBlur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
 
             <CartesianGrid
               strokeDasharray="4 4"
@@ -261,7 +273,7 @@ export function GovernXCandlestickChart({
             {/* The Candle implementation */}
             <Bar 
                 dataKey="range" 
-                shape={<CandleShape />} 
+                shape={<CandleShape glowId={glowId} />} 
                 isAnimationActive={false}
             />
             
