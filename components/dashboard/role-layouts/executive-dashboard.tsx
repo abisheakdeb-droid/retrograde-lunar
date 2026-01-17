@@ -239,8 +239,20 @@ export function ExecutiveDashboard({ data, role }: { data: any, role: string }) 
                                             layout="horizontal"
                                             type="grouped"
                                             stacks={[
-                                                { name: "Target", field: "target", color: "#2A2D35" },
-                                                { name: "Achieved", field: "achieved", color: "#3B82F6" }
+                                                { 
+                                                    name: "Target", 
+                                                    field: "target", 
+                                                    color: "#334155", // Dark slate equivalent
+                                                    radius: [2, 2, 2, 2]
+                                                },
+                                                { 
+                                                    name: "Achieved", 
+                                                    field: "achieved", 
+                                                    color: "#3B82F6",
+                                                    fillType: "gradient",
+                                                    gradientColors: ["#60A5FA", "#2563EB"], // Blue-400 to Blue-600
+                                                    radius: [4, 4, 0, 0]
+                                                }
                                             ]}
                                             height={300}
                                             className="border-0! bg-transparent!"

@@ -16,6 +16,12 @@ interface StackConfig {
   name: string;
   field: string;
   color: string;
+  fillType?: "solid" | "gradient";
+  gradientColors?: [string, string];
+  radius?: [number, number, number, number];
+  stroke?: string;
+  strokeWidth?: number;
+  stackId?: string;
 }
 
 interface GovernXStackedBarChartProps {
@@ -41,6 +47,9 @@ export function GovernXStackedBarChart({
 }: GovernXStackedBarChartProps & { layout?: "horizontal" | "vertical"; type?: "stacked" | "grouped" }) {
   const isVertical = layout === "vertical";
   
+  // Helper to generate gradient ID
+  const getGradientId = (field: string) => `gradient-${field}`;
+  
   return (
     <div
       className={`w-full rounded-xl border border-[${ChartTheme.grid}] bg-[${ChartTheme.card}] p-6 ${className}`}
@@ -65,6 +74,14 @@ export function GovernXStackedBarChart({
             barGap={type === 'grouped' ? 4 : 8}
             layout={layout}
           >
+             <defs>
+              {stacks.filter(s => s.fillType === 'gradient' && s.gradientColors).map((stack) => (
+                <linearGradient key={stack.field} id={getGradientId(stack.field)} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={stack.gradientColors![0]} stopOpacity={1} />
+                  <stop offset="100%" stopColor={stack.gradientColors![1]} stopOpacity={0.6} />
+                </linearGradient>
+              ))}
+            </defs>
             <CartesianGrid
               strokeDasharray="4 4"
               stroke={ChartTheme.grid}
@@ -122,7 +139,10 @@ export function GovernXStackedBarChart({
             {stacks.map((stack, index) => {
               // Radius logic
               let radius: [number, number, number, number] = [0, 0, 0, 0];
-              if (type === "stacked") {
+              
+              if (stack.radius) {
+                  radius = stack.radius; // Use custom override if provided
+              } else if (type === "stacked") {
                  // Convert to array index logic
                  if (index === stacks.length - 1) {
                     if (isVertical) radius = [0, 4, 4, 0]; // Top-right, Bottom-right
@@ -134,15 +154,19 @@ export function GovernXStackedBarChart({
                  else radius = [4, 4, 0, 0];
               }
 
+              const fill = stack.fillType === 'gradient' ? `url(#${getGradientId(stack.field)})` : stack.color;
+
               return (
                 <Bar
                   key={stack.field}
                   dataKey={stack.field}
-                  stackId={type === "stacked" ? "a" : undefined}
-                  fill={stack.color}
+                  stackId={stack.stackId || (type === "stacked" ? "a" : undefined)}
+                  fill={fill}
                   name={stack.name}
                   barSize={barWidth}
                   radius={radius}
+                  stroke={stack.stroke}
+                  strokeWidth={stack.strokeWidth}
                 />
               );
             })}
