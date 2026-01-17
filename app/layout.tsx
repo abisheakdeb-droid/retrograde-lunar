@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
 import { Onest } from "next/font/google"; // Updated to Onest
+import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "@/components/auth-provider";
+import { NeuralBackground } from "@/components/ui/neural-background";
+import { DemoRoleProvider } from "@/components/providers/demo-role-provider";
+import { IntercomSystem } from "@/components/intercom/intercom-system";
+import { NotificationProvider } from "@/components/providers/notification-provider";
 
 const onest = Onest({
   subsets: ["latin"],
