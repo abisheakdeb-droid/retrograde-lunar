@@ -43,37 +43,39 @@ const CandleShape = (props: any) => {
     width,
     height,
     payload, // This contains the actual data point (O, H, L, C)
+    glowId,  // Passed from parent
   } = props;
 
-  // Safety check
-  if (!payload) return null;
+  // Safety checks
+  if (!payload || typeof x !== 'number' || typeof y !== 'number' || typeof width !== 'number' || typeof height !== 'number') {
+      return null;
+  }
 
   const { open, close, high, low } = payload;
+  
+  // Validate data points
+  if (
+      typeof open !== 'number' || 
+      typeof close !== 'number' || 
+      typeof high !== 'number' || 
+      typeof low !== 'number'
+  ) {
+      return null;
+  }
+
   const isUp = close >= open;
 
   // Improve visuals for thin candles
-  const bodyWidth = width * 0.65;
+  const bodyWidth = Math.max(width * 0.65, 4); // Min width 4px
   const wickWidth = 2;
   const xCenter = x + width / 2;
 
-  // Calculate coordinates
-  // Recharts passes y and height based on the Bar's dataKey range [low, high]
-  // So y is the top (high value), and y + height is the bottom (low value)
-  
-  // We need to map price to pixels.
-  // The Bar spans from 'high' (y) to 'low' (y + height).
-  // Range = high - low.
-  // Pixels = height.
-  // Ratio = height / Range.
-  
   const range = high - low;
-  const ratio = range === 0 ? 0 : height / range;
+  // If flat line (high == low), avoid division issues
+  const ratio = range <= 0 ? 0 : height / range;
 
-  // Calculate pixel positions for Open and Close relative to Y (High)
-  // High is at 'y'.
-  // Open is 'y' + (high - open) * ratio
-  // Close is 'y' + (high - close) * ratio
-  
+  // Calculate pixel positions
+  // y is the 'top' visual coordinate (High value) in Recharts Bar default
   const yOpen = y + (high - open) * ratio;
   const yClose = y + (high - close) * ratio;
   
@@ -81,14 +83,14 @@ const CandleShape = (props: any) => {
   const bodyHeight = Math.max(Math.abs(yOpen - yClose), 2); // Min height 2px
 
   const color = isUp ? ChartTheme.accentGreen : ChartTheme.accentRed;
-  const wickColor = isUp ? "#9AFFA0" : "#FF8A8A"; // Lighter for wick per spec
+  const wickColor = isUp ? "#9AFFA0" : "#FF8A8A";
   
-  // Glow filter URL
-  const filterUrl = isUp ? "url(#glow-green)" : undefined;
+  // Use the scoped ID passed via props
+  const filterUrl = isUp && glowId ? `url(#${glowId})` : undefined;
 
   return (
     <g filter={filterUrl}>
-      {/* Wick (High to Low) */}
+      {/* Wick */}
       <line
         x1={xCenter}
         y1={y}
@@ -97,24 +99,26 @@ const CandleShape = (props: any) => {
         stroke={wickColor}
         strokeWidth={wickWidth}
       />
-      {/* Body (Open to Close) */}
+      {/* Body */}
       <rect
         x={xCenter - bodyWidth / 2}
         y={bodyTop}
         width={bodyWidth}
         height={bodyHeight}
         fill={color}
-        rx={3} // Rounded corners per spec
+        rx={3}
         ry={3}
       />
     </g>
   );
 };
 
+// ... component definition ...
+
 export function GovernXCandlestickChart({
   data,
   symbol = "NVDA",
-  title, // Added title
+  title,
   height = 400,
   className,
   currentPrice,
@@ -122,23 +126,39 @@ export function GovernXCandlestickChart({
   priceChangePercent,
 }: GovernXCandlestickChartProps) {
   
+  // Generate unique ID for this chart instance's glow filter
+  const chartId = useMemo(() => Math.random().toString(36).substr(2, 9), []);
+  const glowId = `glow-${chartId}`;
   // Calculate visual cues
-  const lastPrice = currentPrice ?? data[data.length - 1]?.close ?? 0;
-  const change = priceChange ?? (data.length > 1 ? data[data.length - 1].close - data[data.length - 2].close : 0);
-  const percent = priceChangePercent ?? (data.length > 1 ? (change / data[data.length - 2].close) * 100 : 0);
+  const lastPrice = currentPrice ?? (data?.length > 0 ? data[data.length - 1]?.close : 0) ?? 0;
+  const change = priceChange ?? (data?.length > 1 ? data[data.length - 1].close - data[data.length - 2].close : 0);
+  const percent = priceChangePercent ?? (data?.length > 1 ? (change / data[data.length - 2].close) * 100 : 0);
   const isPositive = change >= 0;
   
   // Prepare data for the Bar component: [low, high] tuple for range
   const processingData = useMemo(() => {
+    if (!data) return [];
     return data.map(d => ({
         ...d,
         range: [d.low, d.high] as [number, number]
     }));
   }, [data]);
 
+  if (!data || data.length === 0) {
+      return (
+          <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+              No Data Available
+          </div>
+      );
+  }
+
   const minLow = Math.min(...data.map((d) => d.low));
   const maxHigh = Math.max(...data.map((d) => d.high));
-  const domainPadding = (maxHigh - minLow) * 0.1;
+  // Provide safe fallback domain if min/max are weird
+  const safeMin = isFinite(minLow) ? minLow : 0;
+  const safeMax = isFinite(maxHigh) ? maxHigh : 100;
+  
+  const domainPadding = (safeMax - safeMin) * 0.1;
 
   return (
     <div
@@ -184,7 +204,7 @@ export function GovernXCandlestickChart({
           <ComposedChart data={processingData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
             {/* Definitions for Glow Filter */}
             <defs>
-              <filter id="glow-green" x="-50%" y="-50%" width="200%" height="200%">
+              <filter id={glowId} x="-50%" y="-50%" width="200%" height="200%">
                 <feGaussianBlur stdDeviation="3.5" result="coloredBlur" />
                 <feMerge>
                   <feMergeNode in="coloredBlur" />
@@ -211,7 +231,7 @@ export function GovernXCandlestickChart({
 
             <YAxis
               orientation="right"
-              domain={[minLow - domainPadding, maxHigh + domainPadding]}
+              domain={[safeMin - domainPadding, safeMax + domainPadding]}
               tick={{ fill: "#9AA1AC", fontSize: 11, fontFamily: "monospace" }}
               axisLine={false}
               tickLine={false}
@@ -248,12 +268,11 @@ export function GovernXCandlestickChart({
             {/* The Candle implementation using Bar with range [low, high] and custom shape */}
             <Bar 
                 dataKey="range" 
-                shape={<CandleShape />} 
+                shape={<CandleShape glowId={glowId} />} 
                 isAnimationActive={false}
             >
                 {/* 
-                  Note: Custom shape handles coloring, but we can technically put Cells here if needed.
-                  But the shape has all the logic.
+                  Note: Custom shape handles coloring
                 */}
             </Bar>
             
