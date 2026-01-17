@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 // import { ProductionCostChart } from "@/components/charts/production-cost-chart" (Removed)
 // import { HourlyOutputChart } from "@/components/charts/mis-charts" (Removed)
 import { GovernXProductionChart } from "@/components/charts/governx-production-chart"
-import { GovernXBarChart } from "@/components/charts/governx-bar-chart"
+import { GovernXStackedBarChart } from "@/components/charts/governx-stacked-bar-chart"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { DashboardClientWidgets } from "@/components/dashboard/dashboard-client-widgets"
@@ -233,14 +233,17 @@ export function ExecutiveDashboard({ data, role }: { data: any, role: string }) 
 
                                 <div className="grid gap-4 md:grid-cols-7">
                                     <div className="col-span-4">
-                                        <GovernXBarChart 
+                                        <GovernXStackedBarChart 
                                             data={sampleHourlyData} 
-                                            keys={['target', 'achieved']} 
                                             xAxisKey="hour"
-                                            stacked={false}
-                                            colors={['#2A2D35', '#3B82F6']} 
-                                            title="Hourly Production (Target vs Actual)"
+                                            layout="horizontal"
+                                            type="grouped"
+                                            stacks={[
+                                                { name: "Target", field: "target", color: "#2A2D35" },
+                                                { name: "Achieved", field: "achieved", color: "#3B82F6" }
+                                            ]}
                                             height={300}
+                                            className="border-0! bg-transparent!"
                                         />
                                     </div>
                                     <Card className="col-span-3">

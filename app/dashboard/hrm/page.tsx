@@ -13,7 +13,7 @@ import { AddEmployeeDialog } from "@/components/hrm/add-employee-dialog"
 import { ExportButton } from "@/components/export-button"
 import { HRMFilters } from "@/components/hrm/hrm-filters"
 
-import { GovernXBarChart } from "@/components/charts/governx-bar-chart"
+import { GovernXStackedBarChart } from "@/components/charts/governx-stacked-bar-chart"
 
 export default async function HRMPage(props: { searchParams: Promise<{ page?: string, q?: string }> }) {
     const searchParams = await props.searchParams;
@@ -57,13 +57,19 @@ export default async function HRMPage(props: { searchParams: Promise<{ page?: st
                 </Card>
                 <Card className="col-span-2">
                      <div className="p-2">
-                         <GovernXBarChart 
-                            title="Shift Efficiency & Attendance" 
+                         <GovernXStackedBarChart 
                             data={attendanceData} 
-                            keys={["present", "late", "absent"]}
-                            colors={["#99EC72", "#FFF478", "#FF3C46"]}
+                            xAxisKey="name"
+                            layout="horizontal"
+                            type="stacked" // Assuming stacked based on usage (efficiency usually adds up)
+                            stacks={[
+                                { name: "Present", field: "present", color: "#99EC72" },
+                                { name: "Late", field: "late", color: "#FFF478" },
+                                { name: "Absent", field: "absent", color: "#FF3C46" }
+                            ]}
                             height={180}
-                            className="border-0 shadow-none bg-transparent"
+                            className="border-0! shadow-none! bg-transparent!"
+                            barWidth={40}
                          />
                      </div>
                 </Card>

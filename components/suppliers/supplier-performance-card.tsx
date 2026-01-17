@@ -1,7 +1,7 @@
 "use client"
 
 import { TrendingUp } from "lucide-react"
-import { RadialBar, RadialBarChart, PolarAngleAxis } from "recharts"
+import { GovernXRadialGaugeChart } from "@/components/charts/governx-radial-gauge-chart"
 
 import {
   Card,
@@ -49,50 +49,25 @@ export function SupplierPerformanceCard({ name, category, score, speed, status }
         <CardTitle className="text-sm font-medium text-center uppercase tracking-wider">{name}</CardTitle>
         <CardDescription className="text-xs font-mono uppercase text-muted-foreground/70">{category}</CardDescription>
       </CardHeader>
-      <CardContent className="flex-1 pb-0">
-        <ChartContainer
-          config={chartConfig}
-          className="mx-auto aspect-square max-h-[150px]"
-        >
-          <RadialBarChart
-            data={chartData}
-            startAngle={90}
-            endAngle={score * 3.6 + 90}
-            innerRadius={50}
-            outerRadius={70}
-          >
-            <PolarAngleAxis
-              type="number"
-              domain={[0, 100]}
-              angleAxisId={0}
-              tick={false}
+      <CardContent className="flex-1 pb-0 flex items-center justify-center">
+        <div className="w-full max-w-[150px]">
+            <GovernXRadialGaugeChart
+                value={score}
+                max={100}
+                config={{
+                    color: color,
+                    background: 'rgba(255,255,255,0.05)',
+                    thickness: 10,
+                    startAngle: 225, // 180 + 45
+                    endAngle: -45
+                }}
+                centerLabel={{
+                    primary: `${score}%`,
+                    secondary: "Reliability"
+                }}
+                className="border-0! bg-transparent! p-0! min-h-0!"
             />
-            <RadialBar
-              background={{ fill: 'rgba(255,255,255,0.05)' }}
-              dataKey="value"
-              cornerRadius={5}
-              fill="var(--color-score)"
-            />
-            <text
-              x="50%"
-              y="50%"
-              textAnchor="middle"
-              dominantBaseline="middle"
-              className="fill-foreground text-2xl font-bold font-mono"
-            >
-              {score}%
-            </text>
-            <text
-              x="50%"
-              y="65%"
-              textAnchor="middle"
-              dominantBaseline="middle"
-              className="fill-muted-foreground/80 text-[9px] uppercase font-bold tracking-widest"
-            >
-              Reliability
-            </text>
-          </RadialBarChart>
-        </ChartContainer>
+        </div>
       </CardContent>
       <CardFooter className="flex-col gap-2 text-xs border-t border-primary/10 pt-3">
         <div className="flex items-center gap-1 font-medium leading-none font-mono uppercase">

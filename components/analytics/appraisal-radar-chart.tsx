@@ -1,6 +1,7 @@
 "use client"
 
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from "recharts"
+import { GovernXStackedBarChart } from "@/components/charts/governx-stacked-bar-chart"
+import { ChartTheme } from "@/components/charts/chart-theme"
 
 import {
   ChartConfig,
@@ -31,39 +32,20 @@ const chartConfig = {
 
 export function AppraisalRadarChart() {
   return (
-    <ChartContainer
-      config={chartConfig}
-      className="mx-auto aspect-square max-h-[350px]"
-    >
-      <RadarChart data={chartData}>
-        <defs>
-            <radialGradient id="appraisalFillScore" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
-                <stop offset="0%" stopColor="var(--color-primary)" stopOpacity={0.3}/>
-                <stop offset="100%" stopColor="var(--color-primary)" stopOpacity={0}/>
-            </radialGradient>
-        </defs>
-        <ChartTooltip cursor={false} content={<ChartTooltipContent className="tactical-card bg-popover/90 border-primary/50" />} />
-        <PolarAngleAxis dataKey="metric" tick={{ fill: 'hsl(var(--foreground))', fontSize: 13, fontWeight: 'bold' }} />
-        <PolarGrid className="stroke-primary/20" strokeWidth={1} />
-        <Radar
-          dataKey="score"
-          name="Current Score"
-          stroke="var(--color-primary)"
-          strokeWidth={3}
-          fill="url(#appraisalFillScore)"
-          fillOpacity={0.5}
-          className="drop-shadow-[0_0_10px_var(--color-primary)]"
+    <div className="w-full">
+        <GovernXStackedBarChart
+          data={chartData}
+          xAxisKey="metric"
+          layout="horizontal"
+          type="grouped"
+          stacks={[
+            { name: "Current Score", field: "score", color: ChartTheme.accentGreen },
+            { name: "Target", field: "target", color: ChartTheme.accentYellow }
+          ]}
+          height={350}
+          className="border-0! bg-transparent! p-0!"
+          barWidth={20}
         />
-        <Radar
-            dataKey="target"
-            name="Target"
-            stroke="var(--color-chart-2)" // Amber
-            strokeWidth={2}
-            strokeDasharray="4 4"
-            fill="transparent"
-            fillOpacity={0}
-        />
-      </RadarChart>
-    </ChartContainer>
+    </div>
   )
 }

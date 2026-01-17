@@ -4,8 +4,8 @@ import { TypingEffect } from "@/components/ui/typing-effect"
 import { db } from "@/lib/data/mock-db"
 import { Button } from "@/components/ui/button"
 import { RefreshCcw, Download } from "lucide-react"
-import { GovernXBarChart } from "@/components/charts/governx-bar-chart"
-import { GovernXRadialChart } from "@/components/charts/governx-radial-chart"
+import { GovernXStackedBarChart } from "@/components/charts/governx-stacked-bar-chart"
+import { GovernXRadialGaugeChart } from "@/components/charts/governx-radial-gauge-chart"
 
 export default async function AnalyticsPage() {
   const { kpis, activity } = await db.getAnalytics()
@@ -64,20 +64,37 @@ export default async function AnalyticsPage() {
 
       <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-3">
         <div className="lg:col-span-2">
-             <GovernXBarChart 
-                title="Production Ownership & Ratings" 
+             <GovernXStackedBarChart 
                 data={barData} 
-                keys={["buy", "hold", "sell"]}
-                colors={["#99EC72", "#FFF478", "#FF3C46"]}
+                xAxisKey="name"
+                layout="horizontal"
+                type="grouped" // buy/hold/sell usually grouped
+                stacks={[
+                    { name: "Buy", field: "buy", color: "#99EC72" },
+                    { name: "Hold", field: "hold", color: "#FFF478" },
+                    { name: "Sell", field: "sell", color: "#FF3C46" }
+                ]}
+                height={300}
+                barWidth={12}
              />
         </div>
         <div className="lg:col-span-1">
-            <GovernXRadialChart 
-                data={radialData}
-                centerValue="5,235"
-                centerLabel="Active Projects"
-                subtitle="69% Completion Rate"
+            <GovernXRadialGaugeChart 
                 title="Project Ownership"
+                value={69}
+                max={100}
+                config={{
+                    color: "#FFF478",
+                    background: "#2B2B2B",
+                    startAngle: 180,
+                    endAngle: 0
+                }}
+                centerLabel={{
+                    primary: "5,235",
+                    secondary: "Active Projects",
+                    tertiary: "69% Completion Rate"
+                }}
+                className="border-[#2A2D35]! bg-[#15181E]! shadow-lg h-[300px]"
             />
         </div>
       </div>

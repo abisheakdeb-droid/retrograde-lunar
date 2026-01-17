@@ -1,6 +1,6 @@
 "use client";
 
-import { GovernXLineChart } from "@/components/charts/governx-line-chart";
+import { GovernXDualAreaLineChart } from "@/components/charts/governx-dual-area-line-chart";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -62,12 +62,19 @@ export default function GovernXDemoPage() {
 
         {/* Chart Section */}
         <div className="h-[300px] w-full mt-4">
-             <GovernXLineChart 
+             <GovernXDualAreaLineChart 
                 data={data}
-                dataKeys={[
-                    { key: "value", color: "#FFF478", fill: true } 
+                series={[
+                    { 
+                        name: "Balance", 
+                        field: "value", 
+                        color: "#FFF478", 
+                        fillType: "gradient", 
+                        gradientColors: ["#FFF478", "transparent"] 
+                    }
                 ]}
-                className="w-full"
+                xAxisKey="time"
+                className="w-full border-0! bg-transparent! p-0!"
                 height={300}
              />
         </div>

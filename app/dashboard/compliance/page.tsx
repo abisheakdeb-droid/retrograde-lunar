@@ -5,8 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
 import { ShieldCheck, AlertTriangle, FileText, Activity, AlertOctagon, CheckCircle2 } from "lucide-react"
-import { Area, AreaChart, CartesianGrid, XAxis, Tooltip, ResponsiveContainer } from "recharts"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { GovernXDualAreaLineChart } from "@/components/charts/governx-dual-area-line-chart"
 import { ReportIncidentDialog } from "@/components/compliance/report-incident-dialog"
 
 const riskData = [
@@ -88,40 +87,23 @@ export default function CompliancePage() {
             <CardDescription>6-Month incident volume vs risk impact score</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-[300px] w-full">
-              <ChartContainer config={{ 
-                  riskScore: { label: "Risk Score", color: "hsl(var(--primary))" } 
-              }} className="h-full w-full">
-                <AreaChart data={riskData} margin={{ left: 12, right: 12 }}>
-                    <defs>
-                        <linearGradient id="colorRisk" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="var(--color-primary)" stopOpacity={0.3}/>
-                            <stop offset="95%" stopColor="var(--color-primary)" stopOpacity={0}/>
-                        </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
-                    <XAxis 
-                        dataKey="month" 
-                        stroke="#888888" 
-                        fontSize={12} 
-                        tickLine={false} 
-                        axisLine={false}
-                    />
-                    <Tooltip 
-                        content={<ChartTooltipContent className="tactical-card bg-popover/90 border-primary/50" />}
-                        cursor={{ stroke: 'var(--primary)', strokeWidth: 1, strokeDasharray: '4 4' }}
-                    />
-                    <Area 
-                        type="monotone" 
-                        dataKey="riskScore" 
-                        stroke="var(--color-primary)" 
-                        fillOpacity={1} 
-                        fill="url(#colorRisk)" 
-                        strokeWidth={2}
-                    />
-                </AreaChart>
-              </ChartContainer>
-            </div>
+             <GovernXDualAreaLineChart
+                data={riskData}
+                series={[
+                  {
+                    name: "Risk Score",
+                    field: "riskScore",
+                    color: "hsl(var(--primary))",
+                    fillType: "gradient",
+                    gradientColors: ["hsl(var(--primary))", "transparent"],
+                    yAxisId: "left"
+                  }
+                ]}
+                xAxisKey="month"
+                height={300}
+                className="border-0! bg-transparent! p-0!"
+                yLeft={{ domain: [0, 40] }}
+             />
           </CardContent>
         </Card>
 
