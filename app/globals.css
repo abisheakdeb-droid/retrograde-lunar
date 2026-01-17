@@ -4,43 +4,45 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-background: #0b0c0e; /* Prom Ex Deep Dark */
-  --color-foreground: #d0d0d0; /* Muted White */
+  --color-background: #0A0D11; /* GovernX Black */
+  --color-foreground: #FFFFFF; /* Pure White */
   
-  --color-card: #111217; /* Panel Background */
-  --color-card-foreground: #d0d0d0;
+  --color-card: #15181E; /* Slightly lighter than background */
+  --color-card-foreground: #FFFFFF;
   
-  --color-popover: #111217;
-  --color-popover-foreground: #d0d0d0;
+  --color-popover: #15181E;
+  --color-popover-foreground: #FFFFFF;
   
-  --color-primary: #5794f2; /* Grafana Blue */
-  --color-primary-foreground: #ffffff;
+  --color-primary: #99EC72; /* GovernX Neon Green */
+  --color-primary-foreground: #000000;
   
-  --color-secondary: #22252b; /* Panel Header/Border */
-  --color-secondary-foreground: #d0d0d0;
+  --color-secondary: #22252B;
+  --color-secondary-foreground: #FFFFFF;
   
-  --color-muted: #22252b;
-  --color-muted-foreground: #7b808a; /* Grafana Grey Text */
+  --color-muted: #1F2228;
+  --color-muted-foreground: #8B909A;
   
-  --color-accent: #22252b;
-  --color-accent-foreground: #ffffff;
+  --color-accent: #FFF478; /* GovernX Yellow */
+  --color-accent-foreground: #000000;
   
-  --color-destructive: #f2495c; /* Grafana Red */
-  --color-destructive-foreground: #ffffff;
+  --color-destructive: #FF3C46; /* GovernX Red */
+  --color-destructive-foreground: #FFFFFF;
   
-  --color-border: #22252b; /* Subtle Borders */
-  --color-input: #181b1f; /* Input Fields */
-  --color-ring: #5794f2;
+  --color-border: #2A2D35;
+  --color-input: #2A2D35;
+  --color-ring: #99EC72;
   
-  --color-chart-1: #5794f2; /* Blue */
-  --color-chart-2: #73bf69; /* Green */
-  --color-chart-3: #f2495c; /* Red */
-  --color-chart-4: #ff9830; /* Orange */
-  --color-chart-5: #b877d9; /* Purple */
-
+  --color-chart-1: #99EC72; /* Green */
+  --color-chart-2: #FFF478; /* Yellow */
+  --color-chart-3: #FF3C46; /* Red */
+  --color-chart-4: #5794f2; /* Blue (Legacy/Secondary) */
+  --color-chart-5: #ffffff;
+  
   --radius-lg: 1rem;
   --radius-md: 0.75rem;
   --radius-sm: 0.5rem;
+  
+  --font-sans: 'Onest', system-ui, -apple-system, sans-serif;
 }
 
 @layer base {
@@ -51,102 +53,43 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-sans);
   }
 }
 
 @layer utilities {
-  /* Tactical/Prom Ex Utilities */
   .tactical-panel {
     background-color: var(--color-card);
     border: 1px solid var(--color-border);
-    box-shadow: none; /* Flat look */
+    box-shadow: 0 4px 20px -8px rgba(0, 0, 0, 0.5); 
   }
 
   .tactical-header {
-    background-color: #181b1f; /* Slightly lighter header */
+    background-color: #111318;
     border-bottom: 1px solid var(--color-border);
     font-size: 0.875rem;
-    font-weight: 500;
-    color: #e0e0e0;
+    font-weight: 600;
+    color: #FFFFFF;
   }
   
-  /* Grid pattern for dashboard background */
-  .dashboard-grid {
-    background-image: linear-gradient(to right, #22252b 1px, transparent 1px),
-                      linear-gradient(to bottom, #22252b 1px, transparent 1px);
-    background-size: 40px 40px;
-    background-color: #0b0c0e; 
-    /* Only apply widely if desired, or use on specific containers */
+  /* GovernX Style Gradients */
+  .bg-governx-gradient {
+    background: linear-gradient(135deg, rgba(153,236,114,0.1) 0%, rgba(10,13,17,0) 100%);
   }
 
-  .font-mono-numbers {
-    font-feature-settings: "tnum";
-    font-variant-numeric: tabular-nums;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  }
-
-  .neon-text-green {
-    color: #73bf69;
-    text-shadow: 0 0 5px rgba(115, 191, 105, 0.4);
-  }
-  
-  .neon-text-blue {
-    color: #5794f2;
-    text-shadow: 0 0 5px rgba(87, 148, 242, 0.4);
-  }
-  
-  .neon-text-red {
-    color: #f2495c;
-    text-shadow: 0 0 5px rgba(242, 73, 92, 0.4);
-  }
-
-  /* Custom Scrollbar for Panel Content */
+  /* Custom Scrollbar */
   .panel-scroll::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
   .panel-scroll::-webkit-scrollbar-track {
-    background: #0b0c0e;
-  }
-  .panel-scroll::-webkit-scrollbar-thumb {
-    background: #22252b;
-    border-radius: 2px;
-  }
-  .panel-scroll::-webkit-scrollbar-thumb:hover {
-    background: #333;
-  }
-
-  /* Isolated Intercom Scrollbar */
-  .intercom-scroll {
-    overflow-y: overlay; /* WebKit compatible overlay */
-    scrollbar-gutter: stable all; /* Modern standard - but we want no gap, so maybe 'auto' or we rely on overlay */
-    /* To truly remove the gap, we rely on overflow: overlay or 0-width track */
-  }
-
-  /* Fallback for standard auto if overlay not supported, 
-     but we want to force the visual to not reserve space if possible */
-  @supports not (overflow-y: overlay) {
-    .intercom-scroll {
-      overflow-y: auto;
-    }
-  }
-
-  .intercom-scroll::-webkit-scrollbar {
-    width: 6px; /* Slightly wider for usability, but overlaid */
     background: transparent;
   }
-  .intercom-scroll::-webkit-scrollbar-track {
-    background: transparent; 
+  .panel-scroll::-webkit-scrollbar-thumb {
+    background: #2A2D35;
+    border-radius: 9999px;
   }
-  .intercom-scroll::-webkit-scrollbar-thumb {
-    background: rgba(34, 37, 43, 0.5); /* Semi-transparent handle */
-    border-radius: 10px;
-    border: 1px solid transparent; /* Padding around thumb */
-    background-clip: content-box;
-  }
-  .intercom-scroll::-webkit-scrollbar-thumb:hover {
-    background: rgba(34, 37, 43, 0.8);
-    border: 0;
+  .panel-scroll::-webkit-scrollbar-thumb:hover {
+    background: #3E424B;
   }
 }

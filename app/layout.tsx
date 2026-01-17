@@ -1,25 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { Toaster } from "@/components/ui/sonner";
-import { AuthProvider } from "@/components/auth-provider";
+import { Onest } from "next/font/google"; // Updated to Onest
 
-
-import { NeuralBackground } from "@/components/ui/neural-background";
-import { DemoRoleProvider } from "@/components/providers/demo-role-provider";
-import { IntercomSystem } from "@/components/intercom/intercom-system";
-import { NotificationProvider } from "@/components/providers/notification-provider";
-
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const onest = Onest({
   subsets: ["latin"],
+  variable: "--font-sans",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Ha-Meem Group | Enterprise Portal",
@@ -34,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${onest.variable} antialiased`}
         suppressHydrationWarning
       >
         <AuthProvider>
