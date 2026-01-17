@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Users, AlertTriangle, TrendingUp, Shirt, Layers, Droplets, Activity, ArrowUpRight, ArrowDownRight } from "lucide-react"
@@ -7,16 +8,39 @@ import { GovernXCandlestickChart } from "@/components/charts/governx-candlestick
 import { FactoryTicker } from "@/components/dashboard/factory-ticker"
 
 export function FactoryUnitCard({ unit, candleData }: { unit: any, candleData: any[] }) {
+    // Live Pulse Logic
+    const [liveStats, setLiveStats] = useState({
+        efficiency: unit.overallEfficiency,
+        output: unit.lines.reduce((acc: any, line: any) => acc + line.totalProduced, 0),
+        activeLines: unit.lines.filter((l: any) => l.status === 'Running').length
+    });
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setLiveStats(prev => ({
+                efficiency: Math.min(100, Math.max(0, prev.efficiency + (Math.random() - 0.5) * 2)).toFixed(1),
+                output: Math.floor(prev.output + (Math.random() > 0.3 ? Math.random() * 5 : 0)), // Mostly goes up
+                activeLines: prev.activeLines // Keep stable for now
+            }));
+        }, 2500);
+        return () => clearInterval(interval);
+    }, []);
+
     const totalDailyTarget = unit.lines.reduce((acc: any, line: any) => acc + line.dailyTarget, 0);
-    const totalDailyAchieved = unit.lines.reduce((acc: any, line: any) => acc + line.totalProduced, 0);
+
+    // Calculate Efficiency per Line
+    const linesWithEfficiency = unit.lines.map((line: any) => {
+        const eff = line.dailyTarget > 0 ? (line.totalProduced / line.dailyTarget) * 100 : 0;
+        return { ...line, efficiency: eff.toFixed(0) };
+    });
 
     // Generate Unit-Specific Ticker Items
-    const tickerItems = unit.lines.map((line: any, i: number) => ({
+    const tickerItems = linesWithEfficiency.map((line: any, i: number) => ({
         id: line.id,
         text: `LINE ${line.name.split(' ')[1]} :: ${line.status === 'Running' ? 'TARGET_ON_TRACK' : 'MAINTENANCE_REQ'}`,
         value: `${line.efficiency}%`,
-        trend: line.efficiency > 60 ? 'up' : 'down',
-        type: line.efficiency > 60 ? 'success' : 'warning'
+        trend: Number(line.efficiency) > 80 ? 'up' : 'down',
+        type: line.status === 'Running' ? 'success' : 'warning'
     }))
 
     return (
@@ -46,15 +70,15 @@ export function FactoryUnitCard({ unit, candleData }: { unit: any, candleData: a
             <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-[#2A2F38] border-b border-[#2A2F38] bg-[#0E1218]">
                 <div className="p-3 text-center">
                     <div className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Output</div>
-                    <div className="text-sm font-bold text-[#E8EBF0] font-mono">{totalDailyAchieved.toLocaleString()}</div>
+                    <div className="text-sm font-bold text-[#E8EBF0] font-mono transition-all duration-500">{Number(liveStats.output).toLocaleString()}</div>
                 </div>
                 <div className="p-3 text-center border-l-0">
                     <div className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Efficiency</div>
-                    <div className="text-sm font-bold text-[#7CFF6B] font-mono">{unit.overallEfficiency}%</div>
+                    <div className="text-sm font-bold text-[#7CFF6B] font-mono transition-all duration-500">{liveStats.efficiency}%</div>
                 </div>
                  <div className="p-3 text-center">
                     <div className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Active</div>
-                    <div className="text-sm font-bold text-blue-400 font-mono">{unit.lines.filter((l: any) => l.status === 'Running').length}/{unit.lines.length}</div>
+                    <div className="text-sm font-bold text-blue-400 font-mono">{liveStats.activeLines}/{unit.lines.length}</div>
                 </div>
                  <div className="p-3 text-center">
                     <div className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">DHU</div>
@@ -77,7 +101,10 @@ export function FactoryUnitCard({ unit, candleData }: { unit: any, candleData: a
                     {/* Mini List / Stats */}
                     <div className="p-4 space-y-3 bg-[#151A21]/20">
                         <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">TOP PERFORMERS</div>
-                        {unit.lines.slice(0, 3).map((line: any, idx: number) => (
+                        {linesWithEfficiency
+                            .sort((a: any, b: any) => Number(b.efficiency) - Number(a.efficiency))
+                            .slice(0, 3)
+                            .map((line: any, idx: number) => (
                              <div key={idx} className="flex items-center justify-between text-xs">
                                 <span className="font-mono text-[#9AA1AC]">{line.name}</span>
                                 <Badge variant="outline" className="h-4 text-[9px] border-[#7CFF6B]/20 text-[#7CFF6B]">
@@ -94,6 +121,32 @@ export function FactoryUnitCard({ unit, candleData }: { unit: any, candleData: a
                     </div>
                 </div>
                 
+                {/* Quick Actions Control Panel */}
+                <div className="flex items-center justify-between px-3 py-2 bg-[#0A0C10] border-t border-[#2A2F38]">
+                    <div className="flex gap-2">
+                         <button 
+                            className="bg-[#151A21] hover:bg-[#2A2F38] text-[10px] text-[#E8EBF0] px-2 py-1 rounded border border-[#2A2F38] flex items-center gap-1 transition-colors"
+                            onClick={() => alert(`Broadcasting Alert for ${unit.name}...`)}
+                         >
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#FF5B5B]"></span>
+                            Broadcast
+                         </button>
+                         <button 
+                            className="bg-[#151A21] hover:bg-[#2A2F38] text-[10px] text-[#E8EBF0] px-2 py-1 rounded border border-[#2A2F38] flex items-center gap-1 transition-colors"
+                            onClick={() => {
+                                setLiveStats(prev => ({ ...prev, activeLines: 0 }));
+                                setTimeout(() => setLiveStats(prev => ({ ...prev, activeLines: unit.lines.length })), 1000);
+                            }}
+                         >
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#7CFF6B]"></span>
+                            Reset
+                         </button>
+                    </div>
+                    <div className="text-[9px] text-muted-foreground font-mono">
+                        SYS.V.2.4
+                    </div>
+                </div>
+
                 {/* Static Ticker List (Visualized Individually) */}
                 <div className="border-t border-[#2A2F38] divide-y divide-[#2A2F38] bg-[#0A0C10]">
                     {tickerItems.map((item: any, idx: number) => (
