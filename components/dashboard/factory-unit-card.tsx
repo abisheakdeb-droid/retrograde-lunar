@@ -30,8 +30,8 @@ export function FactoryUnitCard({ unit, candleData }: { unit: FactoryUnit, candl
     // Live Pulse Logic
     const [liveStats, setLiveStats] = useState({
         efficiency: unit.overallEfficiency,
-        output: unit.lines.reduce((acc: number, line: FactoryUnitLine) => acc + line.totalProduced, 0),
-        activeLines: unit.lines.filter((l: FactoryUnitLine) => l.status === 'Running').length
+        output: unit?.lines?.reduce((acc: number, line: FactoryUnitLine) => acc + line.totalProduced, 0) || 0,
+        activeLines: unit?.lines?.filter((l: FactoryUnitLine) => l.status === 'Running').length || 0
     });
 
     useEffect(() => {
@@ -44,6 +44,8 @@ export function FactoryUnitCard({ unit, candleData }: { unit: FactoryUnit, candl
         }, 2500);
         return () => clearInterval(interval);
     }, []);
+
+    if (!unit || !unit.lines) return <div className="p-4 text-red-500">Error: Factory Unit Data Unavailable</div>;
 
     const totalDailyTarget = unit.lines.reduce((acc: number, line: FactoryUnitLine) => acc + line.dailyTarget, 0);
 

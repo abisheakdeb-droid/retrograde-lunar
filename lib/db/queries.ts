@@ -260,7 +260,7 @@ export async function getFactoryPerformance() {
      const data = await db.select().from(factoryUnits);
      return data.map(u => ({
          ...u,
-         lines: u.lines as any[] // Cast JSONB back to array
+         lines: (u.lines as any[]) || [] // Cast JSONB back to array, ensure not null
      }));
 }
 
