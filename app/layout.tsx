@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/components/auth-provider";
-
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { NeuralBackground } from "@/components/ui/neural-background";
 import { DemoRoleProvider } from "@/components/providers/demo-role-provider";
@@ -48,6 +48,7 @@ export default function RootLayout({
              </NotificationProvider>
           </DemoRoleProvider>
         </AuthProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
