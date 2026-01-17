@@ -127,18 +127,14 @@ export function ExecutiveDashboard({ data, role }: { data: any, role: string }) 
                             { 
                                 name: "Production Units", 
                                 field: "production", 
-                                color: "#FFF478",
-                                fillType: "gradient",
-                                gradientColors: ["#FFF478", "#FBBF24"], // Yellow-400 equivalent
-                                radius: [4, 4, 0, 0]
+                                color: "#FFE066", // Solid Yellow (accentYellow)
+                                radius: [2, 2, 0, 0]
                             },
                             { 
                                 name: "Cost (USD)", 
                                 field: "cost", 
-                                color: "#99EC72",
-                                fillType: "gradient",
-                                gradientColors: ["#99EC72", "#4ADE80"], // Green-400 equivalent
-                                radius: [4, 4, 0, 0]
+                                color: "#7CFF6B", // Solid Green (accentGreen)
+                                radius: [2, 2, 0, 0]
                             }
                         ]}
                         className="border-0! bg-transparent!"
@@ -269,16 +265,14 @@ export function ExecutiveDashboard({ data, role }: { data: any, role: string }) 
                                                 { 
                                                     name: "Target", 
                                                     field: "target", 
-                                                    color: "#334155", // Dark slate equivalent
+                                                    color: "#2A2F38", // Grid color for subtle background look
                                                     radius: [2, 2, 2, 2]
                                                 },
                                                 { 
                                                     name: "Achieved", 
                                                     field: "achieved", 
-                                                    color: "#3B82F6",
-                                                    fillType: "gradient",
-                                                    gradientColors: ["#60A5FA", "#2563EB"], // Blue-400 to Blue-600
-                                                    radius: [4, 4, 0, 0]
+                                                    color: "#3B82F6", // Keeping Neon Blue but solid
+                                                    radius: [2, 2, 0, 0]
                                                 }
                                             ]}
                                             height={300}

@@ -1,14 +1,14 @@
 export const ChartTheme = {
-  background: "#0E1218",
-  card: "#151A21",
-  textPrimary: "#E5E7EB",
-  textSecondary: "#8B909A",
+  background: "#0E1218", // Dark Trader Pro Bg
+  card: "#151A21",       // Panel
+  textPrimary: "#E8EBF0",
+  textSecondary: "#9AA1AC",
   grid: "#2A2F38",
-  accentGreen: "#7CFF6B",
-  accentRed: "#FF5B5B",
+  accentGreen: "#7CFF6B", // "Up" Candle
+  accentRed: "#FF5B5B",   // "Down" Candle
   accentYellow: "#FFE066",
-  positiveFill: ["#1C3B2A", "#2FFF9A"], // Gradient start/end
-  negativeFill: ["#3B1C1C", "#FF4D4D"], // Gradient start/end
+  positiveFill: ["#7CFF6B", "#7CFF6B"], // Solid for now (gradients removed per request)
+  negativeFill: ["#FF5B5B", "#FF5B5B"],
 } as const;
 
 export const ChartLayout = {

@@ -65,18 +65,14 @@ export default async function ERPPage(props: { searchParams: Promise<{ page?: st
                               { 
                                   name: "Production Units", 
                                   field: "production", 
-                                  color: "#FFF478",
-                                  fillType: "gradient",
-                                  gradientColors: ["#FFF478", "#FBBF24"],
-                                  radius: [4, 4, 0, 0]
+                                  color: "#FFE066", // Solid Yellow
+                                  radius: [2, 2, 0, 0]
                               },
                               { 
                                   name: "Cost (USD)", 
                                   field: "cost", 
-                                  color: "#99EC72",
-                                  fillType: "gradient",
-                                  gradientColors: ["#99EC72", "#4ADE80"],
-                                  radius: [4, 4, 0, 0]
+                                  color: "#7CFF6B", // Solid Green
+                                  radius: [2, 2, 0, 0]
                               }
                           ]}
                           className="border-0! bg-transparent!"

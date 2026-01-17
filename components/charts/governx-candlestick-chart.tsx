@@ -1,18 +1,20 @@
 "use client";
 
+import { useMemo } from "react";
 import {
   ResponsiveContainer,
-  BarChart,
+  ComposedChart,
   Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   Cell,
+  ReferenceLine,
 } from "recharts";
 import { ChartTheme, ChartLayout } from "./chart-theme";
 
-interface OHLCData {
+interface CandleData {
   date: string;
   open: number;
   high: number;
@@ -22,182 +24,256 @@ interface OHLCData {
 }
 
 interface GovernXCandlestickChartProps {
+  data: CandleData[];
+  symbol?: string;
   title?: string;
-  data: OHLCData[];
   height?: number;
   className?: string;
+  currentPrice?: number;
+  priceChange?: number;
+  priceChangePercent?: number;
 }
 
-const CandlestickShape = (props: any) => {
-  const { x, y, width, height, payload } = props;
+// Custom Candle Shape
+const CandleShape = (props: any) => {
+  const {
+    fill,
+    x,
+    y,
+    width,
+    height,
+    payload, // This contains the actual data point (O, H, L, C)
+  } = props;
+
+  // Safety check
+  if (!payload) return null;
+
   const { open, close, high, low } = payload;
-  const isUp = close > open;
-  const color = isUp ? ChartTheme.accentGreen : ChartTheme.accentRed;
+  const isUp = close >= open;
 
-  // Recharts passes 'y' as the top of the bar (min(open, close) in visual coords)
-  // But we need to use the scale to calculate precise positions if possible.
-  // Actually, standard Recharts Bar can't get the scale easily in the shape.
-  // WE HAVE TO PREPARE THE DATA.
-  
-  // Alternative: Use the passed props 'y' and 'height' if we map keys correctly.
-  // But we have 4 values.
-  
-  // Better approach: We passed the whole payload. We interact with the chart instance? No.
-  // Standard workaround:
-  // Use a ComposedChart with ErrorBar?
-  // Or just draw everything manually based on the passed `y` ONLY if we mapped the [min, max] range correctly.
-  
-  // Let's rely on Recharts to scale ONE value (e.g. High) and then we need the scale for others?
-  // Actually, Custom Shape receives ALL props. But it needs the *scale function* to convert values to pixels.
-  // Recharts doesn't pass the scale easily to CustomShape unless we wrap it.
+  // Improve visuals for thin candles
+  const bodyWidth = width * 0.65;
+  const wickWidth = 2;
+  const xCenter = x + width / 2;
 
-  // SIMPLER HACK:
-  // Data prep: Draw a Bar from Low to High (invisible-ish or background wicks?).
-  // Actually, commonly people use `[low, high]` range bar.
-  // Bar `dataKey` can be an array `[min, max]`.
+  // Calculate coordinates
+  // Recharts passes y and height based on the Bar's dataKey range [low, high]
+  // So y is the top (high value), and y + height is the bottom (low value)
   
-  // Let's specify `dataKey={[low, high]}` for the bar.
-  // Then the `y` and `height` props will correspond to the range from low to high!
-  // Then we calculate where Open and Close fall relative to that range.
+  // We need to map price to pixels.
+  // The Bar spans from 'high' (y) to 'low' (y + height).
+  // Range = high - low.
+  // Pixels = height.
+  // Ratio = height / Range.
   
-  const yBottom = y + height; // This is the 'low' pixel (usually larger value in pixel coords)
-  const yTop = y; // This is the 'high' pixel
-  
-  // We need to know the ratio of (close - low) / (high - low)
   const range = high - low;
-  const openRatio = (open - low) / range;
-  const closeRatio = (close - low) / range;
+  const ratio = range === 0 ? 0 : height / range;
+
+  // Calculate pixel positions for Open and Close relative to Y (High)
+  // High is at 'y'.
+  // Open is 'y' + (high - open) * ratio
+  // Close is 'y' + (high - close) * ratio
   
-  const yOpen = yBottom - (height * openRatio);
-  const yClose = yBottom - (height * closeRatio);
+  const yOpen = y + (high - open) * ratio;
+  const yClose = y + (high - close) * ratio;
   
   const bodyTop = Math.min(yOpen, yClose);
-  const bodyHeight = Math.max(Math.abs(yOpen - yClose), 2); // Min 2px
+  const bodyHeight = Math.max(Math.abs(yOpen - yClose), 2); // Min height 2px
+
+  const color = isUp ? ChartTheme.accentGreen : ChartTheme.accentRed;
+  const wickColor = isUp ? "#9AFFA0" : "#FF8A8A"; // Lighter for wick per spec
   
-  // Wick is drawn from yTop to yBottom (Low to High), centered at x + width/2
-  const center = x + width / 2;
-  const wickWidth = 1;
+  // Glow filter URL
+  const filterUrl = isUp ? "url(#glow-green)" : undefined;
 
   return (
-    <g>
-      {/* Wick */}
+    <g filter={filterUrl}>
+      {/* Wick (High to Low) */}
       <line
-        x1={center}
-        y1={yTop}
-        x2={center}
-        y2={yBottom}
-        stroke={color}
+        x1={xCenter}
+        y1={y}
+        x2={xCenter}
+        y2={y + height}
+        stroke={wickColor}
         strokeWidth={wickWidth}
       />
-      {/* Body */}
+      {/* Body (Open to Close) */}
       <rect
-        x={x}
+        x={xCenter - bodyWidth / 2}
         y={bodyTop}
-        width={width}
+        width={bodyWidth}
         height={bodyHeight}
         fill={color}
-        stroke="none"
+        rx={3} // Rounded corners per spec
+        ry={3}
       />
     </g>
   );
 };
 
 export function GovernXCandlestickChart({
-  title,
   data,
-  height = ChartLayout.height.md,
+  symbol = "NVDA",
+  title, // Added title
+  height = 400,
   className,
+  currentPrice,
+  priceChange,
+  priceChangePercent,
 }: GovernXCandlestickChartProps) {
-  // Prepare data for the Range Bar: [low, high]
-  const processedData = data.map((d) => ({
-    ...d,
-    range: [d.low, d.high] as [number, number],
-  }));
+  
+  // Calculate visual cues
+  const lastPrice = currentPrice ?? data[data.length - 1]?.close ?? 0;
+  const change = priceChange ?? (data.length > 1 ? data[data.length - 1].close - data[data.length - 2].close : 0);
+  const percent = priceChangePercent ?? (data.length > 1 ? (change / data[data.length - 2].close) * 100 : 0);
+  const isPositive = change >= 0;
+  
+  // Prepare data for the Bar component: [low, high] tuple for range
+  const processingData = useMemo(() => {
+    return data.map(d => ({
+        ...d,
+        range: [d.low, d.high] as [number, number]
+    }));
+  }, [data]);
+
+  const minLow = Math.min(...data.map((d) => d.low));
+  const maxHigh = Math.max(...data.map((d) => d.high));
+  const domainPadding = (maxHigh - minLow) * 0.1;
 
   return (
     <div
-      className={`w-full rounded-xl border border-[${ChartTheme.grid}] bg-[${ChartTheme.card}] p-6 ${className}`}
+      className={`relative w-full rounded-[18px] border border-[${ChartTheme.grid}] bg-[${ChartTheme.background}] p-6 ${className}`}
       style={{
-        background: ChartTheme.card,
+        background: ChartTheme.background,
         borderColor: ChartTheme.grid,
       }}
     >
-      {title && (
-        <div className="mb-6 flex items-center justify-between">
-            <h3
-            className="text-lg font-medium"
-            style={{ color: ChartTheme.textPrimary }}
-            >
-            {title}
-            </h3>
-            {/* Simple controls simulation */}
+        {/* Header Overlay */}
+        <div className="flex items-center justify-between mb-4">
+            <div>
+                 <h3 className="text-sm font-bold text-muted-foreground tracking-widest">{title || `${symbol} CANDLESTICK`}</h3>
+                 <div className="flex items-baseline gap-3 mt-1">
+                     <span className="text-3xl font-mono text-[#E8EBF0] font-medium">
+                         {lastPrice.toFixed(2)}
+                     </span>
+                     <span 
+                        className={`px-2 py-1 rounded-lg text-xs font-bold font-mono flex items-center gap-1`}
+                        style={{
+                            background: isPositive ? "#1F3A2A" : "#3B1C1C",
+                            color: isPositive ? ChartTheme.accentGreen : ChartTheme.accentRed
+                        }}
+                     >
+                         {change > 0 ? "+" : ""}{change.toFixed(2)} ({percent.toFixed(2)}%)
+                     </span>
+                 </div>
+            </div>
+            
+            {/* Actions */}
             <div className="flex gap-2">
-                 <div className="h-3 w-3 rounded-full bg-[#7CFF6B] opacity-50"></div>
-                 <div className="h-3 w-3 rounded-full bg-[#FF5B5B] opacity-50"></div>
+                 <button className="px-4 py-1.5 rounded-full text-xs font-bold bg-[#7CFF6B] text-[#0E1218] hover:bg-[#6AE05B] transition-colors">
+                     Buy
+                 </button>
+                 <button className="px-4 py-1.5 rounded-full text-xs font-bold bg-[#FF5B5B] text-[#0E1218] hover:bg-[#E04F4F] transition-colors">
+                     Sell
+                 </button>
             </div>
         </div>
-        
-      )}
-      <div style={{ height }}>
+
+      <div style={{ height: height - 80 }}>
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={processedData} margin={ChartLayout.margin}>
+          <ComposedChart data={processingData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+            {/* Definitions for Glow Filter */}
+            <defs>
+              <filter id="glow-green" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="3.5" result="coloredBlur" />
+                <feMerge>
+                  <feMergeNode in="coloredBlur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
             <CartesianGrid
               strokeDasharray="4 4"
               stroke={ChartTheme.grid}
-              vertical={true}
               horizontal={true}
+              vertical={true}
               opacity={0.1}
             />
-            
+
             <XAxis
               dataKey="date"
-              tick={{ fill: ChartTheme.textSecondary, fontSize: 12 }}
+              tick={{ fill: "#9AA1AC", fontSize: 11, fontFamily: "monospace" }}
               axisLine={false}
               tickLine={false}
-              tickMargin={10}
-            />
-            
-            <YAxis
-              domain={['auto', 'auto']}
-              orientation="right"
-              tick={{ fill: ChartTheme.textSecondary, fontSize: 12 }}
-              axisLine={false}
-              tickLine={false}
-            />
-            
-            <Tooltip
-               content={({ active, payload }) => {
-                   if (active && payload && payload.length) {
-                       const d = payload[0].payload;
-                       return (
-                           <div style={{
-                                backgroundColor: ChartTheme.card,
-                                border: `1px solid ${ChartTheme.grid}`,
-                                color: ChartTheme.textPrimary,
-                                padding: '8px',
-                                borderRadius: '8px',
-                                fontSize: '12px'
-                           }}>
-                               <div className="mb-2 font-bold">{d.date}</div>
-                               <div>Open: {d.open}</div>
-                               <div>High: {d.high}</div>
-                               <div>Low: {d.low}</div>
-                               <div>Close: {d.close}</div>
-                           </div>
-                       )
-                   }
-                   return null;
-               }}
+              minTickGap={30}
             />
 
-            <Bar
-              dataKey="range"
-              shape={<CandlestickShape />}
-              barSize={12} // Thin bars for candles
+            <YAxis
+              orientation="right"
+              domain={[minLow - domainPadding, maxHigh + domainPadding]}
+              tick={{ fill: "#9AA1AC", fontSize: 11, fontFamily: "monospace" }}
+              axisLine={false}
+              tickLine={false}
+              width={50}
+              tickCount={6}
+              tickFormatter={(val) => val.toFixed(1)}
+            />
+
+            <Tooltip
+              cursor={{ stroke: "#FFFFFF", strokeDasharray: "4 4", opacity: 0.35 }}
+              content={({ active, payload }) => {
+                if (active && payload && payload.length) {
+                  const d = payload[0].payload;
+                  return (
+                    <div className="bg-[#151A21] border border-[#2A2F38] p-3 rounded-lg shadow-xl">
+                      <p className="text-[#9AA1AC] text-xs mb-2 font-mono">{d.date}</p>
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs font-mono">
+                        <span className="text-[#9AA1AC]">Open:</span>
+                        <span className="text-[#E8EBF0] text-right">{d.open.toFixed(2)}</span>
+                        <span className="text-[#9AA1AC]">High:</span>
+                        <span className="text-[#E8EBF0] text-right">{d.high.toFixed(2)}</span>
+                        <span className="text-[#9AA1AC]">Low:</span>
+                        <span className="text-[#E8EBF0] text-right">{d.low.toFixed(2)}</span>
+                        <span className="text-[#9AA1AC]">Close:</span>
+                        <span className="text-[#E8EBF0] text-right">{d.close.toFixed(2)}</span>
+                      </div>
+                    </div>
+                  );
+                }
+                return null;
+              }}
+            />
+            
+            {/* The Candle implementation using Bar with range [low, high] and custom shape */}
+            <Bar 
+                dataKey="range" 
+                shape={<CandleShape />} 
+                isAnimationActive={false}
             >
-                {/* We can map cells if we need specific colors, but Shape takes care of it */}
+                {/* 
+                  Note: Custom shape handles coloring, but we can technically put Cells here if needed.
+                  But the shape has all the logic.
+                */}
             </Bar>
-          </BarChart>
+            
+            {/* Current Price Line */}
+             <ReferenceLine 
+                y={lastPrice} 
+                stroke="#FFFFFF" 
+                strokeDasharray="3 3" 
+                opacity={0.5} 
+                label={{ 
+                    position: 'right', 
+                    value: lastPrice.toFixed(2), 
+                    fill: '#111', 
+                    fontSize: 10,
+                    fontWeight: 'bold',
+                    className: 'bg-white px-1 rounded' // Recharts text doesn't support className like that, usually specific rendering needed
+                }}
+             />
+
+          </ComposedChart>
         </ResponsiveContainer>
       </div>
     </div>
