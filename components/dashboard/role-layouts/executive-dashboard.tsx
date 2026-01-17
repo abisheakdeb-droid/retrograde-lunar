@@ -1,17 +1,57 @@
 "use client"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, ShoppingCart, Box, Activity, ExternalLink, TrendingUp, AlertTriangle, Play, Factory, Shirt, Layers, Droplets } from "lucide-react"
+import { 
+    Activity, 
+    AlertTriangle, 
+    ArrowUpRight, 
+    CheckCircle2, 
+    ChevronDown, 
+    DollarSign, 
+    Download, 
+    Droplets, 
+    Factory, 
+    FileText, 
+    Filter, 
+    LayoutDashboard, 
+    Layers, 
+    MoreHorizontal, 
+    Play, 
+    Search, 
+    Settings, 
+    Shirt, 
+    SlidersHorizontal, 
+    TrendingUp, 
+    Users, 
+    MoreVertical,
+    ExternalLink,
+    Box,
+    ShoppingCart
+} from "lucide-react";
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 // import { ProductionCostChart } from "@/components/charts/production-cost-chart" (Removed)
 // import { HourlyOutputChart } from "@/components/charts/mis-charts" (Removed)
 // import { GovernXProductionChart } from "@/components/charts/governx-production-chart" (Removed)
-import { GovernXStackedBarChart } from "@/components/charts/governx-stacked-bar-chart"
+import { GovernXStackedBarChart } from "@/components/charts/governx-stacked-bar-chart";
+import { GovernXCandlestickChart } from "@/components/charts/governx-candlestick-chart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { DashboardClientWidgets } from "@/components/dashboard/dashboard-client-widgets"
 import { DashboardCustomization } from "@/components/dashboard/dashboard-customization"
+
+const productionCandleData = [
+  { date: "08:00", open: 120, high: 145, low: 115, close: 140 },
+  { date: "09:00", open: 140, high: 155, low: 135, close: 150 },
+  { date: "10:00", open: 150, high: 165, low: 145, close: 155 },
+  { date: "11:00", open: 155, high: 180, low: 150, close: 175 },
+  { date: "12:00", open: 175, high: 185, low: 160, close: 165 }, // Lunch dip
+  { date: "13:00", open: 165, high: 170, low: 155, close: 160 },
+  { date: "14:00", open: 160, high: 190, low: 158, close: 185 }, // Post-lunch productivity
+  { date: "15:00", open: 185, high: 200, low: 180, close: 195 },
+  { date: "16:00", open: 195, high: 210, low: 190, close: 205 }, // Peak
+  { date: "17:00", open: 205, high: 215, low: 195, close: 198 }, // Wind down
+];
 
 export function ExecutiveDashboard({ data, role }: { data: any, role: string }) {
     const { stats, productionStats, factoryUnits } = data
@@ -256,27 +296,15 @@ export function ExecutiveDashboard({ data, role }: { data: any, role: string }) 
 
                                 <div className="grid gap-4 md:grid-cols-7">
                                     <div className="col-span-4">
-                                        <GovernXStackedBarChart 
-                                            data={sampleHourlyData} 
-                                            xAxisKey="hour"
-                                            layout="horizontal"
-                                            type="grouped"
-                                            stacks={[
-                                                { 
-                                                    name: "Target", 
-                                                    field: "target", 
-                                                    color: "#2A2F38", // Grid color for subtle background look
-                                                    radius: [2, 2, 2, 2]
-                                                },
-                                                { 
-                                                    name: "Achieved", 
-                                                    field: "achieved", 
-                                                    color: "#3B82F6", // Keeping Neon Blue but solid
-                                                    radius: [2, 2, 0, 0]
-                                                }
-                                            ]}
-                                            height={300}
-                                            className="border-0! bg-transparent!"
+                                        <GovernXCandlestickChart 
+                                            data={productionCandleData} 
+                                            symbol="PROD"
+                                            title="HOURLY OUTPUT VOLATILITY"
+                                            currentPrice={198.00}
+                                            priceChange={-7.00}
+                                            priceChangePercent={-3.4}
+                                            height={350}
+                                            className="shadow-2xl shadow-green-900/5 bg-[#0E1218] border-[#2A2F38]"
                                         />
                                     </div>
                                     <Card className="col-span-3">
