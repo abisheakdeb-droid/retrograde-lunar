@@ -7,6 +7,7 @@ import { NeuralBackground } from "@/components/ui/neural-background";
 import { DemoRoleProvider } from "@/components/providers/demo-role-provider";
 import { IntercomSystem } from "@/components/intercom/intercom-system";
 import { NotificationProvider } from "@/components/providers/notification-provider";
+import { RealTimeProvider } from "@/components/providers/realtime-provider";
 
 const onest = Onest({
   subsets: ["latin"],
@@ -35,8 +36,10 @@ export default function RootLayout({
             <NeuralBackground />
              <NotificationProvider>
                 <IntercomSystem>
-                  {children}
-                  <Toaster />
+                  <RealTimeProvider>
+                    {children}
+                    <Toaster />
+                  </RealTimeProvider>
                 </IntercomSystem>
              </NotificationProvider>
           </DemoRoleProvider>

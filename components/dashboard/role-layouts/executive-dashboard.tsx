@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { 
     Activity, 
@@ -41,22 +42,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { DashboardClientWidgets } from "@/components/dashboard/dashboard-client-widgets"
 import { DashboardCustomization } from "@/components/dashboard/dashboard-customization"
+import { AiInsightsCard } from "@/components/dashboard/ai-insights-card"
+import { useRealTimeData } from "@/components/providers/realtime-provider";
 
-const productionCandleData = [
-  { date: "08:00", open: 120, high: 145, low: 115, close: 140 },
-  { date: "09:00", open: 140, high: 155, low: 135, close: 150 },
-  { date: "10:00", open: 150, high: 165, low: 145, close: 155 },
-  { date: "11:00", open: 155, high: 180, low: 150, close: 175 },
-  { date: "12:00", open: 175, high: 185, low: 160, close: 165 }, // Lunch dip
-  { date: "13:00", open: 165, high: 170, low: 155, close: 160 },
-  { date: "14:00", open: 160, high: 190, low: 158, close: 185 }, // Post-lunch productivity
-  { date: "15:00", open: 185, high: 200, low: 180, close: 195 },
-  { date: "16:00", open: 195, high: 210, low: 190, close: 205 }, // Peak
-  { date: "17:00", open: 205, high: 215, low: 195, close: 198 }, // Wind down
-];
+
 
 export function ExecutiveDashboard({ data, role }: { data: any, role: string }) {
-    const { stats, productionStats, factoryUnits } = data
+    const { stats, factoryUnits } = data
+    
+    // Use global real-time context
+    const { productionStats, candles: realtimeCandles, isConnected, lastUpdated } = useRealTimeData();
 
     return (
         <div className="space-y-8 animate-in fade-in zoom-in duration-300 max-w-full overflow-x-hidden">
@@ -151,6 +146,11 @@ export function ExecutiveDashboard({ data, role }: { data: any, role: string }) 
                 </Card>
             </div>
 
+            {/* AI Insights Section */}
+            <div className="animate-in fade-in slide-in-from-bottom-5 duration-500 delay-150">
+                <AiInsightsCard />
+            </div>
+
             {/* Real-time Production Widget */}
             <DashboardClientWidgets />
 
@@ -230,14 +230,14 @@ export function ExecutiveDashboard({ data, role }: { data: any, role: string }) 
                         <Factory className="h-6 w-6" /> Factory Command Center
                     </h3>
                     <div className="text-sm text-muted-foreground">
-                        Last Updated: {new Date().toLocaleTimeString()}
+                        Last Updated: {lastUpdated.toLocaleTimeString()} {isConnected ? '(Live)' : '(Connecting...)'}
                     </div>
                 </div>
 
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 w-full min-w-0">
                     {factoryUnits.map((unit: any) => (
                         <div key={unit.id} className="min-w-0 w-full">
-                            <FactoryUnitCard unit={unit} candleData={productionCandleData} />
+                            <FactoryUnitCard unit={unit} candleData={realtimeCandles} />
                         </div>
                     ))}
                 </div>
