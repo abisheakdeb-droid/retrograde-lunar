@@ -8,8 +8,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { GraduationCap, Users, Calendar, ArrowRight, PlayCircle, BookOpen } from "lucide-react";
 import { GovernXRadarChart } from "@/components/charts/governx-radar-chart";
+import { EnrollmentDialog } from "./enrollment-dialog";
 
 export function TrainingOverview() {
+  const [selectedProgram, setSelectedProgram] = useState<TrainingProgram | null>(null);
   const [data, setData] = useState<{
     programs: TrainingProgram[];
     sessions: TrainingSession[];
@@ -88,7 +90,12 @@ export function TrainingOverview() {
                                 {program.department} • {program.durationHours} Hours
                             </p>
                         </div>
-                        <Button size="sm" className="w-full md:w-auto gap-2">
+
+                        <Button 
+                            size="sm" 
+                            className="w-full md:w-auto gap-2"
+                            onClick={() => setSelectedProgram(program)}
+                        >
                             <PlayCircle className="w-4 h-4" />
                             Enroll
                         </Button>
@@ -162,6 +169,13 @@ export function TrainingOverview() {
              </Card>
         </div>
       </div>
+
+      
+      <EnrollmentDialog 
+        open={!!selectedProgram} 
+        onOpenChange={(open) => !open && setSelectedProgram(null)}
+        program={selectedProgram}
+      />
     </div>
   );
 }
