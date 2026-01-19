@@ -24,7 +24,7 @@ import {
   History,
   PieChart
 } from "lucide-react"
-import { LogoutButton } from "@/components/logout-button"
+import { LogoutButton } from "@/components/shared/logout-button"
 
 const sidebarGroups = [
   {

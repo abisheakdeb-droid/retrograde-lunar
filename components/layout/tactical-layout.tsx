@@ -3,7 +3,7 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
-import { CommandPalette } from "@/components/command-palette"
+import { CommandPalette } from "@/components/shared/command-palette"
 
 interface TacticalLayoutProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode

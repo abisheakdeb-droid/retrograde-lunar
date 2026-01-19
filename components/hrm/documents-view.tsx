@@ -25,7 +25,7 @@ import {
     Upload,
     Lock
 } from "lucide-react"
-import { SearchInput } from "@/components/search-input"
+import { SearchInput } from "@/components/shared/search-input"
 import { Suspense, useMemo } from "react"
 import { useDemoRole } from "@/components/providers/demo-role-provider"
 import { UploadDocumentDialog } from "@/components/documents/upload-document-dialog"

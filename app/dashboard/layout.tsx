@@ -1,5 +1,5 @@
-import { Sidebar } from "@/components/sidebar"
-import { TacticalLayout } from "@/components/tactical-layout"
+import { Sidebar } from "@/components/layout/sidebar"
+import { TacticalLayout } from "@/components/layout/tactical-layout"
 import { NotificationBell } from "@/components/notifications/notification-bell"
 import { IntercomLauncher } from "@/components/intercom/intercom-launcher"
 import { auth } from "@/auth"

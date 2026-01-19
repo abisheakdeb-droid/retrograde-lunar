@@ -16,7 +16,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { SearchInput } from "@/components/search-input"
+import { SearchInput } from "@/components/shared/search-input"
 import { Progress } from "@/components/ui/progress"
 
 import { CreateTadaClaimDialog } from "@/components/tada/create-claim-dialog"

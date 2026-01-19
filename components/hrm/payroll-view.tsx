@@ -21,7 +21,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { PayslipDialog } from "@/components/hrm/payslip-dialog"
-import { SearchInput } from "@/components/search-input"
+import { SearchInput } from "@/components/shared/search-input"
 import { ExecutePayrollDialog } from "@/components/hrm/execute-payroll-dialog"
 import { useDemoRole } from "@/components/providers/demo-role-provider"
 import { useMemo } from "react"
