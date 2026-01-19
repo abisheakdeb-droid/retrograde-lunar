@@ -65,29 +65,29 @@ export function AiInsightsCard() {
                             <div 
                                 key={insight.id}
                                 className={cn(
-                                    "flex items-center gap-4 p-4 rounded-full border-0 transition-all hover:scale-[1.01] shadow-lg",
-                                    insight.type === 'critical' && "bg-[#fff0f0] text-slate-900",
-                                    insight.type === 'warning' && "bg-[#fff9e6] text-slate-900",
-                                    insight.type === 'success' && "bg-[#e6fffa] text-slate-900",
-                                    insight.type === 'info' && "bg-[#f0f4ff] text-slate-900",
+                                    "flex items-center gap-4 p-4 rounded-full border transition-all hover:scale-[1.01] shadow-lg hover:shadow-xl hover:bg-white/5",
+                                    insight.type === 'critical' && "bg-red-500/10 border-red-500/20 text-red-100",
+                                    insight.type === 'warning' && "bg-amber-500/10 border-amber-500/20 text-amber-100",
+                                    insight.type === 'success' && "bg-emerald-500/10 border-emerald-500/20 text-emerald-100",
+                                    insight.type === 'info' && "bg-indigo-500/10 border-indigo-500/20 text-indigo-100",
                                 )}
                             >
                                 <div className="shrink-0 pl-2">
-                                    {insight.type === 'critical' && <AlertTriangle className="h-5 w-5 text-red-500" />}
-                                    {insight.type === 'warning' && <AlertTriangle className="h-5 w-5 text-amber-500" />}
-                                    {insight.type === 'success' && <CheckCircle className="h-5 w-5 text-emerald-500" />}
-                                    {insight.type === 'info' && <Info className="h-5 w-5 text-blue-500" />}
+                                    {insight.type === 'critical' && <AlertTriangle className="h-5 w-5 text-red-400" />}
+                                    {insight.type === 'warning' && <AlertTriangle className="h-5 w-5 text-amber-400" />}
+                                    {insight.type === 'success' && <CheckCircle className="h-5 w-5 text-emerald-400" />}
+                                    {insight.type === 'info' && <Info className="h-5 w-5 text-indigo-400" />}
                                 </div>
                                 <div className="flex-1 min-w-0 grid gap-1">
-                                    <p className="font-semibold text-sm truncate pr-4">
+                                    <p className="font-semibold text-sm truncate pr-4 text-slate-200">
                                         {insight.message}
                                     </p>
                                     <div className="flex items-center gap-3">
                                         <Badge variant="outline" className={cn(
-                                            "text-[10px] px-2 py-0.5 h-auto rounded-full font-medium border-0",
-                                            insight.impact === 'High' && "bg-red-100 text-red-600",
-                                            insight.impact === 'Medium' && "bg-amber-100 text-amber-600",
-                                            insight.impact === 'Low' && "bg-blue-100 text-blue-600",
+                                            "text-[10px] px-2 py-0.5 h-auto rounded-full font-medium border",
+                                            insight.impact === 'High' && "bg-red-500/10 text-red-300 border-red-500/30",
+                                            insight.impact === 'Medium' && "bg-amber-500/10 text-amber-300 border-amber-500/30",
+                                            insight.impact === 'Low' && "bg-blue-500/10 text-blue-300 border-blue-500/30",
                                         )}>
                                             {insight.impact} Impact
                                         </Badge>
