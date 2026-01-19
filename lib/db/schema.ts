@@ -250,7 +250,7 @@ export const documents = pgTable("documents", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-// Reusing existing 'users' table for auth if needed, or deprecating in favor of 'employees' for this ERP context
+// ... existing users table
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
@@ -258,4 +258,39 @@ export const users = pgTable("users", {
   role: text("role").default("Staff"),
   image: text("image"),
   createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Training Module Tables
+export const trainingPrograms = pgTable("training_programs", {
+  id: text("id").primaryKey(), // TP-2026-001
+  title: text("title").notNull(),
+  description: text("description"),
+  department: text("department").notNull(), // Target department
+  durationHours: integer("duration_hours").notNull(),
+  type: text("type").notNull(), // Workshop, Seminar, Online Course
+  status: text("status").default("Active"), // Active, Archived
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const trainingSessions = pgTable("training_sessions", {
+  id: text("id").primaryKey(), // TS-2026-001
+  programId: text("program_id").notNull(), // FK to trainingPrograms
+  trainerName: text("trainer_name").notNull(),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  location: text("location"), // "Conference Room A" or "Zoom Link"
+  status: text("status").default("Scheduled"), // Scheduled, In Progress, Completed, Cancelled
+  maxCapacity: integer("max_capacity").default(20),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const enrollments = pgTable("enrollments", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  sessionId: text("session_id").notNull(),
+  employeeId: text("employee_id").notNull(),
+  employeeName: text("employee_name").notNull(),
+  status: text("status").default("Enrolled"), // Enrolled, Completed, Failed, No Show
+  score: integer("score"), // Assessment score if applicable
+  certificateUrl: text("certificate_url"),
+  enrolledAt: timestamp("enrolled_at").defaultNow(),
 });

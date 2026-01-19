@@ -11,6 +11,7 @@ import {
   Legend,
 } from "recharts";
 import { ChartTheme, ChartLayout } from "./chart-theme";
+import { ChartTooltip } from "./chart-tooltip";
 
 interface StackConfig {
   name: string;
@@ -124,13 +125,7 @@ export function GovernXStackedBarChart({
 
             <Tooltip
               cursor={{ fill: ChartTheme.grid, opacity: 0.1 }}
-              contentStyle={{
-                backgroundColor: ChartTheme.card,
-                borderColor: ChartTheme.grid,
-                color: ChartTheme.textPrimary,
-                borderRadius: "8px",
-              }}
-              itemStyle={{ fontSize: "12px" }}
+              content={<ChartTooltip showTotal />}
             />
 
             <Legend
@@ -171,6 +166,14 @@ export function GovernXStackedBarChart({
                   radius={radius}
                   stroke={stack.stroke}
                   strokeWidth={stack.strokeWidth}
+                  activeBar={{ 
+                    fill: fill, 
+                    opacity: 0.8, 
+                    stroke: ChartTheme.textPrimary, 
+                    strokeWidth: 1 
+                  }}
+                  animationDuration={1500}
+                  animationBegin={index * 200}
                 />
               );
             })}

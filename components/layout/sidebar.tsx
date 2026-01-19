@@ -21,7 +21,7 @@ import {
   Bell,
   Briefcase,
   Network,
-  History,
+  History as HistoryIcon,
   PieChart
 } from "lucide-react"
 import { LogoutButton } from "@/components/shared/logout-button"
@@ -67,7 +67,7 @@ const sidebarGroups = [
     items: [
       { name: "Documents & Archive", href: "/dashboard/documents", icon: FileText },
       { name: "Safety & Compliance", href: "/dashboard/compliance", icon: ShieldCheck },
-      { name: "Audit Logs", href: "/dashboard/compliance/audit-logs", icon: History },
+      { name: "Audit Logs", href: "/dashboard/compliance/audit-logs", icon: HistoryIcon },
       { name: "System Settings", href: "/dashboard/settings", icon: Settings },
     ]
   }
