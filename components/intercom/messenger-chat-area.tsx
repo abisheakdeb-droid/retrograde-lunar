@@ -42,6 +42,7 @@ export function MessengerChatArea({
   const [inputValue, setInputValue] = useState("")
   const [attachments, setAttachments] = useState<Attachment[]>([])
   const [showProfile, setShowProfile] = useState(false)
+  const [isTyping, setIsTyping] = useState(false)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -57,6 +58,16 @@ export function MessengerChatArea({
     onSendMessage(inputValue, attachments)
     setInputValue("")
     setAttachments([])
+    
+    // Simulate reply after 2 seconds
+    setTimeout(() => {
+        setIsTyping(true)
+        if(scrollAreaRef.current) scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
+    }, 1000)
+
+    setTimeout(() => {
+        setIsTyping(false)
+    }, 4000)
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -159,6 +170,20 @@ export function MessengerChatArea({
               attachments={msg.attachments}
             />
           ))}
+          
+           {isTyping && (
+            <div className="flex items-center gap-2 mb-4">
+                <Avatar className="h-8 w-8">
+                    <AvatarImage src={contact.avatar} />
+                    <AvatarFallback>{contact.name.substring(0, 2)}</AvatarFallback>
+                </Avatar>
+                <div className="bg-muted px-4 py-3 rounded-2xl rounded-bl-none flex gap-1 items-center h-10 w-16">
+                    <span className="w-1.5 h-1.5 bg-foreground/40 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                    <span className="w-1.5 h-1.5 bg-foreground/40 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                    <span className="w-1.5 h-1.5 bg-foreground/40 rounded-full animate-bounce"></span>
+                </div>
+            </div>
+           )}
         </div>
         </div>
 

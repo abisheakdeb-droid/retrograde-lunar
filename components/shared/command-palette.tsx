@@ -14,6 +14,9 @@ import {
   Activity,
   Terminal,
   Search,
+  GraduationCap,
+  ShieldCheck,
+  FileText,
 } from "lucide-react"
 
 import {
@@ -76,6 +79,11 @@ export function CommandPalette() {
             <span>Inventory ERP</span>
             <CommandShortcut>⌘I</CommandShortcut>
           </CommandItem>
+          <CommandItem onSelect={() => runCommand(() => router.push("/dashboard/training"))}>
+             <GraduationCap className="mr-2 h-4 w-4" />
+             <span>Training & Skill</span>
+             <CommandShortcut>⌘T</CommandShortcut>
+          </CommandItem>
           <CommandItem onSelect={() => runCommand(() => router.push("/dashboard"))}>
              <Search className="mr-2 h-4 w-4" />
              <span>Overview</span>
@@ -90,6 +98,14 @@ export function CommandPalette() {
           <CommandItem onSelect={() => runCommand(() => console.log('Deploying'))}>
             <Truck className="mr-2 h-4 w-4" />
             <span>Deploy Supplies</span>
+          </CommandItem>
+          <CommandItem onSelect={() => runCommand(() => router.push("/dashboard/compliance"))}>
+             <ShieldCheck className="mr-2 h-4 w-4" />
+             <span>Compliance Dashboard</span>
+          </CommandItem>
+          <CommandItem onSelect={() => runCommand(() => router.push("/dashboard/documents"))}>
+             <FileText className="mr-2 h-4 w-4" />
+             <span>Documents Archive</span>
           </CommandItem>
         </CommandGroup>
         <CommandSeparator />

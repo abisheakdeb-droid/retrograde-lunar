@@ -58,16 +58,34 @@ export function MessageBubble({ message, isMe, timestamp, attachments }: Message
             )}
           >
             <p>{message}</p>
-            <div
-              className={cn(
-                "text-[10px] opacity-0 group-hover:opacity-70 absolute bottom-0 transition-opacity duration-200 whitespace-nowrap mb-[-1.2rem]",
-                isMe ? "right-0" : "left-0"
-              )}
-            >
-              {timestamp}
-            </div>
           </div>
         )}
+
+      {/* Timestamp & Read Receipt */}
+      <div className="flex items-center justify-end gap-1 mt-1">
+        <span className="text-[10px] text-muted-foreground opacity-70">
+          {timestamp}
+        </span>
+        {isMe && (
+          <span className="text-primary">
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              width="12" 
+              height="12" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              className="lucide lucide-check-check"
+            >
+              <path d="M18 6 7 17l-5-5"/>
+              <path d="m22 10-7.5 7.5L13 16"/>
+            </svg>
+          </span>
+        )}
+      </div>
       </div>
     </motion.div>
   )
