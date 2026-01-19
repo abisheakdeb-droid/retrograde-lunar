@@ -68,54 +68,150 @@ export function RealTimeProvider({ children }: { children: ReactNode }) {
     const [activeLines, setActiveLines] = useState(12);
 
     useEffect(() => {
-        // Simulate connection
-        const timeout = setTimeout(() => setIsConnected(true), 1000);
+        let ws: WebSocket | null = null;
+        let interval: NodeJS.Timeout | undefined; // Initialize as undefined
 
-        const interval = setInterval(() => {
-            setLastUpdated(new Date());
+        // Check if WEBSOCKET_URL is defined
+        const wsUrl = process.env.NEXT_PUBLIC_WEBSOCKET_URL;
 
-            // 1. Update Candles (Simulate Market/Production Pulse)
-            setCandles(prev => {
-                const newData = [...prev];
-                const last = { ...newData[newData.length - 1] };
+        if (wsUrl) {
+            // --- REAL MODE ---
+            try {
+                ws = new WebSocket(wsUrl);
                 
-                // Random walk
-                const change = Math.random() * 8 - 4; 
-                last.close = Math.max(100, last.close + change);
-                last.high = Math.max(last.high, last.close);
-                last.low = Math.min(last.low, last.close);
+                ws.onopen = () => {
+                    console.log("Connected to Real-time Production Stream");
+                    setIsConnected(true);
+                };
 
-                newData[newData.length - 1] = last;
-                return newData;
-            });
+                ws.onmessage = (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        setLastUpdated(new Date());
+                        
+                        // Expecting backend to send partial updates
+                        if (data.hourlyOutput !== undefined) setHourlyOutput(data.hourlyOutput);
+                        if (data.efficiency !== undefined) setEfficiency(data.efficiency);
+                        if (data.activeLines !== undefined) setActiveLines(data.activeLines);
+                        if (data.candles) setCandles(data.candles);
+                        if (data.productionStats) setProductionStats(data.productionStats);
+                        
+                    } catch (e) {
+                        console.error("Failed to parse WS message", e);
+                    }
+                };
 
-            // 2. Update Production Stats (Simulate small deviations)
-            setProductionStats(prev => prev.map(item => ({
-                ...item,
-                production: Math.max(0, item.production + Math.floor(Math.random() * 40 - 20)),
-                cost: Math.max(0, item.cost + Math.floor(Math.random() * 60 - 30))
-            })));
+                ws.onclose = () => {
+                    console.log("Disconnected from Real-time Stream");
+                    setIsConnected(false);
+                }
+                ws.onerror = (error) => {
+                    console.error("WebSocket error:", error);
+                    setIsConnected(false);
+                };
+            } catch (e) {
+                console.error("WebSocket connection error", e);
+                // Fallback to demo mode if WebSocket constructor fails
+                console.log("Falling back to DEMO MODE due to WebSocket error.");
+                
+                // Simulate connection delay
+                setTimeout(() => setIsConnected(true), 1000);
 
-            // 3. Widget Metrics Updates
-            setHourlyOutput(prev => prev + Math.floor(Math.random() * 20 - 10));
-            setEfficiency(prev => Math.min(100, Math.max(70, prev + Math.random() * 4 - 2)));
-            setActiveLines(prev => {
-                const rand = Math.random();
-                if (rand > 0.9) return Math.min(15, prev + 1);
-                if (rand < 0.1) return Math.max(10, prev - 1);
-                return prev;
-            });
+                interval = setInterval(() => {
+                    setLastUpdated(new Date());
 
-            // 4. Random Alerts
-            if (Math.random() > 0.9) {
-                setActiveAlerts(prev => prev + 1);
+                    // 1. Update Candles (Simulate Market/Production Pulse)
+                    setCandles(prev => {
+                        const newData = [...prev];
+                        const last = { ...newData[newData.length - 1] };
+                        
+                        // Random walk
+                        const change = Math.random() * 8 - 4; 
+                        last.close = Math.max(100, last.close + change);
+                        last.high = Math.max(last.high, last.close);
+                        last.low = Math.min(last.low, last.close);
+
+                        newData[newData.length - 1] = last;
+                        return newData;
+                    });
+
+                    // 2. Update Production Stats (Simulate small deviations)
+                    setProductionStats(prev => prev.map(item => ({
+                        ...item,
+                        production: Math.max(0, item.production + Math.floor(Math.random() * 40 - 20)),
+                        cost: Math.max(0, item.cost + Math.floor(Math.random() * 60 - 30))
+                    })));
+
+                    // 3. Widget Metrics Updates
+                    setHourlyOutput(prev => prev + Math.floor(Math.random() * 20 - 10));
+                    setEfficiency(prev => Math.min(100, Math.max(70, prev + Math.random() * 4 - 2)));
+                    setActiveLines(prev => {
+                        const rand = Math.random();
+                        if (rand > 0.9) return Math.min(15, prev + 1);
+                        if (rand < 0.1) return Math.max(10, prev - 1);
+                        return prev;
+                    });
+
+                    // 4. Random Alerts
+                    if (Math.random() > 0.9) {
+                        setActiveAlerts(prev => prev + 1);
+                    }
+
+                }, 2000); // 2 second heartbeat
             }
+        } else {
+            // --- DEMO MODE (Fallback) ---
+            console.log("Running in DEMO MODE (No NEXT_PUBLIC_WEBSOCKET_URL provided)");
+            
+            // Simulate connection delay
+            setTimeout(() => setIsConnected(true), 1000);
 
-        }, 2000); // 2 second heartbeat
+            interval = setInterval(() => {
+                setLastUpdated(new Date());
+
+                // 1. Update Candles (Simulate Market/Production Pulse)
+                setCandles(prev => {
+                    const newData = [...prev];
+                    const last = { ...newData[newData.length - 1] };
+                    
+                    // Random walk
+                    const change = Math.random() * 8 - 4; 
+                    last.close = Math.max(100, last.close + change);
+                    last.high = Math.max(last.high, last.close);
+                    last.low = Math.min(last.low, last.close);
+
+                    newData[newData.length - 1] = last;
+                    return newData;
+                });
+
+                // 2. Update Production Stats (Simulate small deviations)
+                setProductionStats(prev => prev.map(item => ({
+                    ...item,
+                    production: Math.max(0, item.production + Math.floor(Math.random() * 40 - 20)),
+                    cost: Math.max(0, item.cost + Math.floor(Math.random() * 60 - 30))
+                })));
+
+                // 3. Widget Metrics Updates
+                setHourlyOutput(prev => prev + Math.floor(Math.random() * 20 - 10));
+                setEfficiency(prev => Math.min(100, Math.max(70, prev + Math.random() * 4 - 2)));
+                setActiveLines(prev => {
+                    const rand = Math.random();
+                    if (rand > 0.9) return Math.min(15, prev + 1);
+                    if (rand < 0.1) return Math.max(10, prev - 1);
+                    return prev;
+                });
+
+                // 4. Random Alerts
+                if (Math.random() > 0.9) {
+                    setActiveAlerts(prev => prev + 1);
+                }
+
+            }, 2000); // 2 second heartbeat
+        }
 
         return () => {
-            clearTimeout(timeout);
-            clearInterval(interval);
+            if (interval) clearInterval(interval);
+            if (ws) ws.close();
         };
     }, []);
 
