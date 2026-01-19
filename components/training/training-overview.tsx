@@ -159,7 +159,7 @@ export function TrainingOverview() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <p className="text-sm text-muted-foreground">
-                        Based on recent tactical reviews, the <strong>Logistics</strong> department requires immediate upskilling in "Quantum Supply Chain" methodologies.
+                        Based on recent tactical reviews, the <strong>Logistics</strong> department requires immediate upskilling in &quot;Quantum Supply Chain&quot; methodologies.
                     </p>
                     <Button variant="secondary" className="w-full">
                         Auto-Assign Training
