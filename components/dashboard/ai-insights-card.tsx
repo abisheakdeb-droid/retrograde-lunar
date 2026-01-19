@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Brain, Sparkles, RefreshCcw, AlertTriangle, CheckCircle, Info, Zap } from "lucide-react"
 import { getSystemInsights, SystemInsight } from "@/app/actions/ai-actions"
 import { cn } from "@/lib/utils"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "../ui/skeleton"
 
 export function AiInsightsCard() {
     const [insights, setInsights] = useState<SystemInsight[]>([])
