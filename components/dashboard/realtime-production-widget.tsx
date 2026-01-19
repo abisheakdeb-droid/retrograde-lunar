@@ -1,19 +1,12 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useRealTimeProduction } from "@/lib/hooks/use-realtime-production"
+import { useRealTimeData } from "@/components/providers/realtime-provider"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Activity, TrendingUp, Factory } from "lucide-react"
 
 export function RealTimeProductionWidget() {
-  const { hourlyOutput, efficiency, activeLines, timestamp } = useRealTimeProduction()
-  const [mounted, setMounted] = useState(false)
-
-  // Ensure component is mounted before rendering time-sensitive data
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  const { hourlyOutput, efficiency, activeLines, lastUpdated } = useRealTimeData()
 
   return (
     <Card className="tactical-card border-l-4 border-l-primary/50 overflow-hidden relative group">
@@ -51,7 +44,7 @@ export function RealTimeProductionWidget() {
             <span className="text-2xl font-bold font-mono text-primary drop-shadow-[0_0_8px_rgba(6,182,212,0.3)]">{activeLines}</span>
           </div>
           <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-widest mt-4">
-            Updated {mounted ? new Date(timestamp).toLocaleTimeString() : "--:--:--"}
+            Updated {lastUpdated.toLocaleTimeString()}
           </p>
         </div>
       </CardContent>

@@ -1,6 +1,8 @@
 import { getDocuments } from "@/lib/db/queries"
 import { DocumentsView } from "@/components/hrm/documents-view"
 
+import { RoleGuard } from "@/components/auth/role-guard"
+
 export default async function DocumentsPage(props: { searchParams: Promise<{ q?: string }> }) {
     const searchParams = await props.searchParams;
     const search = (searchParams?.q || '').toString().trim();
@@ -11,7 +13,11 @@ export default async function DocumentsPage(props: { searchParams: Promise<{ q?:
         uploadDate: d.uploadDate ? new Date(d.uploadDate).toISOString() : new Date().toISOString()
     }));
 
+
+
     return (
-        <DocumentsView documents={documents} search={search} />
+        <RoleGuard allowedRoles={['admin', 'hr', 'md']}>
+            <DocumentsView documents={documents} search={search} />
+        </RoleGuard>
     )
 }
